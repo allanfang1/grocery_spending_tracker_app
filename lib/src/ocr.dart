@@ -97,7 +97,7 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
                                     : Container(
                                         width: 24,
                                         height: 24,
-                                        padding: EdgeInsets.all(2.0),
+                                        padding: const EdgeInsets.all(2.0),
                                         child: const CircularProgressIndicator(
                                           strokeWidth: 3,
                                         )),
@@ -182,6 +182,11 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
 
       final inputReceipt = InputImage.fromFile(file);
       final scannedReceipt = await _receiptScanner.processImage(inputReceipt);
+
+      // reset button for page returns
+      setState(() {
+        _isActive = true;
+      });
 
       await navigator.push(MaterialPageRoute(
           builder: (context) =>
