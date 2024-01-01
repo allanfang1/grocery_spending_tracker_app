@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'package:grocery_spending_tracker_app/pages/clicker.dart';
+import 'package:grocery_spending_tracker_app/pages/home.dart';
 
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  bool? enableBtn;
+  bool? _enableBtn;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class _LoginPage extends State<LoginPage> {
               Form(
                 key: _formKey,
                 onChanged: () => setState(
-                    () => enableBtn = _formKey.currentState?.validate()),
+                    () => _enableBtn = _formKey.currentState?.validate()),
                 child: Column(
                   children: [
                     TextFormField(
@@ -92,12 +93,16 @@ class _LoginPage extends State<LoginPage> {
                     ),
                     const SizedBox(height: 10),
                     OutlinedButton(
-                      onPressed: enableBtn ?? false
-                          ? () => {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Good Data')),
-                                )
-                              }
+                      onPressed: _enableBtn ?? false
+                          ? () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const HomePage(
+                                    title: 'clicker',
+                                  ),
+                                ),
+                              );
+                            }
                           : null,
                       child: const Text('Login'),
                     ),
