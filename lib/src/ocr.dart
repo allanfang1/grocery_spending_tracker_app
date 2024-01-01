@@ -13,11 +13,9 @@ class ReceiptScan extends StatefulWidget {
 
 class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
   bool _isPermissionGranted = false;
-
+  bool _isActive = true;
   late final Future<void> _future;
-
   CameraController? _cameraController;
-
   final _receiptScanner = TextRecognizer();
 
   @override
@@ -43,9 +41,9 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.inactive) {
       _stopCamera();
-    } else if (state == AppLifecycleState.resumed
-        && _cameraController != null
-        && _cameraController!.value.isInitialized) {
+    } else if (state == AppLifecycleState.resumed &&
+        _cameraController != null &&
+        _cameraController!.value.isInitialized) {
       _startCamera();
     }
   }
@@ -67,8 +65,7 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
                     return Center(child: CameraPreview(_cameraController!));
                   } else {
                     return const Center(
-                        child: Text('Camera permission not granted')
-                    );
+                        child: Text('Camera permission not granted'));
                   }
                 },
               ),
@@ -77,31 +74,45 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
                 title: const Text('Receipt Scanning'),
               ),
               backgroundColor: _isPermissionGranted ? Colors.transparent : null,
-              body: _isPermissionGranted ?
-                Column(
-                  children: [
-                    Expanded(
-                        child: Container(),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only (bottom: 30.0),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _scanReceipt,
-                          child: const Text('Scan Receipt'),
+              body: _isPermissionGranted
+                  ? Column(
+                      children: [
+                        Expanded(
+                          child: Container(),
                         ),
-                      )
+                        Container(
+                            padding: const EdgeInsets.only(bottom: 30.0),
+                            child: Center(
+                              child: ElevatedButton(
+                                onPressed: _isActive
+                                    ? () {
+                                        setState(() {
+                                          _isActive = false;
+                                        });
+                                        _scanReceipt();
+                                      }
+                                    : null,
+                                child: _isActive
+                                    ? const Text('Scan Receipt')
+                                    : Container(
+                                        width: 24,
+                                        height: 24,
+                                        padding: EdgeInsets.all(2.0),
+                                        child: const CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                        )),
+                              ),
+                            ))
+                      ],
                     )
-                  ],
-                ) : Center(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: const Text(
-                    'Camera permission denied',
-                    textAlign: TextAlign.center,
-                  )
-                )
-              ),
+                  : Center(
+                      child: Container(
+                          padding:
+                              const EdgeInsets.only(left: 24.0, right: 24.0),
+                          child: const Text(
+                            'Camera permission denied',
+                            textAlign: TextAlign.center,
+                          ))),
             )
           ],
         );
@@ -156,9 +167,7 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
 
     if (!mounted) return;
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Future<void> _scanReceipt() async {
@@ -174,15 +183,13 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
       final inputReceipt = InputImage.fromFile(file);
       final scannedReceipt = await _receiptScanner.processImage(inputReceipt);
 
-      await navigator.push(
-        MaterialPageRoute(
-            builder: (context) =>
-                ConfirmReceipt(receiptData: scannedReceipt.text))
-      );
+      await navigator.push(MaterialPageRoute(
+          builder: (context) =>
+              ConfirmReceipt(receiptData: scannedReceipt.text)));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('An error occurred scanning the receipt.'),)
-      );
+        content: Text('An error occurred scanning the receipt.'),
+      ));
     }
   }
 }
