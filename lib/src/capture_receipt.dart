@@ -1,22 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:grocery_spending_tracker_app/src/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/parse_receipt.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
-class ReceiptScan extends StatefulWidget {
+class CaptureReceipt extends StatefulWidget {
   @override
-  State<ReceiptScan> createState() => _ReceiptScanState();
+  State<CaptureReceipt> createState() => _CaptureReceiptState();
 }
 
-class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
+class _CaptureReceiptState extends State<CaptureReceipt>
+    with WidgetsBindingObserver {
   bool _isPermissionGranted = false;
   bool _isActive = true;
   late final Future<void> _future;
   CameraController? _cameraController;
-  final _receiptScanner = TextRecognizer();
 
   @override
   void initState() {
@@ -30,7 +30,6 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopCamera();
-    _receiptScanner.close();
     super.dispose();
   }
 
@@ -176,12 +175,11 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
     final navigator = Navigator.of(context);
 
     try {
+      _cameraController!.setFlashMode(FlashMode.off); // caused issues when on
       final receipt = await _cameraController!.takePicture();
 
-      final file = File(receipt.path);
-
-      final inputReceipt = InputImage.fromFile(file);
-      final scannedReceipt = await _receiptScanner.processImage(inputReceipt);
+      final scannedReceipt =
+          await ParseReceipt().scanReceipt(_cameraController, receipt);
 
       // reset button for page returns
       setState(() {
@@ -190,7 +188,7 @@ class _ReceiptScanState extends State<ReceiptScan> with WidgetsBindingObserver {
 
       await navigator.push(MaterialPageRoute(
           builder: (context) =>
-              ConfirmReceipt(receiptData: scannedReceipt.text)));
+              ConfirmReceipt(receiptData: scannedReceipt!.text)));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),
