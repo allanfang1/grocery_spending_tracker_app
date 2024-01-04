@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'src/ocr.dart';
+import 'src/capture_receipt.dart';
 
 void main() {
   runApp(const MyApp());
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ReceiptScan())
+              MaterialPageRoute(builder: (context) => CaptureReceipt())
             );
           },
         )

@@ -178,8 +178,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
       _cameraController!.setFlashMode(FlashMode.off); // caused issues when on
       final receipt = await _cameraController!.takePicture();
 
-      final scannedReceipt =
-          await ParseReceipt().scanReceipt(_cameraController, receipt);
+      final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
       // reset button for page returns
       setState(() {
