@@ -187,7 +187,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       await navigator.push(MaterialPageRoute(
           builder: (context) =>
-              ConfirmReceipt(receiptData: scannedReceipt!.text)));
+              ConfirmReceipt(receiptData: scannedReceipt)));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),
