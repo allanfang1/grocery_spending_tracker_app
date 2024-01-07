@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/models/userdata.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserDataModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

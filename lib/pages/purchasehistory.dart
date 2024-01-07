@@ -19,19 +19,13 @@ class _PurchaseHistory extends State<PurchaseHistory> {
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 300.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const SizedBox(height: 20),
-              SizedBox(
-                child: OutlinedButton(
-                  onPressed: null,
-                  child: const Text('Take Photo'),
-                ),
-              ),
-            ],
-          ),
+          // child: ListView.builder(
+          //   itemCount: ,
+          //   prototypeItem: ,
+          //   itemBuilder: (context, index) {
+          //     return Card();
+          //   },
+          // ),
         ),
       ),
     );

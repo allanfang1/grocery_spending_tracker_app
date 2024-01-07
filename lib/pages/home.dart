@@ -7,8 +7,7 @@ import 'package:grocery_spending_tracker_app/pages/purchasehistory.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.title});
-  final String title;
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

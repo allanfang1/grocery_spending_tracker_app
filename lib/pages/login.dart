@@ -1,7 +1,12 @@
+import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:grocery_spending_tracker_app/models/userdata.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
-
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore_for_file: prefer_const_constructors
 
@@ -15,6 +20,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPage extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn;
+  String? _email;
+  String? _password;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +49,7 @@ class _LoginPage extends State<LoginPage> {
                   children: [
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onSaved: (newValue) => setState(() => _email = newValue),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: "Email",
@@ -62,6 +70,8 @@ class _LoginPage extends State<LoginPage> {
                     const SizedBox(height: 10),
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onSaved: (newValue) =>
+                          setState(() => _password = newValue),
                       obscureText: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -92,20 +102,33 @@ class _LoginPage extends State<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    OutlinedButton(
-                      onPressed: _enableBtn ?? false
-                          ? () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const HomePage(
-                                    title: 'clicker',
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
-                      child: const Text('Login'),
-                    ),
+                    Consumer<UserDataModel>(
+                      builder: (context, userDataModel, child) {
+                        return OutlinedButton(
+                          onPressed: _enableBtn ?? false
+                              ? () async {
+                                  final navigator = Navigator.of(context);
+                                  _formKey.currentState!.save();
+                                  setState(() => _enableBtn = false);
+                                  final response = await userDataModel.login(
+                                      _email!, _password!);
+                                  if (response == 200) {
+                                    navigator.push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const HomePage(),
+                                      ),
+                                    );
+                                  } else {
+                                    print(
+                                        'Login failed. Response: ${response}');
+                                  }
+                                  setState(() => _enableBtn = true);
+                                }
+                              : null,
+                          child: const Text('Login'),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
