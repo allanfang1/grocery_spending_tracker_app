@@ -7,4 +7,15 @@ class ExtractData {
 
     return dateTime;
   }
+
+  String? getLocation(String receiptData) {
+    // Full Street Address, City, Province, Postal Code
+    // r'(\d+) [a-zA-Z\s]+(\,)? [a-zA-Z]+(\,)? ([A-Z]{2})+(\,)? [A-Z0-9\s]{6,7}'
+
+    // want to add optional city, province and postal
+    final addressRegex = RegExp(r'(\d+) [a-zA-Z\s]');
+    String? address = addressRegex.stringMatch(receiptData);
+
+    return address;
+  }
 }
