@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/src/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/src/parse_receipt.dart';
