@@ -1,17 +1,10 @@
-import 'dart:io';
-
 class ExtractData {
-  // List<String> stringToList(String data) {
-  //   List<String> splitString = data.split('\n');
-  //
-  //   return splitString;
-  // }
-
-  String getDate(String receiptData) {
+  // extract date from the input receipt text if it exists
+  String? getDate(String receiptData) {
     final dateRegex = RegExp(
-        r'/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/');
-    RegExpMatch? date = dateRegex.firstMatch(receiptData);
+        r'^(\d{1,2})[/\-](\d{1,2})[/\-](\d{4})');
+    String? date = dateRegex.stringMatch(receiptData);
 
-    return date.toString();
+    return date;
   }
 }
