@@ -1,4 +1,6 @@
 class ExtractData {
+  // need to separate out the lines of text in order to more easily parse
+  // and improve quality of outputs from RegExp
   List<String> textToList(String receiptData) {
     List<String> splitReceipt = receiptData.split('\n');
 
@@ -22,6 +24,7 @@ class ExtractData {
     return null;
   }
 
+  // extract location of store if available
   String? getLocation(List<String> receiptData) {
     // Full Street Address, City, Province, Postal Code
     // r'([1-9]+) [a-zA-Z\s]+(\,)? [a-zA-Z]+(\,)? ([A-Z]{2})+(\,)? [A-Z0-9\s]{6,7}'
@@ -36,6 +39,7 @@ class ExtractData {
     return null;
   }
 
+  // extracts grocery items from receipt data
   List<String> getItems(List<String> receiptData) {
     List<String> groceries = [];
 
