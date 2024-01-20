@@ -86,7 +86,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                                         setState(() {
                                           _isActive = false;
                                         });
-                                        _scanReceipt();
+                                        scanReceipt();
                                       }
                                     : null,
                                 child: _isActive
@@ -167,7 +167,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     setState(() {});
   }
 
-  Future<void> _scanReceipt() async {
+  Future<void> scanReceipt() async {
     if (_cameraController == null) return;
 
     final navigator = Navigator.of(context);
