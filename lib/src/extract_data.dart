@@ -53,9 +53,18 @@ class ExtractData {
     List<String> groceries = [];
 
     final itemRegex = RegExp(r'([a-zA-Z\s]+) [$]?[0-9]+.[0-9\s]{2,3}');
+    final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
-      if (itemRegex.hasMatch(line)) groceries.add(line);
+      if (itemRegex.hasMatch(line)) {
+        // correct OCR parsing if there is a space captured in the price
+        if (priceRegex.hasMatch(line)) {
+          int temp = line.lastIndexOf(' ');
+          line = line.replaceRange(temp, temp+1, '');
+        }
+
+        groceries.add(line);
+      }
     }
 
     return groceries;
