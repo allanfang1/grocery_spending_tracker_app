@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/src/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/src/parse_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/extract_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
@@ -178,6 +179,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
+      final listReceipt = ExtractData().textToList(scannedReceipt);
+
       // reset button for page returns
       setState(() {
         _isActive = true;
@@ -185,7 +188,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       await navigator.push(MaterialPageRoute(
           builder: (context) =>
-              ConfirmReceipt(receiptData: scannedReceipt)));
+              ConfirmReceipt(receiptData: listReceipt)));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),

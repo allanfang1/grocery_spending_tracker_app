@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ConfirmReceipt extends StatelessWidget {
-  final String receiptData;
+  final List<String> receiptData;
 
   const ConfirmReceipt({super.key, required this.receiptData});
 
@@ -12,7 +12,7 @@ class ConfirmReceipt extends StatelessWidget {
     ),
     body: Container(
       padding: const EdgeInsets.all(30.0),
-      child: Text(receiptData),
+      child: Text(receiptData[0]),
     ),
   );
 }
