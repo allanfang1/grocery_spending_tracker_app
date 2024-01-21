@@ -13,7 +13,7 @@ class ExtractData {
   }
 
   // extract date and time from the input receipt text if it exists
-  String? getDateTime(List<String> receiptData) {
+  String getDateTime(List<String> receiptData) {
     final dateTimeRegex = RegExp(
         r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{4}) ([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?');
 
@@ -21,11 +21,11 @@ class ExtractData {
       if (dateTimeRegex.hasMatch(line)) return line;
     }
 
-    return null;
+    return "";
   }
 
   // extract location of store if available
-  String? getLocation(List<String> receiptData) {
+  String getLocation(List<String> receiptData) {
     // Full Street Address, City, Province, Postal Code
     // r'([1-9]+) [a-zA-Z\s]+(\,)? [a-zA-Z]+(\,)? ([A-Z]{2})+(\,)? [A-Z0-9\s]{6,7}'
 
@@ -36,7 +36,7 @@ class ExtractData {
       if (addressRegex.hasMatch(line)) return line;
     }
 
-    return null;
+    return "";
   }
 
   // extracts grocery items from receipt data
@@ -51,4 +51,27 @@ class ExtractData {
 
     return groceries;
   }
+
+  // gets subtotal from receipt
+  String getSubtotal(List<String> receiptData) {
+    final subtotalRegex = RegExp(r'(Subtotal|SUBTOTAL) [$]?[0-9]+.[0-9]{2}');
+
+    for (String line in receiptData) {
+      if (subtotalRegex.hasMatch(line)) return line;
+    }
+
+    return "";
+  }
+
+  // gets total from receipt
+  String getTotal(List<String> receiptData) {
+    final subtotalRegex = RegExp(r'(Total|TOTAL) [$]?[0-9]+.[0-9]{2}');
+
+    for (String line in receiptData) {
+      if (subtotalRegex.hasMatch(line)) return line;
+    }
+
+    return "";
+  }
+
 }
