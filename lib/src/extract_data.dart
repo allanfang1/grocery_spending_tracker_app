@@ -13,15 +13,24 @@ class ExtractData {
   }
 
   // extract date and time from the input receipt text if it exists
-  String getDateTime(List<String> receiptData) {
+  int getDateTime(List<String> receiptData) {
     final dateTimeRegex = RegExp(
-        r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{4}) ([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?');
+        r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{1,2}) ([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?');
+    var parsedDate = DateTime.now();
 
     for (String line in receiptData) {
-      if (dateTimeRegex.hasMatch(line)) return line;
+      if (dateTimeRegex.hasMatch(line)) {
+        var temp = "20$line";
+
+        if (temp.contains("/")) temp = temp.replaceAll("/", "-");
+
+        parsedDate = DateTime.parse(temp);
+      }
     }
 
-    return "";
+    final dateTime = parsedDate.millisecondsSinceEpoch~/1000;
+
+    return dateTime;
   }
 
   // extract location of store if available
