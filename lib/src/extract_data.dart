@@ -52,7 +52,7 @@ class ExtractData {
   List<String> getItems(List<String> receiptData) {
     List<String> groceries = [];
 
-    final itemRegex = RegExp(r'([a-zA-Z\s]+) [$]?[0-9]+.[0-9]{2}');
+    final itemRegex = RegExp(r'([a-zA-Z\s]+) [$]?[0-9]+.[0-9\s]{2,3}');
 
     for (String line in receiptData) {
       if (itemRegex.hasMatch(line)) groceries.add(line);
