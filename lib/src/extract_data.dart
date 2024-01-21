@@ -20,6 +20,10 @@ class ExtractData {
 
     for (String line in receiptData) {
       if (dateTimeRegex.hasMatch(line)) {
+        List<String> splitLine = line.split(' ');
+        splitLine.removeAt(0);
+        line = splitLine.join(' ');
+
         var temp = "20$line";
 
         if (temp.contains("/")) temp = temp.replaceAll("/", "-");
