@@ -19,16 +19,30 @@ class ConfirmReceipt extends StatelessWidget {
         ),
       );
 
+  // for formatting String items into Item object
   List<Item> formatItems(List<String> receipt) {
     List<String> parsedItems = ExtractData().getItems(receipt);
     List<Item> groceries = [];
 
     // Item("", "", 0.00, false)
 
-    // first word is gonna be the SKU
-    // next n number of words are description
-    // HMRJ or MRJ for tax
-    // final word would be the price
+    for (String item in parsedItems) {
+      List<String> splitItem = item.split(' ');
+
+      String itemKey = splitItem[0];
+      splitItem.removeAt(0);
+
+      double price = double.parse(splitItem.last);
+      splitItem.removeLast();
+
+      String taxIdentifier = splitItem.last;
+      bool taxed = taxIdentifier.contains("H");
+      splitItem.removeLast();
+
+      String itemDesc = splitItem.join(' ');
+
+      groceries.add(Item(itemKey, itemDesc, price, taxed));
+    }
 
     return groceries;
   }
