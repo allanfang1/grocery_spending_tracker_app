@@ -19,6 +19,9 @@ class ConfirmReceipt extends StatelessWidget {
         ),
       );
 
+  // maybe have to move these to a different file to perform the
+  // computations earlier
+
   // for formatting String items into Item object
   List<Item> formatItems(List<String> receipt) {
     List<String> parsedItems = ExtractData().getItems(receipt);
