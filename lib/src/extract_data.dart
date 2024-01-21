@@ -77,9 +77,16 @@ class ExtractData {
   // gets subtotal from receipt
   String getSubtotal(List<String> receiptData) {
     final subtotalRegex = RegExp(r'(Subtotal|SUBTOTAL) [$]?[0-9]+.[0-9]{2}');
+    final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
-      if (subtotalRegex.hasMatch(line)) return line;
+      if (subtotalRegex.hasMatch(line)) {
+        if (priceRegex.hasMatch(line)) {
+          int temp = line.lastIndexOf(' ');
+          line = line.replaceRange(temp, temp+1, '');
+        }
+        return line;
+      }
     }
 
     return "";
@@ -88,9 +95,16 @@ class ExtractData {
   // gets total from receipt
   String getTotal(List<String> receiptData) {
     final subtotalRegex = RegExp(r'(Total|TOTAL) [$]?[0-9]+.[0-9]{2}');
+    final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
-      if (subtotalRegex.hasMatch(line)) return line;
+      if (subtotalRegex.hasMatch(line)) {
+        if (priceRegex.hasMatch(line)) {
+          int temp = line.lastIndexOf(' ');
+          line = line.replaceRange(temp, temp+1, '');
+        }
+        return line;
+      }
     }
 
     return "";
