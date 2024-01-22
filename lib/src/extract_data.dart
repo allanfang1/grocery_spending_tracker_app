@@ -28,13 +28,15 @@ class ExtractData {
 
         if (temp.contains("/")) temp = temp.replaceAll("/", "-");
 
-        parsedDate = DateTime.parse(temp);
+        try {
+          parsedDate = DateTime.parse(temp);
+        } on FormatException {
+          return DateTime.now().millisecondsSinceEpoch~/1000;
+        }
       }
     }
 
-    final dateTime = parsedDate.millisecondsSinceEpoch~/1000;
-
-    return dateTime;
+    return parsedDate.millisecondsSinceEpoch~/1000;
   }
 
   // extract location of store if available
