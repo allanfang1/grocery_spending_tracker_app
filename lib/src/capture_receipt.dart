@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/src/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/src/parse_receipt.dart';
 import 'package:grocery_spending_tracker_app/src/extract_data.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -179,7 +180,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
-      final listReceipt = ExtractData().textToList(scannedReceipt);
+      final formattedReceipt = FormatReceipt()
+          .formatGroceryTrip(ExtractData().textToList(scannedReceipt));
 
       // reset button for page returns
       setState(() {
@@ -187,8 +189,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
       });
 
       await navigator.push(MaterialPageRoute(
-          builder: (context) =>
-              ConfirmReceipt(receiptData: listReceipt)));
+          builder: (context) => ConfirmReceipt(tripData: formattedReceipt)));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),

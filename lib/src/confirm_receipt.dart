@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_spending_tracker_app/src/extract_data.dart';
-import 'package:grocery_spending_tracker_app/src/item.dart';
-import 'package:grocery_spending_tracker_app/src/grocery_trip.dart';
+import 'grocery_trip.dart';
 
-class ConfirmReceipt extends StatelessWidget {
-  final List<String> receiptData;
+class ConfirmReceipt extends StatefulWidget {
+  final GroceryTrip tripData;
 
-  const ConfirmReceipt({super.key, required this.receiptData});
+  const ConfirmReceipt({ Key? key, required this.tripData}): super(key: key);
+
+  @override
+  State<ConfirmReceipt> createState() => _ConfirmReceiptState();
+}
+
+class _ConfirmReceiptState extends State<ConfirmReceipt> {
+  // create late variables here
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // set variables to widget.tripData values here
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -15,44 +34,12 @@ class ConfirmReceipt extends StatelessWidget {
         ),
         body: Container(
           padding: const EdgeInsets.all(30.0),
-          child: Text(receiptData[0]),
+          child: Text("Hello"),
         ),
       );
 
   // maybe have to move these to a different file to perform the
   // computations earlier
 
-  // for formatting String items into Item object
-  List<Item> formatItems(List<String> receipt) {
-    List<String> parsedItems = ExtractData().getItems(receipt);
-    List<Item> groceries = [];
 
-    // Item("", "", 0.00, false)
-
-    for (String item in parsedItems) {
-      List<String> splitItem = item.split(' ');
-
-      String itemKey = splitItem[0];
-      splitItem.removeAt(0);
-
-      double price = double.parse(splitItem.last);
-      splitItem.removeLast();
-
-      String taxIdentifier = splitItem.last;
-      bool taxed = taxIdentifier.contains("H");
-      splitItem.removeLast();
-
-      String itemDesc = splitItem.join(' ');
-
-      groceries.add(Item(itemKey, itemDesc, price, taxed));
-    }
-
-    return groceries;
-  }
-
-  GroceryTrip formatGroceryTrip(List<String> receipt, List<Item> groceries) {
-    // run getters for the data and put into the below constructor
-
-    return GroceryTrip("userId", 0, "location", [], 0, 0, "");
-  }
 }
