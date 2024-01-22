@@ -37,9 +37,4 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
           child: Text("Hello"),
         ),
       );
-
-  // maybe have to move these to a different file to perform the
-  // computations earlier
-
-
 }
