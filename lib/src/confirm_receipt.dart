@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/src/grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/src/item.dart';
 
 class ConfirmReceipt extends StatefulWidget {
   final GroceryTrip tripData;
@@ -11,14 +12,23 @@ class ConfirmReceipt extends StatefulWidget {
 }
 
 class _ConfirmReceiptState extends State<ConfirmReceipt> {
-  // create late variables here
+  late int dateTime;
+  late String location;
+  late List<Item> items;
+  late double subtotal;
+  late double total;
+  late String? tripDesc;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    // set variables to widget.tripData values here
+    dateTime = widget.tripData.dateTime;
+    location = widget.tripData.location;
+    items = widget.tripData.items;
+    subtotal = widget.tripData.subtotal;
+    total = widget.tripData.total;
+    tripDesc = widget.tripData.tripDesc;
   }
 
   @override
