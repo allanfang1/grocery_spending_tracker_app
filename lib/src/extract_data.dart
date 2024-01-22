@@ -91,7 +91,7 @@ class ExtractData {
       }
     }
 
-    return "";
+    return "SUBTOTAL 0.00";
   }
 
   // gets total from receipt
@@ -109,7 +109,7 @@ class ExtractData {
       }
     }
 
-    return "";
+    return "TOTAL 0.00";
   }
 
 }

@@ -46,7 +46,14 @@ class FormatReceipt {
   // Should only be taking in Strings of form "(SUB)TOTAL ($)XX.XX"
   double _formatPrice(String priceLine) {
     List<String> splitPrice = priceLine.split(' ');
+    if (splitPrice[1].contains('\$')) {
+      splitPrice[1] = splitPrice[1].replaceAll('\$', '');
+    }
 
-    return double.parse(splitPrice[1]);
+    try {
+      return double.parse(splitPrice[1]);
+    } on FormatException {
+      return 0.00;
+    }
   }
 }
