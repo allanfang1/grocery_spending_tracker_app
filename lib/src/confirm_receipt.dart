@@ -61,11 +61,51 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   }
 
   Widget _buildSubtotal() {
-    return Text("hello");
+    return TextFormField(
+      decoration: const InputDecoration(labelText: 'Subtotal'),
+      initialValue: _subtotal.toString(),
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: false,
+      ),
+      validator: (String? value) {
+        final priceRegex = RegExp(r'^\d+(.\d{1,2})?$');
+
+        if (value == null || value.isEmpty) {
+          return 'Subtotal is required';
+        } else if (priceRegex.hasMatch(value)) {
+          return 'Subtotal should follow format X.XX';
+        }
+        return null;
+      },
+      onSaved: (String? value) {
+        _subtotal = double.parse(value!);
+      },
+    );
   }
 
   Widget _buildTotal() {
-    return Text("hello");
+    return TextFormField(
+      decoration: const InputDecoration(labelText: 'Total'),
+      initialValue: _total.toString(),
+      keyboardType: const TextInputType.numberWithOptions(
+        decimal: true,
+        signed: false,
+      ),
+      validator: (String? value) {
+        final priceRegex = RegExp(r'^\d+(.\d{1,2})?$');
+
+        if (value == null || value.isEmpty) {
+          return 'Total is required';
+        } else if (priceRegex.hasMatch(value)) {
+          return 'Total should follow format X.XX';
+        }
+        return null;
+      },
+      onSaved: (String? value) {
+        _total = double.parse(value!);
+      },
+    );
   }
 
   Widget _buildTripDesc() {
@@ -86,8 +126,8 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
               // _buildDateTime(),
               _buildLocation(),
               // _buildItems(),
-              // _buildSubtotal(),
-              // _buildTotal(),
+              _buildSubtotal(),
+              _buildTotal(),
               // _buildTripDesc(),
               SizedBox(height: 100),
               ElevatedButton(
