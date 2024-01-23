@@ -181,8 +181,10 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
+      final receiptToList = ExtractData().textToList(scannedReceipt);
+
       final GroceryTrip formattedReceipt = FormatReceipt()
-          .formatGroceryTrip(ExtractData().textToList(scannedReceipt));
+          .formatGroceryTrip(receiptToList);
 
       // reset button for page returns
       setState(() {

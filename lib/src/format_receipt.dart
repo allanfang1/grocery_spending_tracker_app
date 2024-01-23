@@ -32,7 +32,7 @@ class FormatReceipt {
       splitItem.removeLast();
 
       String taxIdentifier = splitItem.last;
-      bool taxed = taxIdentifier.contains("H");
+      bool taxed = taxIdentifier.contains(RegExp(r'^H'));
       splitItem.removeLast();
 
       String itemDesc = splitItem.join(' ');

@@ -31,12 +31,12 @@ class ExtractData {
         try {
           parsedDate = DateTime.parse(temp);
         } on FormatException {
-          return DateTime.now().millisecondsSinceEpoch~/1000;
+          return DateTime.now().millisecondsSinceEpoch ~/ 1000;
         }
       }
     }
 
-    return parsedDate.millisecondsSinceEpoch~/1000;
+    return parsedDate.millisecondsSinceEpoch ~/ 1000;
   }
 
   // extract location of store if available
@@ -62,11 +62,13 @@ class ExtractData {
     final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
-      if (itemRegex.hasMatch(line)) {
+      if (itemRegex.hasMatch(line) &&
+          !line.contains(RegExp('TOTAL', caseSensitive: false)) &&
+          !line.contains(RegExp('SUBTOTAL', caseSensitive: false))) {
         // correct OCR parsing if there is a space captured in the price
         if (priceRegex.hasMatch(line)) {
           int temp = line.lastIndexOf(' ');
-          line = line.replaceRange(temp, temp+1, '');
+          line = line.replaceRange(temp, temp + 1, '');
         }
 
         groceries.add(line);
@@ -78,14 +80,14 @@ class ExtractData {
 
   // gets subtotal from receipt
   String getSubtotal(List<String> receiptData) {
-    final subtotalRegex = RegExp(r'(Subtotal|SUBTOTAL) [$]?[0-9]+.[0-9]{2}');
+    final subtotalRegex = RegExp(r'^(Subtotal|SUBTOTAL) [$]?[0-9]+.[0-9\s]{2,3}');
     final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
       if (subtotalRegex.hasMatch(line)) {
         if (priceRegex.hasMatch(line)) {
           int temp = line.lastIndexOf(' ');
-          line = line.replaceRange(temp, temp+1, '');
+          line = line.replaceRange(temp, temp + 1, '');
         }
         return line;
       }
@@ -96,14 +98,14 @@ class ExtractData {
 
   // gets total from receipt
   String getTotal(List<String> receiptData) {
-    final subtotalRegex = RegExp(r'(Total|TOTAL) [$]?[0-9]+.[0-9]{2}');
+    final totalRegex = RegExp(r'^(Total|TOTAL) [$]?[0-9]+.[0-9\s]{2,3}');
     final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
 
     for (String line in receiptData) {
-      if (subtotalRegex.hasMatch(line)) {
+      if (totalRegex.hasMatch(line)) {
         if (priceRegex.hasMatch(line)) {
           int temp = line.lastIndexOf(' ');
-          line = line.replaceRange(temp, temp+1, '');
+          line = line.replaceRange(temp, temp + 1, '');
         }
         return line;
       }
@@ -111,5 +113,4 @@ class ExtractData {
 
     return "TOTAL 0.00";
   }
-
 }
