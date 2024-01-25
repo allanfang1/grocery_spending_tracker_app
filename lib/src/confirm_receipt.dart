@@ -86,8 +86,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
               color: Colors.purple[900],
             ),
           ),
-        )
-    );
+        ));
   }
 
   Widget _buildLocation() {
@@ -95,7 +94,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
       decoration: const InputDecoration(labelText: 'Location'),
       initialValue: _location,
       validator: (String? value) {
-        // print(value);
         if (value == null || value.isEmpty) return 'Location is required';
         return null;
       },
@@ -105,8 +103,74 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     );
   }
 
-  Widget _buildItems() {
-    return Text("hello");
+  Widget _buildItem(int index) {
+    Color getColor(Set<MaterialState> states) {
+      if (_items[index].taxed) return Colors.purple;
+      return Colors.white;
+    }
+
+    return Container(
+        padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+        child: Column(
+          children: [
+            Text(
+              "Item ${index + 1}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Item ID (SKU)'),
+              initialValue: _items[index].itemKey,
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                _items[index].itemKey = value!;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Item Name'),
+              initialValue: _items[index].itemDesc,
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Item Name is required';
+                }
+                return null;
+              },
+              onSaved: (String? value) {
+                _items[index].itemDesc = value!;
+              },
+            ),
+            CheckboxListTile(
+              title: const Text('Taxed?'),
+              checkColor: Colors.white,
+              fillColor: MaterialStateProperty.resolveWith(getColor),
+              value: _items[index].taxed,
+              onChanged: (bool? value) {
+                setState(() {
+                  _items[index].taxed = value!;
+                });
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Price'),
+              initialValue: _items[index].price.toString(),
+              keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true, signed: false),
+              validator: (String? value) {
+                final priceRegex = RegExp(r'^\d+(.\d{2})?$');
+
+                if (value == null || value.isEmpty) {
+                  return 'Item price is required';
+                } else if (!priceRegex.hasMatch(value)) {
+                  return 'Price should follow format X.XX';
+                }
+                return null;
+              },
+              onSaved: (String? value) {
+                _items[index].price = double.parse(value!);
+              },
+            ),
+          ],
+        ));
   }
 
   Widget _buildSubtotal() {
@@ -118,7 +182,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         signed: false,
       ),
       validator: (String? value) {
-        final priceRegex = RegExp(r'^\d+(.\d{1,2})?$');
+        final priceRegex = RegExp(r'^\d+(.\d{2})?$');
 
         if (value == null || value.isEmpty) {
           return 'Subtotal is required';
@@ -142,7 +206,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         signed: false,
       ),
       validator: (String? value) {
-        final priceRegex = RegExp(r'^\d+(.\d{1,2})?$');
+        final priceRegex = RegExp(r'^\d+(.\d{2})?$');
 
         if (value == null || value.isEmpty) {
           return 'Total is required';
@@ -168,40 +232,42 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Confirm Scanned Receipt'),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Confirm Scanned Receipt'),
+      ),
+      body: Container(
+        margin: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          child: Form(
+              key: _confirmReceiptKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildDateTime(context),
+                  _buildLocation(),
+                  _buildItem(0),
+                  _buildSubtotal(),
+                  _buildTotal(),
+                  _buildTripDesc(),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                      onPressed: () => {
+                            if (_confirmReceiptKey.currentState!.validate())
+                              {
+                                // TODO Save Data, Update Grocery Trip, Send Data
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Processing Data')),
+                                )
+                              }
+                          },
+                      child: const Text('Confirm Receipt'))
+                ],
+              )),
         ),
-        body: Container(
-          margin: const EdgeInsets.all(24.0),
-          child: SingleChildScrollView(
-            child: Form(
-                key: _confirmReceiptKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _buildDateTime(context),
-                    _buildLocation(),
-                    // _buildItems(),
-                    _buildSubtotal(),
-                    _buildTotal(),
-                    _buildTripDesc(),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                        onPressed: () => {
-                              if (_confirmReceiptKey.currentState!.validate())
-                                {
-                                  // TODO Save Data, Update Grocery Trip, Send Data
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Processing Data')),
-                                  )
-                                }
-                            },
-                        child: const Text('Confirm Receipt'))
-                  ],
-                )),
-          ),
-        ),
-      );
+      ),
+    );
+  }
 }
