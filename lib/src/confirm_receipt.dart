@@ -46,48 +46,47 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   }
 
   Widget _buildDateTime(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Column(
-          children: [
-            ValueListenableBuilder<String>(
-                valueListenable: _dateTimeString,
-                builder: (context, String value, Widget? child) {
-                  return Text(value);
-                })
-          ],
-        ),
-        Column(
-          children: [
-            Material(
-              child: Ink(
-                decoration: ShapeDecoration(
-                    color: Colors.purple[50], shape: const CircleBorder()),
-                child: IconButton(
-                    onPressed: () {
-                      return DatePicker.showDatePicker(context,
-                          pickerTheme: DateTimePickerTheme(
-                              pickerHeight:
-                                  MediaQuery.of(context).size.height / 2),
-                          dateFormat: 'MMM dd yyyy HH:mm:ss',
-                          initialDateTime: DateTime.fromMillisecondsSinceEpoch(
-                              _dateTime * 1000),
-                          minDateTime: DateTime(2000),
-                          maxDateTime: DateTime.now(),
-                          onMonthChangeStartWithFirstDate: true,
-                          onConfirm: (DateTime selected, List<int> index) {
-                        _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
-                        _dateTimeString.value = _dateFormat.format(selected);
-                      });
-                    },
-                    icon: const Icon(Icons.edit_calendar_outlined),
-                    color: Colors.purple[900],),
-              ),
-            )
-          ],
+    var textValue = TextEditingController();
+    textValue.text = _dateTimeString.value;
+
+    return ListTile(
+        title: ValueListenableBuilder<String>(
+            valueListenable: _dateTimeString,
+            builder: (context, String value, Widget? child) {
+              return TextField(
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'Date and Time of Purchase',
+                ),
+                controller: textValue,
+              );
+            }),
+        trailing: Material(
+          child: Ink(
+            decoration: ShapeDecoration(
+                color: Colors.purple[50], shape: const CircleBorder()),
+            child: IconButton(
+              onPressed: () {
+                return DatePicker.showDatePicker(context,
+                    pickerTheme: DateTimePickerTheme(
+                        pickerHeight: MediaQuery.of(context).size.height / 2),
+                    dateFormat: 'MMM dd yyyy HH:mm:ss',
+                    initialDateTime:
+                        DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
+                    minDateTime: DateTime(2000),
+                    maxDateTime: DateTime.now(),
+                    onMonthChangeStartWithFirstDate: false,
+                    onConfirm: (DateTime selected, List<int> index) {
+                  _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                  _dateTimeString.value = _dateFormat.format(selected);
+                  textValue.text = _dateTimeString.value;
+                });
+              },
+              icon: const Icon(Icons.edit_calendar_outlined),
+              color: Colors.purple[900],
+            ),
+          ),
         )
-      ],
     );
   }
 
@@ -175,32 +174,34 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         ),
         body: Container(
           margin: const EdgeInsets.all(24.0),
-          child: Form(
-              key: _confirmReceiptKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _buildDateTime(context),
-                  _buildLocation(),
-                  // _buildItems(),
-                  _buildSubtotal(),
-                  _buildTotal(),
-                  _buildTripDesc(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                      onPressed: () => {
-                            if (_confirmReceiptKey.currentState!.validate())
-                              {
-                                // TODO Save Data, Update Grocery Trip, Send Data
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')),
-                                )
-                              }
-                          },
-                      child: const Text('Confirm Receipt'))
-                ],
-              )),
+          child: SingleChildScrollView(
+            child: Form(
+                key: _confirmReceiptKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _buildDateTime(context),
+                    _buildLocation(),
+                    // _buildItems(),
+                    _buildSubtotal(),
+                    _buildTotal(),
+                    _buildTripDesc(),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                        onPressed: () => {
+                              if (_confirmReceiptKey.currentState!.validate())
+                                {
+                                  // TODO Save Data, Update Grocery Trip, Send Data
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')),
+                                  )
+                                }
+                            },
+                        child: const Text('Confirm Receipt'))
+                  ],
+                )),
+          ),
         ),
       );
 }
