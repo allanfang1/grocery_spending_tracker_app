@@ -28,7 +28,12 @@ class FormatReceipt {
       String itemKey = splitItem[0];
       splitItem.removeAt(0);
 
-      double price = double.parse(splitItem.last);
+      double price;
+      try {
+        price = double.parse(splitItem.last);
+      } on FormatException {
+        price = 0.00;
+      }
       splitItem.removeLast();
 
       String taxIdentifier = splitItem.last;

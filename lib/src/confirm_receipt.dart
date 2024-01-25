@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/src/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/src/item.dart';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
+import 'package:intl/intl.dart';
 
 class ConfirmReceipt extends StatefulWidget {
   final GroceryTrip tripData;
@@ -12,7 +14,10 @@ class ConfirmReceipt extends StatefulWidget {
 }
 
 class _ConfirmReceiptState extends State<ConfirmReceipt> {
+  final DateFormat _dateFormat = DateFormat.yMMMMd('en_US').add_Hms();
+
   late int _dateTime;
+  late ValueNotifier<String> _dateTimeString;
   late String _location;
   late List<Item> _items;
   late double _subtotal;
@@ -26,6 +31,8 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     super.initState();
 
     _dateTime = widget.tripData.dateTime;
+    _dateTimeString = ValueNotifier<String>(_dateFormat.format(
+        DateTime.fromMillisecondsSinceEpoch(widget.tripData.dateTime * 1000)));
     _location = widget.tripData.location;
     _items = widget.tripData.items;
     _subtotal = widget.tripData.subtotal;
@@ -38,15 +45,58 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     super.dispose();
   }
 
-  Widget _buildDateTime() {
-    return Text("hello");
+  Widget _buildDateTime(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          children: [
+            ValueListenableBuilder<String>(
+                valueListenable: _dateTimeString,
+                builder: (context, String value, Widget? child) {
+                  return Text(value);
+                })
+          ],
+        ),
+        Column(
+          children: [
+            Material(
+              child: Ink(
+                decoration: ShapeDecoration(
+                    color: Colors.purple[50], shape: const CircleBorder()),
+                child: IconButton(
+                    onPressed: () {
+                      return DatePicker.showDatePicker(context,
+                          pickerTheme: DateTimePickerTheme(
+                              pickerHeight:
+                                  MediaQuery.of(context).size.height / 2),
+                          dateFormat: 'MMM dd yyyy HH:mm:ss',
+                          initialDateTime: DateTime.fromMillisecondsSinceEpoch(
+                              _dateTime * 1000),
+                          minDateTime: DateTime(2000),
+                          maxDateTime: DateTime.now(),
+                          onMonthChangeStartWithFirstDate: true,
+                          onConfirm: (DateTime selected, List<int> index) {
+                        _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                        _dateTimeString.value = _dateFormat.format(selected);
+                      });
+                    },
+                    icon: const Icon(Icons.edit_calendar_outlined),
+                    color: Colors.purple[900],),
+              ),
+            )
+          ],
+        )
+      ],
+    );
   }
 
   Widget _buildLocation() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Location'),
+      decoration: const InputDecoration(labelText: 'Location'),
       initialValue: _location,
       validator: (String? value) {
+        // print(value);
         if (value == null || value.isEmpty) return 'Location is required';
         return null;
       },
@@ -73,7 +123,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
         if (value == null || value.isEmpty) {
           return 'Subtotal is required';
-        } else if (priceRegex.hasMatch(value)) {
+        } else if (!priceRegex.hasMatch(value)) {
           return 'Subtotal should follow format X.XX';
         }
         return null;
@@ -97,7 +147,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
         if (value == null || value.isEmpty) {
           return 'Total is required';
-        } else if (priceRegex.hasMatch(value)) {
+        } else if (!priceRegex.hasMatch(value)) {
           return 'Total should follow format X.XX';
         }
         return null;
@@ -109,7 +159,13 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   }
 
   Widget _buildTripDesc() {
-    return Text("hello");
+    return TextFormField(
+      decoration: const InputDecoration(labelText: 'Trip Description'),
+      initialValue: _tripDesc,
+      onSaved: (String? value) {
+        _tripDesc = value!;
+      },
+    );
   }
 
   @override
@@ -120,29 +176,31 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         body: Container(
           margin: const EdgeInsets.all(24.0),
           child: Form(
+              key: _confirmReceiptKey,
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // _buildDateTime(),
-              _buildLocation(),
-              // _buildItems(),
-              _buildSubtotal(),
-              _buildTotal(),
-              // _buildTripDesc(),
-              SizedBox(height: 100),
-              ElevatedButton(
-                  onPressed: () => {
-                        if (_confirmReceiptKey.currentState!.validate())
-                          {
-                            // TODO Save Data, Update Grocery Trip, Send Data
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
-                            )
-                          }
-                      },
-                  child: const Text('Confirm Receipt'))
-            ],
-          )),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildDateTime(context),
+                  _buildLocation(),
+                  // _buildItems(),
+                  _buildSubtotal(),
+                  _buildTotal(),
+                  _buildTripDesc(),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                      onPressed: () => {
+                            if (_confirmReceiptKey.currentState!.validate())
+                              {
+                                // TODO Save Data, Update Grocery Trip, Send Data
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Processing Data')),
+                                )
+                              }
+                          },
+                      child: const Text('Confirm Receipt'))
+                ],
+              )),
         ),
       );
 }
