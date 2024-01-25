@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 //ignore_for_file: prefer_const_constructors
 import 'package:grocery_spending_tracker_app/pages/login.dart';
-import 'package:grocery_spending_tracker_app/pages/newtrip.dart';
-import 'package:grocery_spending_tracker_app/pages/purchasehistory.dart';
+import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
+import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
 
 import 'package:flutter/material.dart';
 

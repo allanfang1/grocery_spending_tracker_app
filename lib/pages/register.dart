@@ -1,5 +1,6 @@
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/pages/register.dart';
+import 'package:grocery_spending_tracker_app/common/helper.dart';
+import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/viewmodel/user_data.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
@@ -11,14 +12,14 @@ import 'package:provider/provider.dart';
 
 // ignore_for_file: prefer_const_constructors
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  State<RegisterPage> createState() => _RegisterPage();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _RegisterPage extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn;
   String? _email;
@@ -34,7 +35,7 @@ class _LoginPage extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Grocery Spending Tracker',
+                'New Account',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -83,17 +84,17 @@ class _LoginPage extends State<LoginPage> {
                           vertical: 0.0,
                           horizontal: 10.0,
                         ),
-                        errorStyle: TextStyle(
-                          color: Colors.transparent,
-                          fontSize: 0,
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black54),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.deepPurple, width: 2.0),
-                        ),
+                        // errorStyle: TextStyle(
+                        //   color: Colors.transparent,
+                        //   fontSize: 0,
+                        // ),
+                        // errorBorder: OutlineInputBorder(
+                        //   borderSide: BorderSide(color: Colors.black54),
+                        // ),
+                        // focusedErrorBorder: OutlineInputBorder(
+                        //   borderSide:
+                        //       BorderSide(color: Colors.deepPurple, width: 2.0),
+                        // ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -111,36 +112,24 @@ class _LoginPage extends State<LoginPage> {
                                   final navigator = Navigator.of(context);
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
-                                  final response = await userDataModel.login(
-                                      _email!, _password!);
+                                  final response =
+                                      await register(_email!, _password!);
                                   if (response == 200) {
                                     navigator.push(
                                       MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
+                                        builder: (context) => const LoginPage(),
                                       ),
                                     );
                                   } else {
-                                    print('Login failed ${response}');
+                                    print('Register failed ${response}');
                                   }
                                   setState(() => _enableBtn = true);
                                 }
                               : null,
-                          child: const Text('Login'),
+                          child: const Text('Create Account'),
                         );
                       },
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.blue),
-                        ))
+                    )
                   ],
                 ),
               ),
@@ -149,5 +138,16 @@ class _LoginPage extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<Object> register(String email, String password) async {
+    return 200;
+    final response = await http.post(
+        Uri(
+            scheme: 'http',
+            host: Constants.HOST,
+            path: Constants.REGISTER_PATH),
+        body: {'email': email, 'password': Helper.encrypt(password)});
+    return response.statusCode;
   }
 }
