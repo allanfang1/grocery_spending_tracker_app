@@ -20,14 +20,4 @@ class TransactionHistoryViewModel extends ChangeNotifier {
     // } else {}
     // return response.statusCode;
   }
-
-  // String getToken() {
-  //   return _token;
-  // }
-
-  String encryptPassword(String password) {
-    final bytes = utf8.encode(password);
-    final hash = sha256.convert(bytes);
-    return hash.toString();
-  }
 }

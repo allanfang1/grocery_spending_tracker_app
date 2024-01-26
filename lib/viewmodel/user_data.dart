@@ -10,7 +10,7 @@ class UserDataViewModel extends ChangeNotifier {
   String _token = "";
 
   Future<Object> login(String email, String password) async {
-    // return 200;
+    return 200;
     final response = await http.post(
         Uri(scheme: 'http', host: Constants.HOST, path: Constants.LOGIN_PATH),
         body: {'email': email, 'password': Helper.encrypt(password)});
