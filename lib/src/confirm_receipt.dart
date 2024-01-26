@@ -15,11 +15,13 @@ class ConfirmReceipt extends StatefulWidget {
 
 class _ConfirmReceiptState extends State<ConfirmReceipt> {
   final DateFormat _dateFormat = DateFormat.yMMMMd('en_US').add_Hms();
+  final List<Widget> _itemFields = [];
 
   late int _dateTime;
-  late ValueNotifier<String> _dateTimeString;
+  late ValueNotifier<String> _dateTimeString; // for user display of dateTime
   late String _location;
   late List<Item> _items;
+  late int _itemCount; // for tracking added/deleted items
   late double _subtotal;
   late double _total;
   late String? _tripDesc;
@@ -35,9 +37,14 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         DateTime.fromMillisecondsSinceEpoch(widget.tripData.dateTime * 1000)));
     _location = widget.tripData.location;
     _items = widget.tripData.items;
+    _itemCount = _items.length;
     _subtotal = widget.tripData.subtotal;
     _total = widget.tripData.total;
     _tripDesc = widget.tripData.tripDesc;
+
+    for (int i = 0; i < _items.length; i++) {
+      _itemFields.add(_buildItem(i));
+    }
   }
 
   @override
@@ -77,9 +84,11 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                     maxDateTime: DateTime.now(),
                     onMonthChangeStartWithFirstDate: false,
                     onConfirm: (DateTime selected, List<int> index) {
-                  _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
-                  _dateTimeString.value = _dateFormat.format(selected);
-                  textValue.text = _dateTimeString.value;
+                  setState(() {
+                    _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                    _dateTimeString.value = _dateFormat.format(selected);
+                    textValue.text = _dateTimeString.value;
+                  });
                 });
               },
               icon: const Icon(Icons.edit_calendar_outlined),
@@ -91,14 +100,16 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
   Widget _buildLocation() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Location'),
+      decoration: const InputDecoration(labelText: 'Location (Address)'),
       initialValue: _location,
       validator: (String? value) {
         if (value == null || value.isEmpty) return 'Location is required';
         return null;
       },
       onSaved: (String? value) {
-        _location = value!;
+        setState(() {
+          _location = value!;
+        });
       },
     );
   }
@@ -113,17 +124,37 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
         child: Column(
           children: [
-            Text(
-              "Item ${index + 1}",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
+            ListTile(
+              title: Text(
+                "Item ${index + 1}",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left,
+              ),
+              trailing: Material(
+                child: Ink(
+                    decoration: const ShapeDecoration(
+                        color: Colors.red, shape: CircleBorder()),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _itemCount--;
+                          _itemFields.removeAt(index);
+                          _items.removeAt(index);
+                        });
+                      },
+                      icon: const Icon(Icons.delete_outlined),
+                      color: Colors.white,
+                    )),
+              ),
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Item ID (SKU)'),
               initialValue: _items[index].itemKey,
               keyboardType: TextInputType.number,
               onSaved: (String? value) {
-                _items[index].itemKey = value!;
+                setState(() {
+                  _items[index].itemKey = value!;
+                });
               },
             ),
             TextFormField(
@@ -136,7 +167,9 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 return null;
               },
               onSaved: (String? value) {
-                _items[index].itemDesc = value!;
+                setState(() {
+                  _items[index].itemDesc = value!;
+                });
               },
             ),
             CheckboxListTile(
@@ -166,11 +199,26 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 return null;
               },
               onSaved: (String? value) {
-                _items[index].price = double.parse(value!);
+                setState(() {
+                  _items[index].price = double.parse(value!);
+                });
               },
             ),
           ],
         ));
+  }
+
+  Widget _buildAddItem() {
+    return FloatingActionButton(
+      onPressed: () {
+        setState(() {
+          _itemCount++;
+          _items.add(Item('', '', 0.00, false));
+          _itemFields.add(_buildItem(_itemCount));
+        });
+      },
+      child: const Text('NEW\nITEM'),
+    );
   }
 
   Widget _buildSubtotal() {
@@ -192,7 +240,9 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         return null;
       },
       onSaved: (String? value) {
-        _subtotal = double.parse(value!);
+        setState(() {
+          _subtotal = double.parse(value!);
+        });
       },
     );
   }
@@ -216,7 +266,9 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         return null;
       },
       onSaved: (String? value) {
-        _total = double.parse(value!);
+        setState(() {
+          _total = double.parse(value!);
+        });
       },
     );
   }
@@ -226,7 +278,9 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
       decoration: const InputDecoration(labelText: 'Trip Description'),
       initialValue: _tripDesc,
       onSaved: (String? value) {
-        _tripDesc = value!;
+        setState(() {
+          _tripDesc = value!;
+        });
       },
     );
   }
@@ -248,6 +302,22 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                   _buildDateTime(context),
                   _buildLocation(),
                   _buildItem(0),
+                  // _itemCount == 0 ? const Padding(
+                  //     padding: EdgeInsets.all(15),
+                  //     child: Align(
+                  //       alignment: Alignment.center,
+                  //       child: Text(
+                  //         "No grocery items found.",
+                  //         style: TextStyle(fontWeight: FontWeight.bold),
+                  //       ),
+                  //     )
+                  // ) : ListView.builder(
+                  //   itemCount: _itemCount,
+                  //   shrinkWrap: true,
+                  //   itemBuilder: (context, _itemCount) {
+                  //     return Text('Test');
+                  //   },
+                  // ),
                   _buildSubtotal(),
                   _buildTotal(),
                   _buildTripDesc(),
