@@ -139,7 +139,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                         setState(() {
                           _itemCount--;
                           _itemFields.removeAt(index);
-                          _items.removeAt(index);
+                          _items.removeAt(index); // causes index errors on delete
                         });
                       },
                       icon: const Icon(Icons.delete_outlined),
@@ -206,19 +206,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
             ),
           ],
         ));
-  }
-
-  Widget _buildAddItem() {
-    return FloatingActionButton(
-      onPressed: () {
-        setState(() {
-          _itemCount++;
-          _items.add(Item('', '', 0.00, false));
-          _itemFields.add(_buildItem(_itemCount));
-        });
-      },
-      child: const Text('NEW\nITEM'),
-    );
   }
 
   Widget _buildSubtotal() {
@@ -294,6 +281,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
       body: Container(
         margin: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
           child: Form(
               key: _confirmReceiptKey,
               child: Column(
@@ -301,23 +289,26 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 children: [
                   _buildDateTime(context),
                   _buildLocation(),
-                  _buildItem(0),
-                  // _itemCount == 0 ? const Padding(
-                  //     padding: EdgeInsets.all(15),
-                  //     child: Align(
-                  //       alignment: Alignment.center,
-                  //       child: Text(
-                  //         "No grocery items found.",
-                  //         style: TextStyle(fontWeight: FontWeight.bold),
-                  //       ),
-                  //     )
-                  // ) : ListView.builder(
-                  //   itemCount: _itemCount,
-                  //   shrinkWrap: true,
-                  //   itemBuilder: (context, _itemCount) {
-                  //     return Text('Test');
-                  //   },
-                  // ),
+                  _itemCount == 0
+                      ? const Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "No grocery items found.",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ))
+                      : ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _itemFields.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            // TODO on delete, only last item in list is removed
+
+                            return _itemFields[index];
+                          },
+                        ),
                   _buildSubtotal(),
                   _buildTotal(),
                   _buildTripDesc(),
@@ -337,6 +328,16 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 ],
               )),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            _itemCount++;
+            _items.add(Item('', '', 0.00, false));
+            _itemFields.add(_buildItem(_itemCount-1));
+          });
+        },
+        child: const Text('NEW\nITEM'),
       ),
     );
   }
