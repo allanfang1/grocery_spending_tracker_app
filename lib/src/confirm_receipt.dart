@@ -124,37 +124,17 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
         child: Column(
           children: [
-            ListTile(
-              title: Text(
-                "Item ${index + 1}",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.left,
-              ),
-              trailing: Material(
-                child: Ink(
-                    decoration: const ShapeDecoration(
-                        color: Colors.red, shape: CircleBorder()),
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _itemCount--;
-                          _itemFields.removeAt(index);
-                          _items.removeAt(index); // causes index errors on delete
-                        });
-                      },
-                      icon: const Icon(Icons.delete_outlined),
-                      color: Colors.white,
-                    )),
-              ),
+            Text(
+              "Item ${index + 1}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Item ID (SKU)'),
               initialValue: _items[index].itemKey,
               keyboardType: TextInputType.number,
-              onSaved: (String? value) {
-                setState(() {
-                  _items[index].itemKey = value!;
-                });
+              onChanged: (String? value) {
+                _items[index].itemKey = value!;
               },
             ),
             TextFormField(
@@ -166,10 +146,8 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 }
                 return null;
               },
-              onSaved: (String? value) {
-                setState(() {
-                  _items[index].itemDesc = value!;
-                });
+              onChanged: (String? value) {
+                _items[index].itemDesc = value!;
               },
             ),
             CheckboxListTile(
@@ -178,9 +156,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
               fillColor: MaterialStateProperty.resolveWith(getColor),
               value: _items[index].taxed,
               onChanged: (bool? value) {
-                setState(() {
-                  _items[index].taxed = value!;
-                });
+                _items[index].taxed = !_items[index].taxed;
               },
             ),
             TextFormField(
@@ -198,10 +174,8 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 }
                 return null;
               },
-              onSaved: (String? value) {
-                setState(() {
-                  _items[index].price = double.parse(value!);
-                });
+              onChanged: (String? value) {
+                _items[index].price = double.parse(value!);
               },
             ),
           ],
@@ -299,14 +273,27 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ))
-                      : ListView.builder(
+                      : ListView.separated(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _itemFields.length,
                           shrinkWrap: true,
+                          separatorBuilder: (context, index) {
+                            return const Divider();
+                          },
                           itemBuilder: (context, index) {
-                            // TODO on delete, only last item in list is removed
-
-                            return _itemFields[index];
+                            return Dismissible(
+                              background: Container(
+                                color: Colors.red,
+                              ),
+                              key: UniqueKey(),
+                              onDismissed: (DismissDirection direction) {
+                                setState(() {
+                                  _itemCount--;
+                                  _itemFields[index] = Container();
+                                });
+                              },
+                              child: _itemFields[index],
+                            );
                           },
                         ),
                   _buildSubtotal(),
@@ -334,7 +321,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
           setState(() {
             _itemCount++;
             _items.add(Item('', '', 0.00, false));
-            _itemFields.add(_buildItem(_itemCount-1));
+            _itemFields.add(_buildItem(_items.length-1));
           });
         },
         child: const Text('NEW\nITEM'),
