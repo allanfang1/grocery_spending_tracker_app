@@ -21,7 +21,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   late ValueNotifier<String> _dateTimeString; // for user display of dateTime
   late String _location;
   late List<Item> _items;
-  late int _itemCount; // for tracking added/deleted items
   late double _subtotal;
   late double _total;
   late String? _tripDesc;
@@ -37,7 +36,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         DateTime.fromMillisecondsSinceEpoch(widget.tripData.dateTime * 1000)));
     _location = widget.tripData.location;
     _items = widget.tripData.items;
-    _itemCount = _items.length;
     _subtotal = widget.tripData.subtotal;
     _total = widget.tripData.total;
     _tripDesc = widget.tripData.tripDesc;
@@ -106,7 +104,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         if (value == null || value.isEmpty) return 'Location is required';
         return null;
       },
-      onSaved: (String? value) {
+      onChanged: (String? value) {
         setState(() {
           _location = value!;
         });
@@ -182,6 +180,43 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         ));
   }
 
+  Widget _buildItems(BuildContext context) {
+    return Column(
+      children: [
+        const Text(
+          'Item List',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline),
+        ),
+        const Text(
+          'Swipe left or right to remove an item',
+          style: TextStyle(fontStyle: FontStyle.italic),
+        ),
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _itemFields.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return Dismissible(
+              background: Container(
+                color: Colors.red,
+              ),
+              key: UniqueKey(),
+              onDismissed: (DismissDirection direction) {
+                setState(() {
+                  _items[index].itemDesc = 'USER REMOVED';
+                  _itemFields[index] = Container();
+                });
+              },
+              child: _itemFields[index],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildSubtotal() {
     return TextFormField(
       decoration: const InputDecoration(labelText: 'Subtotal'),
@@ -200,7 +235,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         }
         return null;
       },
-      onSaved: (String? value) {
+      onChanged: (String? value) {
         setState(() {
           _subtotal = double.parse(value!);
         });
@@ -226,7 +261,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         }
         return null;
       },
-      onSaved: (String? value) {
+      onChanged: (String? value) {
         setState(() {
           _total = double.parse(value!);
         });
@@ -238,7 +273,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     return TextFormField(
       decoration: const InputDecoration(labelText: 'Trip Description'),
       initialValue: _tripDesc,
-      onSaved: (String? value) {
+      onChanged: (String? value) {
         setState(() {
           _tripDesc = value!;
         });
@@ -248,6 +283,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
   @override
   Widget build(BuildContext context) {
+    GroceryTrip updated;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Confirm Scanned Receipt'),
@@ -263,39 +299,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                 children: [
                   _buildDateTime(context),
                   _buildLocation(),
-                  _itemCount == 0
-                      ? const Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "No grocery items found.",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ))
-                      : ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _itemFields.length,
-                          shrinkWrap: true,
-                          separatorBuilder: (context, index) {
-                            return const Divider();
-                          },
-                          itemBuilder: (context, index) {
-                            return Dismissible(
-                              background: Container(
-                                color: Colors.red,
-                              ),
-                              key: UniqueKey(),
-                              onDismissed: (DismissDirection direction) {
-                                setState(() {
-                                  _itemCount--;
-                                  _itemFields[index] = Container();
-                                });
-                              },
-                              child: _itemFields[index],
-                            );
-                          },
-                        ),
+                  _buildItems(context),
                   _buildSubtotal(),
                   _buildTotal(),
                   _buildTripDesc(),
@@ -305,9 +309,14 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                             if (_confirmReceiptKey.currentState!.validate())
                               {
                                 // TODO Save Data, Update Grocery Trip, Send Data
+                                _sendData()
+                              }
+                            else
+                              {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text('Processing Data')),
+                                      content: Text(
+                                          'An error occurred. Please check inputs.')),
                                 )
                               }
                           },
@@ -319,13 +328,43 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _itemCount++;
             _items.add(Item('', '', 0.00, false));
-            _itemFields.add(_buildItem(_items.length-1));
+            _itemFields.add(_buildItem(_items.length - 1));
           });
         },
         child: const Text('NEW\nITEM'),
       ),
+    );
+  }
+
+  Future<void> _sendData() async {
+    List<Item> newItems = [];
+
+    for (int i = 0; i < _itemFields.length; i++) {
+      if (_items[i].itemDesc != 'USER REMOVED') newItems.add(_items[i]);
+    }
+
+    widget.tripData.updateGroceryTrip(
+        _dateTime, _location, newItems, _subtotal, _total, _tripDesc);
+
+    print(_dateFormat.format(
+        DateTime.fromMillisecondsSinceEpoch(widget.tripData.dateTime * 1000)));
+    print(widget.tripData.location);
+    for (Item item in widget.tripData.items) {
+      print(item.itemKey);
+      print(item.itemDesc);
+      print(item.price);
+      print(item.taxed);
+    }
+    print(widget.tripData.subtotal);
+    print(widget.tripData.total);
+    print(widget.tripData.tripDesc);
+
+    // convert to JSON
+
+    // send widget.tripData
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Processing Data')),
     );
   }
 }
