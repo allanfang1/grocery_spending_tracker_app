@@ -1,5 +1,4 @@
 import 'package:grocery_spending_tracker_app/src/item.dart';
-import 'dart:convert';
 
 class GroceryTrip {
   String userId;
