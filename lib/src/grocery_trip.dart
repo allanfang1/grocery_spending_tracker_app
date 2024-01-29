@@ -20,12 +20,14 @@ class GroceryTrip {
       List<Item> updatedItems,
       double updatedSubtotal,
       double updatedTotal,
-      String updatedTripDesc) {
+      String? updatedTripDesc) {
     if (updatedDateTime != dateTime) dateTime = updatedDateTime;
     if (updatedLocation != location) location = updatedLocation;
     if (updatedItems != items) items = updatedItems;
     if (updatedSubtotal != subtotal) subtotal = updatedSubtotal;
     if (updatedTotal != total) total = updatedTotal;
-    if (updatedTripDesc != tripDesc) tripDesc = updatedTripDesc;
+    if (updatedTripDesc != null && updatedTripDesc != tripDesc) {
+      tripDesc = updatedTripDesc;
+    }
   }
 }

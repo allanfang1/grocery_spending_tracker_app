@@ -26,6 +26,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   late String? _tripDesc;
 
   final _confirmReceiptKey = GlobalKey<FormState>();
+  final _confirmItemKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,9 +41,13 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     _total = widget.tripData.total;
     _tripDesc = widget.tripData.tripDesc;
 
-    for (int i = 0; i < _items.length; i++) {
-      _itemFields.add(_buildItem(i));
-    }
+    Future.delayed(Duration.zero, () {
+      for (int i = 0; i < _items.length; i++) {
+        setState(() {
+          _itemFields.add(_buildItem(context, i));
+        });
+      }
+    });
   }
 
   @override
@@ -112,82 +117,130 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     );
   }
 
-  Widget _buildItem(int index) {
+  Widget _buildItem(BuildContext context, int index) {
     Color getColor(Set<MaterialState> states) {
       if (_items[index].taxed) return Colors.purple;
       return Colors.white;
     }
 
-    return Container(
-        padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-        child: Column(
-          children: [
-            Text(
-              "Item ${index + 1}",
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.left,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Item ID (SKU)'),
-              initialValue: _items[index].itemKey,
-              keyboardType: TextInputType.number,
-              onChanged: (String? value) {
-                _items[index].itemKey = value!;
-              },
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Item Name'),
-              initialValue: _items[index].itemDesc,
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Item Name is required';
-                }
-                return null;
-              },
-              onChanged: (String? value) {
-                _items[index].itemDesc = value!;
-              },
-            ),
-            CheckboxListTile(
-              title: const Text('Taxed?'),
-              checkColor: Colors.white,
-              fillColor: MaterialStateProperty.resolveWith(getColor),
-              value: _items[index].taxed,
-              onChanged: (bool? value) {
-                _items[index].taxed = !_items[index].taxed;
-              },
-            ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'Price'),
-              initialValue: _items[index].price.toString(),
-              keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true, signed: false),
-              validator: (String? value) {
-                final priceRegex = RegExp(r'^\d+(.\d{2})?$');
+    return ListTile(
+      title: Text(_items[index].itemDesc),
+      subtitle:
+          Text('Price: ${_items[index].price}, Taxed: ${_items[index].taxed}'),
+      onTap: () async {
+        await showDialog(
+            context: context,
+            builder: (context) {
+              return StatefulBuilder(builder: (context, setState) {
+                return AlertDialog(
+                  title: const Text('Edit Item'),
+                  content: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                          right: -40,
+                          top: -40,
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.red,
+                              child: Icon(Icons.close),
+                            ),
+                          )
+                      ),
+                      Form(
+                          key: _confirmItemKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Item ID (SKU)'),
+                                initialValue: _items[index].itemKey,
+                                keyboardType: TextInputType.number,
+                                onSaved: (String? value) {
+                                  setState(() {
+                                    _items[index].itemKey = value!;
+                                  });
+                                },
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Item Name'),
+                                initialValue: _items[index].itemDesc,
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Item Name is required';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (String? value) {
+                                  setState(() {
+                                    _items[index].itemDesc = value!;
+                                  });
+                                },
+                              ),
+                              CheckboxListTile(
+                                title: const Text('Taxed?'),
+                                checkColor: Colors.white,
+                                fillColor: MaterialStateProperty.resolveWith(getColor),
+                                value: _items[index].taxed,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    _items[index].taxed = value!;
+                                  });
+                                },
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Price'),
+                                initialValue: _items[index].price.toString(),
+                                keyboardType: const TextInputType.numberWithOptions(
+                                    decimal: true, signed: false),
+                                validator: (String? value) {
+                                  final priceRegex = RegExp(r'^\d+(.\d{2})?$');
 
-                if (value == null || value.isEmpty) {
-                  return 'Item price is required';
-                } else if (!priceRegex.hasMatch(value)) {
-                  return 'Price should follow format X.XX';
-                }
-                return null;
-              },
-              onChanged: (String? value) {
-                _items[index].price = double.parse(value!);
-              },
-            ),
-          ],
-        ));
+                                  if (value == null || value.isEmpty) {
+                                    return 'Item price is required';
+                                  } else if (!priceRegex.hasMatch(value)) {
+                                    return 'Price should follow format X.XX';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (String? value) {
+                                  setState(() {
+                                    _items[index].price = double.parse(value!);
+                                  });
+                                },
+                              ),
+                              ElevatedButton(onPressed: () {
+                                if (_confirmItemKey.currentState!.validate()) {
+                                  _confirmItemKey.currentState!.save();
+                                  Navigator.of(context).pop();
+                                }
+                              }, child: const Text('Confirm'))
+                            ],
+                          )
+                      )
+                    ],
+                  ),
+                );
+              });
+            });
+      },
+    );
   }
 
   Widget _buildItems(BuildContext context) {
     return Column(
       children: [
-        const Text(
-          'Item List',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline),
+        const Padding(
+          padding: EdgeInsets.only(top: 15),
+          child: Text(
+            'Item List',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline),
+          )
         ),
         const Text(
           'Swipe left or right to remove an item',
@@ -283,7 +336,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
   @override
   Widget build(BuildContext context) {
-    GroceryTrip updated;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Confirm Scanned Receipt'),
@@ -309,7 +361,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                             if (_confirmReceiptKey.currentState!.validate())
                               {
                                 // TODO Save Data, Update Grocery Trip, Send Data
-                                _sendData()
+                                handleSubmit()
                               }
                             else
                               {
@@ -329,7 +381,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         onPressed: () {
           setState(() {
             _items.add(Item('', '', 0.00, false));
-            _itemFields.add(_buildItem(_items.length - 1));
+            _itemFields.add(_buildItem(context, _items.length - 1));
           });
         },
         child: const Text('NEW\nITEM'),
@@ -337,34 +389,19 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     );
   }
 
-  Future<void> _sendData() async {
-    List<Item> newItems = [];
-
-    for (int i = 0; i < _itemFields.length; i++) {
-      if (_items[i].itemDesc != 'USER REMOVED') newItems.add(_items[i]);
+  Future<void> handleSubmit() async {
+    List<Item> updatedItems = [];
+    for (Item item in _items) {
+      if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
     }
 
-    widget.tripData.updateGroceryTrip(
-        _dateTime, _location, newItems, _subtotal, _total, _tripDesc);
-
-    print(_dateFormat.format(
-        DateTime.fromMillisecondsSinceEpoch(widget.tripData.dateTime * 1000)));
-    print(widget.tripData.location);
-    for (Item item in widget.tripData.items) {
-      print(item.itemKey);
-      print(item.itemDesc);
-      print(item.price);
-      print(item.taxed);
+    for (Item item in updatedItems) {
+      print('${item.itemKey} ${item.itemDesc} ${item.taxed} ${item.price}');
     }
-    print(widget.tripData.subtotal);
-    print(widget.tripData.total);
-    print(widget.tripData.tripDesc);
 
-    // convert to JSON
-
-    // send widget.tripData
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Processing Data')),
+      const SnackBar(
+          content: Text('Processing data.')),
     );
   }
 }
