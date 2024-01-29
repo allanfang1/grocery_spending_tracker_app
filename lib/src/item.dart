@@ -14,4 +14,13 @@ class Item {
     if (updatedPrice != updatedPrice) price = updatedPrice;
     if (updatedTaxed != updatedTaxed) taxed = updatedTaxed;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'itemKey': itemKey,
+      'itemDesc': itemDesc,
+      'price': price,
+      'taxed': taxed
+    };
+  }
 }

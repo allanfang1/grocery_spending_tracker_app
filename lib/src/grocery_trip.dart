@@ -1,4 +1,5 @@
 import 'package:grocery_spending_tracker_app/src/item.dart';
+import 'dart:convert';
 
 class GroceryTrip {
   String userId;
@@ -29,5 +30,23 @@ class GroceryTrip {
     if (updatedTripDesc != null && updatedTripDesc != tripDesc) {
       tripDesc = updatedTripDesc;
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    List<Map<String, dynamic>> itemList = [];
+
+    for (Item item in items) {
+      itemList.add(item.toJson());
+    }
+
+    return {
+      'userId': userId,
+      'dateTime': dateTime,
+      'location': location,
+      'items': itemList,
+      'subtotal': subtotal,
+      'total': total,
+      'tripDesc': tripDesc
+    };
   }
 }
