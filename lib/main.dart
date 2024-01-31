@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'src/capture_receipt.dart';
+import 'src/pages/capture_receipt.dart';
 
 void main() {
   runApp(const MyApp());

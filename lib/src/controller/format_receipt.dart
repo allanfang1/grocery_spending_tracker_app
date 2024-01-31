@@ -1,6 +1,6 @@
-import 'package:grocery_spending_tracker_app/src/extract_data.dart';
-import 'package:grocery_spending_tracker_app/src/item.dart';
-import 'package:grocery_spending_tracker_app/src/grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/src/controller/extract_data.dart';
+import 'package:grocery_spending_tracker_app/src/model/capture_item.dart';
+import 'package:grocery_spending_tracker_app/src/model/grocery_trip.dart';
 
 class FormatReceipt {
   GroceryTrip formatGroceryTrip(List<String> receipt) {

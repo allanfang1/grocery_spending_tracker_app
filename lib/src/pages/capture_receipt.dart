@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_spending_tracker_app/src/confirm_receipt.dart';
-import 'package:grocery_spending_tracker_app/src/format_receipt.dart';
-import 'package:grocery_spending_tracker_app/src/parse_receipt.dart';
-import 'package:grocery_spending_tracker_app/src/extract_data.dart';
-import 'package:grocery_spending_tracker_app/src/grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/src/pages/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/controller/format_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/controller/parse_receipt.dart';
+import 'package:grocery_spending_tracker_app/src/controller/extract_data.dart';
+import 'package:grocery_spending_tracker_app/src/model/grocery_trip.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
