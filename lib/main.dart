@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_spending_tracker_app/viewmodel/user_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserDataViewModel(),
-      child: const MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

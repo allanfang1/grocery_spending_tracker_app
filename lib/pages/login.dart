@@ -1,13 +1,8 @@
-import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/register.dart';
-import 'package:grocery_spending_tracker_app/viewmodel/user_data.dart';
-import 'package:grocery_spending_tracker_app/pages/clicker.dart';
+import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 // ignore_for_file: prefer_const_constructors
 
@@ -103,16 +98,21 @@ class _LoginPage extends State<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    Consumer<UserDataViewModel>(
-                      builder: (context, userDataModel, child) {
+                    Consumer(
+                      builder: (_, WidgetRef ref, __) {
                         return OutlinedButton(
                           onPressed: _enableBtn ?? false
                               ? () async {
                                   final navigator = Navigator.of(context);
+                                  // final profileController =
+                                  //     ref.watch(profileControllerProvider);
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
-                                  final response = await userDataModel.login(
-                                      _email!, _password!);
+
+                                  final response = await ref
+                                      .read(profileControllerProvider.notifier)
+                                      .login("bob", "bob");
+                                  await (_email!, _password!);
                                   if (response == 200) {
                                     navigator.push(
                                       MaterialPageRoute(
@@ -140,7 +140,7 @@ class _LoginPage extends State<LoginPage> {
                         child: const Text(
                           'Register',
                           style: TextStyle(color: Colors.blue),
-                        ))
+                        )),
                   ],
                 ),
               ),

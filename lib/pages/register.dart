@@ -1,7 +1,6 @@
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
-import 'package:grocery_spending_tracker_app/viewmodel/user_data.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:crypto/crypto.dart';
@@ -104,35 +103,43 @@ class _RegisterPage extends State<RegisterPage> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    Consumer<UserDataViewModel>(
-                      builder: (context, userDataModel, child) {
-                        return OutlinedButton(
-                          onPressed: _enableBtn ?? false
-                              ? () async {
-                                  final navigator = Navigator.of(context);
-                                  _formKey.currentState!.save();
-                                  setState(() => _enableBtn = false);
-                                  final response =
-                                      await register(_email!, _password!);
-                                  if (response == 200) {
-                                    navigator.push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const LoginPage(),
-                                      ),
-                                    );
-                                  } else {
-                                    print('Register failed ${response}');
-                                  }
-                                  setState(() => _enableBtn = true);
-                                }
-                              : null,
-                          child: const Text('Create Account'),
-                        );
-                      },
-                    )
+                    OutlinedButton(
+                      onPressed: _enableBtn ?? false
+                          ? () async {
+                              final navigator = Navigator.of(context);
+                              _formKey.currentState!.save();
+                              setState(() => _enableBtn = false);
+                              final response =
+                                  await register(_email!, _password!);
+                              if (response == 200) {
+                                navigator.push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ),
+                                );
+                              } else {
+                                print('Register failed ${response}');
+                              }
+                              setState(() => _enableBtn = true);
+                            }
+                          : null,
+                      child: const Text('Create Account'),
+                    ),
                   ],
                 ),
               ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(color: Colors.blue),
+                  ))
             ],
           ),
         ),
