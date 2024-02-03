@@ -4,7 +4,7 @@ import 'package:grocery_spending_tracker_app/src/model/grocery_trip.dart';
 
 class FormatReceipt {
   GroceryTrip formatGroceryTrip(List<String> receipt) {
-    String userId = "filler"; // TODO
+    int userId = 123; // TODO
     int dateTime = ExtractData().getDateTime(receipt);
     String location = ExtractData().getLocation(receipt);
     List<Item> groceries = _formatItems(receipt);

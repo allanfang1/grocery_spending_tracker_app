@@ -1,7 +1,7 @@
 import 'package:grocery_spending_tracker_app/src/model/capture_item.dart';
 
 class GroceryTrip {
-  String userId;
+  int userId;
   int dateTime;
   String location;
   List<Item> items;
