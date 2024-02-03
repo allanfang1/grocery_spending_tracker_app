@@ -10,6 +10,7 @@ part 'profile_repository.g.dart';
 
 class ProfileRepository {
   ProfileRepository();
+  http.Client client = http.Client();
 
   late final User user;
 
@@ -17,12 +18,12 @@ class ProfileRepository {
     // user = User.fromJson(
     //     '{"email": "a@mail.com", "token": "bbba", "firstname": "allan", "lastname": "fang"}');
     // return 200;
-    final response = await http.post(
-        Uri(scheme: 'https', host: Constants.HOST, path: Constants.LOGIN_PATH),
+    final response = await client.post(
+        Uri.parse(Constants.HOST + Constants.LOGIN_PATH),
         body: {'email': email, 'password': Helper.encrypt(password)});
     if (response.statusCode == 200) {
       user = User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    } else {}
+    }
     return response.statusCode;
   }
 }
