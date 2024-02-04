@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:grocery_spending_tracker_app/model/item.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,6 +26,16 @@ class AnalyticsRepository {
       transactions =
           jsonList.map((json) => Transaction.fromJson(json)).toList();
     }
+  }
+
+  List<Transaction> getTransactions() {
+    return [
+      Transaction('transactionId', DateTime.now(), 'location', 'description', [
+        Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
+            'category', 'description')
+      ])
+    ];
+    return transactions;
   }
 }
 
