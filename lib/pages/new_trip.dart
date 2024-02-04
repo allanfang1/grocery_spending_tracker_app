@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'capture_receipt.dart';
 
 class NewTrip extends StatefulWidget {
   const NewTrip({super.key});
@@ -26,7 +27,11 @@ class _NewTrip extends State<NewTrip> {
               const SizedBox(height: 20),
               SizedBox(
                 child: OutlinedButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => CaptureReceipt())
+                    );
+                  },
                   child: const Text('Take Photo'),
                 ),
               ),

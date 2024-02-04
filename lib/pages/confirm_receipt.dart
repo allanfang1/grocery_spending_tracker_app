@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_spending_tracker_app/src/model/grocery_trip.dart';
-import 'package:grocery_spending_tracker_app/src/model/capture_item.dart';
+import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';

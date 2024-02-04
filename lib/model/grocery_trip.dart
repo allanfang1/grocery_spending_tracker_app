@@ -1,4 +1,4 @@
-import 'package:grocery_spending_tracker_app/src/model/capture_item.dart';
+import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 
 class GroceryTrip {
   int userId;
