@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/clicker.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:provider/provider.dart';
-=======
-import 'src/pages/capture_receipt.dart';
->>>>>>> 233/ocr-mvp
 
 void main() {
   runApp(const ProviderScope(
