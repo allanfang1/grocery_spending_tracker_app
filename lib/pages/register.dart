@@ -1,13 +1,7 @@
-import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/common/helper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
-import 'package:grocery_spending_tracker_app/pages/clicker.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 // ignore_for_file: prefer_const_constructors
 
@@ -103,27 +97,32 @@ class _RegisterPage extends State<RegisterPage> {
                       },
                     ),
                     const SizedBox(height: 10),
-                    OutlinedButton(
-                      onPressed: _enableBtn ?? false
-                          ? () async {
-                              final navigator = Navigator.of(context);
-                              _formKey.currentState!.save();
-                              setState(() => _enableBtn = false);
-                              final response =
-                                  await register(_email!, _password!);
-                              if (response == 200) {
-                                navigator.push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginPage(),
-                                  ),
-                                );
-                              } else {
-                                print('Register failed ${response}');
-                              }
-                              setState(() => _enableBtn = true);
-                            }
-                          : null,
-                      child: const Text('Create Account'),
+                    Consumer(
+                      builder: (_, WidgetRef ref, __) {
+                        return OutlinedButton(
+                          onPressed: _enableBtn ?? false
+                              ? () async {
+                                  final navigator = Navigator.of(context);
+                                  _formKey.currentState!.save();
+                                  setState(() => _enableBtn = false);
+                                  final response = await ref
+                                      .read(profileControllerProvider.notifier)
+                                      .register(_email!, _password!);
+                                  if (response == 200) {
+                                    navigator.push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const LoginPage(),
+                                      ),
+                                    );
+                                  } else {
+                                    print('Register failed ${response}');
+                                  }
+                                  setState(() => _enableBtn = true);
+                                }
+                              : null,
+                          child: const Text('Create Account'),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -145,16 +144,5 @@ class _RegisterPage extends State<RegisterPage> {
         ),
       ),
     );
-  }
-
-  Future<Object> register(String email, String password) async {
-    return 200;
-    final response = await http.post(
-        Uri(
-            scheme: 'http',
-            host: Constants.HOST,
-            path: Constants.REGISTER_PATH),
-        body: {'email': email, 'password': Helper.encrypt(password)});
-    return response.statusCode;
   }
 }

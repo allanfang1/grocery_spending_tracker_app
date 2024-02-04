@@ -15,15 +15,27 @@ class ProfileRepository {
   late final User user;
 
   Future<Object> login(String email, String password) async {
-    // user = User.fromJson(
-    //     '{"email": "a@mail.com", "token": "bbba", "firstname": "allan", "lastname": "fang"}');
-    // return 200;
+    user = User.fromJson({
+      "email": "a@a.com",
+      "token": "bbba",
+      "firstname": "allan",
+      "lastname": "fang"
+    });
+    return 200;
     final response = await client.post(
         Uri.parse(Constants.HOST + Constants.LOGIN_PATH),
         body: {'email': email, 'password': Helper.encrypt(password)});
     if (response.statusCode == 200) {
       user = User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     }
+    return response.statusCode;
+  }
+
+  Future<Object> register(String email, String password) async {
+    return 200;
+    final response = await client.post(
+        Uri.parse(Constants.HOST + Constants.REGISTER_PATH),
+        body: {'email': email, 'password': Helper.encrypt(password)});
     return response.statusCode;
   }
 }

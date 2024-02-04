@@ -104,15 +104,11 @@ class _LoginPage extends State<LoginPage> {
                           onPressed: _enableBtn ?? false
                               ? () async {
                                   final navigator = Navigator.of(context);
-                                  // final profileController =
-                                  //     ref.watch(profileControllerProvider);
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
-
                                   final response = await ref
                                       .read(profileControllerProvider.notifier)
-                                      .login("bob", "bob");
-                                  await (_email!, _password!);
+                                      .login(_email!, _password!);
                                   if (response == 200) {
                                     navigator.push(
                                       MaterialPageRoute(

@@ -13,7 +13,11 @@ class ProfileController extends _$ProfileController {
 
   Future<Object> login(String email, String password) async {
     final profileRepository = ref.read(profileRepositoryProvider);
-    state = const AsyncLoading();
     return await profileRepository.login(email, Helper.encrypt(password));
+  }
+
+  Future<Object> register(String email, String password) async {
+    final profileRepository = ref.read(profileRepositoryProvider);
+    return await profileRepository.register(email, Helper.encrypt(password));
   }
 }

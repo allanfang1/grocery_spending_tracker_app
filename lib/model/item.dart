@@ -11,7 +11,7 @@ class Item {
   Item(this.itemId, this.productKey, this.dateTime, this.price, this.location,
       this.isTaxed, this.category, this.description);
 
-  factory Item.fromJson(dynamic json) {
+  factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       json['itemId'] as String,
       json['productKey'] as String,

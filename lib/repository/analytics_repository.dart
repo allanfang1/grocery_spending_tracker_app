@@ -6,29 +6,31 @@ import 'package:grocery_spending_tracker_app/repository/profile_repository.dart'
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart' as http;
 
-part 'transaction_repository.g.dart';
+part 'analytics_repository.g.dart';
 
-class TransactionRepository {
-  TransactionRepository(this.profileRepository);
+class AnalyticsRepository {
+  AnalyticsRepository(this.profileRepository);
   final ProfileRepository profileRepository;
+  http.Client client = http.Client();
+
   List<Transaction> transactions = [];
 
   Future<void> loadTransactions() async {
-    print(profileRepository.user.email);
-    final response = await http.post(
-        Uri(scheme: 'https', host: Constants.HOST, path: Constants.LOGIN_PATH),
+    final response = await client.post(
+        Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS),
         body: {'email': profileRepository.user.email});
     if (response.statusCode == 200) {
-      List<Map<String, dynamic>> jsonList = jsonDecode(response.body);
+      List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
       transactions =
           jsonList.map((json) => Transaction.fromJson(json)).toList();
-      Transaction.fromJson(response.body);
     }
   }
 }
 
 @Riverpod(keepAlive: true)
-TransactionRepository transactionRepository(TransactionRepositoryRef ref) {
+AnalyticsRepository analyticsRepository(AnalyticsRepositoryRef ref) {
   final profileRepository = ref.watch(profileRepositoryProvider);
-  return TransactionRepository(profileRepository);
+  return AnalyticsRepository(profileRepository);
 }
