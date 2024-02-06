@@ -39,13 +39,13 @@ class GroceryTrip {
     }
 
     return {
-      'userId': userId,
-      'dateTime': dateTime,
+      'user_id': userId,
+      'date_time': dateTime,
       'location': location,
       'items': itemList,
       'subtotal': subtotal,
       'total': total,
-      'tripDesc': tripDesc
+      'trip_desc': tripDesc
     };
   }
 }

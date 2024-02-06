@@ -25,8 +25,8 @@ class Item with ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     return {
-      'itemKey': itemKey,
-      'itemDesc': itemDesc,
+      'item_key': itemKey,
+      'item_desc': itemDesc,
       'price': price,
       'taxed': taxed
     };
