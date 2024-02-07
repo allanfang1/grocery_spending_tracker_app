@@ -39,7 +39,6 @@ class GroceryTrip {
     }
 
     return {
-      'user_id': userId,
       'date_time': dateTime,
       'location': location,
       'items': itemList,

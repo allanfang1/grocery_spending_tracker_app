@@ -421,6 +421,9 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
 
     print(jsonEncode(widget.tripData));
 
+    // TODO HTTP request here to send JSON
+    // User Id is no longer included in the JSON object, rather it will be part of the POST request URL
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Processing data.')),
     );
