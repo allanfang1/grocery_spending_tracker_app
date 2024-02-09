@@ -1,6 +1,9 @@
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
+import 'package:intl/intl.dart';
 
 class GroceryTrip {
+  final DateFormat _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+
   int userId;
   int dateTime;
   String location;
@@ -39,8 +42,8 @@ class GroceryTrip {
     }
 
     return {
-      'user_id': userId,
-      'date_time': dateTime,
+      'date_time': _dateFormat
+          .format(DateTime.fromMillisecondsSinceEpoch(dateTime * 1000)),
       'location': location,
       'items': itemList,
       'subtotal': subtotal,
