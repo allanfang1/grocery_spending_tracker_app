@@ -27,7 +27,8 @@ void main() {
       profileRepository.client = MockClient((request) async {
         return Response("", 200);
       });
-      final response = await profileRepository.register("bob", "uncle");
+      final response =
+          await profileRepository.register("allan", "fang", "bob", "uncle");
       expect(response, 200);
     });
   });
@@ -37,7 +38,8 @@ void main() {
 
     setUp(() {
       profileRepository = ProfileRepository();
-      profileRepository.user = User("email", "token", "firstName", "lastName");
+      profileRepository.user =
+          User("id", "email", "token", "firstName", "lastName");
     });
 
     test("Test load transactions call", () async {

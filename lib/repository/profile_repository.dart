@@ -31,11 +31,16 @@ class ProfileRepository {
     return response.statusCode;
   }
 
-  Future<Object> register(String email, String password) async {
+  Future<Object> register(
+      String firstname, String lastname, String email, String password) async {
     return 200;
-    final response = await client.post(
-        Uri.parse(Constants.HOST + Constants.REGISTER_PATH),
-        body: {'email': email, 'password': Helper.encrypt(password)});
+    final response = await client
+        .post(Uri.parse(Constants.HOST + Constants.REGISTER_PATH), body: {
+      'first_name': firstname,
+      'last_name': lastname,
+      'email': email,
+      'password': Helper.encrypt(password)
+    });
     return response.statusCode;
   }
 }

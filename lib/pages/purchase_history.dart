@@ -18,7 +18,6 @@ class PurchaseHistory extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Purchase History"),
-        // automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Container(

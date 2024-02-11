@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
@@ -15,11 +17,32 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPage extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn;
+  String? _firstname;
+  String? _lastname;
   String? _email;
   String? _password;
 
   @override
   Widget build(BuildContext context) {
+    final InputDecoration _hiddenValidation = InputDecoration(
+      border: OutlineInputBorder(),
+      hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: 0.0,
+        horizontal: 10.0,
+      ),
+      errorStyle: TextStyle(
+        color: Colors.transparent,
+        fontSize: 0,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.black54),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
+      ),
+    );
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -44,17 +67,36 @@ class _RegisterPage extends State<RegisterPage> {
                   children: [
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onSaved: (newValue) =>
+                          setState(() => _firstname = newValue),
+                      decoration:
+                          _hiddenValidation.copyWith(hintText: "First Name"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onSaved: (newValue) =>
+                          setState(() => _lastname = newValue),
+                      decoration:
+                          _hiddenValidation.copyWith(hintText: "Last Name"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Invalid input';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       onSaved: (newValue) => setState(() => _email = newValue),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Email",
-                        hintStyle:
-                            TextStyle(color: Colors.black.withOpacity(0.4)),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 0.0,
-                          horizontal: 10.0,
-                        ),
-                      ),
+                      decoration: _hiddenValidation.copyWith(hintText: "Email"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Invalid input';
@@ -68,27 +110,8 @@ class _RegisterPage extends State<RegisterPage> {
                       onSaved: (newValue) =>
                           setState(() => _password = newValue),
                       obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Password",
-                        hintStyle:
-                            TextStyle(color: Colors.black.withOpacity(0.4)),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 0.0,
-                          horizontal: 10.0,
-                        ),
-                        // errorStyle: TextStyle(
-                        //   color: Colors.transparent,
-                        //   fontSize: 0,
-                        // ),
-                        // errorBorder: OutlineInputBorder(
-                        //   borderSide: BorderSide(color: Colors.black54),
-                        // ),
-                        // focusedErrorBorder: OutlineInputBorder(
-                        //   borderSide:
-                        //       BorderSide(color: Colors.deepPurple, width: 2.0),
-                        // ),
-                      ),
+                      decoration:
+                          _hiddenValidation.copyWith(hintText: "Password"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Invalid input';
@@ -107,7 +130,8 @@ class _RegisterPage extends State<RegisterPage> {
                                   setState(() => _enableBtn = false);
                                   final response = await ref
                                       .read(profileControllerProvider.notifier)
-                                      .register(_email!, _password!);
+                                      .register(_firstname!, _lastname!,
+                                          _email!, _password!);
                                   if (response == 200) {
                                     navigator.push(
                                       MaterialPageRoute(
@@ -115,7 +139,7 @@ class _RegisterPage extends State<RegisterPage> {
                                       ),
                                     );
                                   } else {
-                                    print('Register failed ${response}');
+                                    log('Register failed $response');
                                   }
                                   setState(() => _enableBtn = true);
                                 }

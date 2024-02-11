@@ -18,6 +18,7 @@ class AnalyticsRepository {
   Future<void> loadTransactions() async {
     final response = await client.post(
         Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS),
+        headers: {'Auth': profileRepository.user.token!},
         body: {'email': profileRepository.user.email});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)

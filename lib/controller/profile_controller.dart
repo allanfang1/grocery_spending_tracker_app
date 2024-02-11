@@ -16,8 +16,10 @@ class ProfileController extends _$ProfileController {
     return await profileRepository.login(email, Helper.encrypt(password));
   }
 
-  Future<Object> register(String email, String password) async {
+  Future<Object> register(
+      String firstname, String lastname, String email, String password) async {
     final profileRepository = ref.read(profileRepositoryProvider);
-    return await profileRepository.register(email, Helper.encrypt(password));
+    return await profileRepository.register(
+        firstname, lastname, email, Helper.encrypt(password));
   }
 }
