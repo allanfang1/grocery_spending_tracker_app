@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
@@ -18,6 +19,17 @@ class _LoginPage extends State<LoginPage> {
   bool? _enableBtn;
   String? _email;
   String? _password;
+
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
