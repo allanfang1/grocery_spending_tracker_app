@@ -107,7 +107,7 @@ class _LoginPage extends State<LoginPage> {
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
                                   final response = await ref
-                                      .read(profileControllerProvider.notifier)
+                                      .watch(profileControllerProvider.notifier)
                                       .login(_email!, _password!);
                                   if (response == 200) {
                                     navigator.push(

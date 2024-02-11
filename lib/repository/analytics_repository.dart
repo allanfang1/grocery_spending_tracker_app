@@ -30,12 +30,38 @@ class AnalyticsRepository {
 
   List<Transaction> getTransactions() {
     return [
-      Transaction('transactionId', DateTime.now(), 'location', 'description', [
-        Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
-            'category', 'description')
-      ])
+      Transaction(
+          'transactionId',
+          DateTime.now(),
+          'Shopper Drug Mart',
+          'description',
+          [
+            Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
+                'category', 'description')
+          ],
+          1000),
     ];
     return transactions;
+  }
+
+  Transaction getTransactionByIndex(int index) {
+    return Transaction(
+        'transactionId',
+        DateTime.now(),
+        'Shopper Drug Mart',
+        'description',
+        [
+          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
+              'category', 'description'),
+          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
+              'category', 'description'),
+          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
+              'category', 'description')
+        ],
+        1000);
+    return index >= 0
+        ? transactions[index]
+        : Transaction.withId('No Transaction Found', []);
   }
 }
 

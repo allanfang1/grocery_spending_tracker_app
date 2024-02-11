@@ -9,6 +9,8 @@ part 'analytics_controller.g.dart';
 
 @riverpod
 class AnalyticsController extends _$AnalyticsController {
+  int transactionIndex = -1;
+
   @override
   FutureOr<void> build() {}
 
@@ -18,5 +20,11 @@ class AnalyticsController extends _$AnalyticsController {
 
   List<Transaction> getTransactions() {
     return ref.read(analyticsRepositoryProvider).getTransactions();
+  }
+
+  Transaction getTransactionByIndex() {
+    return ref
+        .read(analyticsRepositoryProvider)
+        .getTransactionByIndex(transactionIndex);
   }
 }
