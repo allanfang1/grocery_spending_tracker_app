@@ -382,7 +382,6 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                       onPressed: () => {
                             if (_confirmReceiptKey.currentState!.validate())
                               {
-                                // TODO Save Data, Update Grocery Trip, Send Data
                                 handleSubmit()
                               }
                             else
