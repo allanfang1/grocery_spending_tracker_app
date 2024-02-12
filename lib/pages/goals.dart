@@ -7,8 +7,8 @@ import 'package:grocery_spending_tracker_app/pages/receipt_view.dart';
 
 // ignore_for_file: prefer_const_constructors
 
-class PurchaseHistory extends ConsumerWidget {
-  const PurchaseHistory({super.key});
+class Goals extends ConsumerWidget {
+  const Goals({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,15 +35,16 @@ class PurchaseHistory extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("placeholder",
+                          Text(_transactions.first.location ?? "",
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 18)),
-                          Text("placeholder"),
+                          Text(Helper.dateTimeToString(
+                              _transactions.first.dateTime)),
                         ],
                       ),
                     ),
                     Text(
-                      "placeholder",
+                      Helper.priceFormat(_transactions.first.total),
                       style: TextStyle(fontSize: 16),
                     ),
                   ],

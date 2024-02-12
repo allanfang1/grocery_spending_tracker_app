@@ -1,26 +1,26 @@
 class Item {
-  String itemId;
-  String productKey;
-  DateTime dateTime;
-  int price;
-  String location;
-  bool isTaxed;
-  String category;
-  String description;
+  int? itemId;
+  String? productKey;
+  DateTime? dateTime;
+  double? price;
+  String? location;
+  bool? isTaxed;
+  String? category;
+  String? description;
 
   Item(this.itemId, this.productKey, this.dateTime, this.price, this.location,
       this.isTaxed, this.category, this.description);
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
-      json['itemId'] as String,
-      json['productKey'] as String,
-      DateTime.parse(json['dateTime']),
-      json['price'] as int,
-      json['location'] as String,
-      json['isTaxed'] as bool,
-      json['category'] as String,
-      json['description'] as String,
+      json['item_id'] as int?,
+      json['item_key'] as String?,
+      json['dateTime'] != null ? DateTime.parse(json['dateTime']) : null,
+      double.tryParse(json['price']),
+      json['location'] as String?,
+      json['taxed'] as bool?,
+      json['category'] as String?,
+      json['item_desc'] as String?,
     );
   }
 }

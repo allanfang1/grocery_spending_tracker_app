@@ -2,28 +2,36 @@ import 'dart:convert';
 import 'item.dart';
 
 class Transaction {
-  String transactionId;
+  int? transactionId;
   DateTime? dateTime;
-  String location;
-  String description;
-  List<Item> items;
+  String? location;
+  String? description;
+  List<Item>? items;
+  double? subtotal;
+  double? total;
 
   Transaction(this.transactionId, this.dateTime, this.location,
-      this.description, this.items);
+      this.description, this.items, this.subtotal, this.total);
+
+  Transaction.notFound(this.transactionId);
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
-    List<Item> items = (jsonDecode(json['items']) as List)
-        .map((e) => Item.fromJson(e as Map<String, dynamic>))
-        .toList();
-    // List<Map<String, dynamic>> jsonItems = (jsonDecode(json['items']) as List)
-    //     .map((e) => e as Map<String, dynamic>)
-    //     .toList();
-    // List<Item> items = jsonItems.map((json) => Item.fromJson(json)).toList();
+    List<Item> items;
+    if (json['items'] == null) {
+      items = [];
+    } else {
+      items = (json['items'] as List)
+          .map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
     return Transaction(
-        json['transactionId'] as String,
-        DateTime.parse(json['dateTime']),
-        json['location'] as String,
-        json['description'] as String,
-        items);
+      json['trip_id'] as int?,
+      json['date_time'] != null ? DateTime.parse(json['date_time']) : null,
+      json['location'] as String?,
+      json['description'] as String?,
+      items,
+      double.tryParse(json['subtotal']),
+      double.tryParse(json['total']),
+    );
   }
 }
