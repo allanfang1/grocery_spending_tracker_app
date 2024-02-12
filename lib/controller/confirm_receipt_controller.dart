@@ -4,8 +4,7 @@ import 'package:grocery_spending_tracker_app/repository/confirm_receipt_reposito
 
 class ConfirmReceiptController {
   Future<int> submitTrip(GroceryTrip trip) async {
-    int userId = 6; // TODO temp hardcoded, get from login
     String jsonTrip = jsonEncode(trip);
-    return await ConfirmReceiptRepository().submitTrip(userId, jsonTrip);
+    return await ConfirmReceiptRepository().submitTrip(jsonTrip);
   }
 }
