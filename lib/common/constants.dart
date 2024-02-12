@@ -3,6 +3,7 @@ class Constants {
   static const String LOGIN_PATH = "/auth/login/";
   static const String GET_USER_PATH = "/users/";
   static const String REGISTER_PATH = "/users/new-user/";
+  static const String SUBMIT_TRIP = "/users/trip";
   static const String LOAD_TRANSACTIONS = "/users/trip/";
 
   static const String FIRST_NAME_LABEL = "First Name";
