@@ -1,5 +1,5 @@
 class User {
-  String? id;
+  int? id;
   String? email;
   String? token;
   String? firstName;
@@ -19,11 +19,11 @@ class User {
   }
 
   void fromJson(dynamic json) {
-    id = json['id'] as String?;
-    email = json['email'] as String?;
-    token = json['token'] as String?;
-    firstName = json['firstName'] as String?;
-    lastName = json['lastName'] as String?;
+    id ??= json['user_id'] as int?;
+    email ??= json['email'] as String?;
+    token ??= json['token'] as String?;
+    firstName ??= json['first_name'] as String?;
+    lastName ??= json['last_name'] as String?;
   }
 
   void clear() {

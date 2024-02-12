@@ -16,7 +16,7 @@ class ReceiptView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(_transaction.transactionId),
+        title: Text(_transaction.transactionId.toString() ?? ""),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Card(
@@ -39,7 +39,7 @@ class ReceiptView extends ConsumerWidget {
               const SizedBox(height: 12),
               ListView.separated(
                   shrinkWrap: true,
-                  itemCount: _transaction.items.length,
+                  itemCount: _transaction.items!.length,
                   separatorBuilder: (context, index) => SizedBox(height: 5),
                   itemBuilder: (context, index) {
                     return GestureDetector(
@@ -47,18 +47,19 @@ class ReceiptView extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              _transaction.items[index].description,
+                              _transaction.items![index].description ?? "",
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(20, 0, 4, 0),
-                            child: _transaction.items[index].isTaxed
+                            child: _transaction.items![index].isTaxed ?? false
                                 ? Text("H")
                                 : Text(""),
                           ),
                           Text(
-                            Helper.priceFormat(_transaction.items[index].price),
+                            Helper.priceFormat(
+                                _transaction.items![index].price),
                           ),
                         ],
                       ),
@@ -72,9 +73,7 @@ class ReceiptView extends ConsumerWidget {
                     "Subtotal",
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
-                  Text(
-                      Helper.priceFormat(_transaction.items
-                          .fold(0, (prevVal, item) => prevVal! + item.price)),
+                  Text(Helper.priceFormat(_transaction.subtotal),
                       style:
                           TextStyle(fontWeight: FontWeight.w500, fontSize: 16))
                 ],

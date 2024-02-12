@@ -35,16 +35,15 @@ class PurchaseHistory extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_transactions.first.location ?? "",
+                          Text("placeholder",
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 18)),
-                          Text(Helper.dateTimeToString(
-                              _transactions.first.dateTime)),
+                          Text("placeholder"),
                         ],
                       ),
                     ),
                     Text(
-                      Helper.priceFormat(_transactions.first.total),
+                      "placeholder",
                       style: TextStyle(fontSize: 16),
                     ),
                   ],

@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 //ignore_for_file: prefer_const_constructors
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/common/error_alert.dart';
+import 'package:grocery_spending_tracker_app/common/helper.dart';
+import 'package:grocery_spending_tracker_app/controller/analytics_controller.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
@@ -10,11 +13,11 @@ import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return WillPopScope(
         child: Scaffold(
           appBar: AppBar(
@@ -45,12 +48,19 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 6),
                   SizedBox(
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PurchaseHistory(),
-                          ),
-                        );
+                      onPressed: () async {
+                        var response = await ref
+                            .watch(analyticsControllerProvider.notifier)
+                            .loadTransactions();
+                        if (response.statusCode == 200) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const PurchaseHistory(),
+                            ),
+                          );
+                        } else {
+                          showErrorAlertDialog(context, response.body);
+                        }
                       },
                       child: const Text('History'),
                     ),

@@ -9,10 +9,8 @@ class Helper {
     return hash.toString();
   }
 
-  static String priceFormat(int? val) {
-    return val != null
-        ? NumberFormat.currency(symbol: "\$").format(val / 100.0)
-        : "";
+  static String priceFormat(double? val) {
+    return val != null ? NumberFormat.currency(symbol: "\$").format(val) : "";
   }
 
   static String dateTimeToString(DateTime? dateTime) {
