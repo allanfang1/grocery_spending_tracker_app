@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/controller/confirm_receipt_controller.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
+import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
 
 class ConfirmReceipt extends StatefulWidget {
   final GroceryTrip tripData;
@@ -411,7 +412,10 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
   }
 
   Future<void> handleSubmit() async {
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     List<Item> updatedItems = [];
+
     for (Item item in _items) {
       if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
     }
@@ -419,10 +423,18 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     widget.tripData.updateGroceryTrip(
         _dateTime, _location, updatedItems, _subtotal, _total, _tripDesc);
 
-    print(jsonEncode(widget.tripData));
+    int status = await ConfirmReceiptController().submitTrip(widget.tripData);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Processing data.')),
-    );
+    if (status == 200) {
+      scaffold.showSnackBar(const SnackBar(
+        content: Text('Receipt submitted successfully.'),
+      ));
+
+      await navigator.push(MaterialPageRoute(builder: (context) => HomePage()));
+    } else {
+      scaffold.showSnackBar(const SnackBar(
+        content: Text('An error occurred submitting the receipt.'),
+      ));
+    }
   }
 }
