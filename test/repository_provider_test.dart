@@ -38,8 +38,8 @@ void main() {
 
     setUp(() {
       profileRepository = ProfileRepository();
-      profileRepository.user =
-          User("id", "email", "token", "firstName", "lastName");
+      profileRepository.user
+          .setUser("id", "email", "token", "firstName", "lastName");
     });
 
     test("Test load transactions call", () async {

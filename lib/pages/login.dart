@@ -1,20 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 // ignore_for_file: prefer_const_constructors
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPage extends State<LoginPage> {
+class LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  String? _responseMsg;
   bool? _enableBtn;
   String? _email;
   String? _password;
@@ -97,33 +101,37 @@ class _LoginPage extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 10),
-                    Consumer(
-                      builder: (_, WidgetRef ref, __) {
-                        return OutlinedButton(
-                          onPressed: _enableBtn ?? false
-                              ? () async {
-                                  final navigator = Navigator.of(context);
-                                  _formKey.currentState!.save();
-                                  setState(() => _enableBtn = false);
-                                  final response = await ref
-                                      .watch(profileControllerProvider.notifier)
-                                      .login(_email!, _password!);
-                                  if (response == 200) {
-                                    navigator.push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const HomePage(),
-                                      ),
-                                    );
-                                  } else {
-                                    print('Login failed ${response}');
-                                  }
-                                  setState(() => _enableBtn = true);
-                                }
-                              : null,
-                          child: const Text('Login'),
-                        );
-                      },
+                    const SizedBox(height: 6),
+                    if (_responseMsg != null)
+                      Text(
+                        _responseMsg!,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    const SizedBox(height: 4),
+                    OutlinedButton(
+                      onPressed: _enableBtn ?? false
+                          ? () async {
+                              final navigator = Navigator.of(context);
+                              _formKey.currentState!.save();
+                              setState(() => _enableBtn = false);
+                              final response = await ref
+                                  .watch(profileControllerProvider.notifier)
+                                  .login(_email!, _password!);
+                              if (response.statusCode == 200) {
+                                navigator.push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomePage(),
+                                  ),
+                                );
+                              } else {
+                                setState(() {
+                                  _enableBtn = true;
+                                  _responseMsg = response.body;
+                                });
+                              }
+                            }
+                          : null,
+                      child: const Text('Login'),
                     ),
                     GestureDetector(
                         onTap: () {

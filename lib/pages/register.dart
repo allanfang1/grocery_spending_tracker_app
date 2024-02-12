@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
@@ -132,14 +133,17 @@ class _RegisterPage extends State<RegisterPage> {
                                       .read(profileControllerProvider.notifier)
                                       .register(_firstname!, _lastname!,
                                           _email!, _password!);
-                                  if (response == 200) {
+                                  if (response.statusCode == 200) {
                                     navigator.push(
                                       MaterialPageRoute(
                                         builder: (context) => const LoginPage(),
                                       ),
                                     );
                                   } else {
-                                    log('Register failed $response');
+                                    if (context.mounted) {
+                                      showErrorAlertDialog(
+                                          context, response.body);
+                                    }
                                   }
                                   setState(() => _enableBtn = true);
                                 }
