@@ -3,6 +3,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/item.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
+import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,54 +16,27 @@ class AnalyticsRepository {
 
   List<Transaction> transactions = [];
 
-  Future<void> loadTransactions() async {
-    final response = await client.post(
+  Future<Response> loadTransactions() async {
+    final response = await client.get(
         Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS),
-        headers: {'Auth': profileRepository.user.token!},
-        body: {'email': profileRepository.user.email});
+        headers: {'Auth': profileRepository.user.token!});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
           .map((e) => e as Map<String, dynamic>)
           .toList();
+      print(jsonList);
       transactions =
           jsonList.map((json) => Transaction.fromJson(json)).toList();
     }
+    return response;
   }
 
   List<Transaction> getTransactions() {
-    return [
-      Transaction(
-          'transactionId',
-          DateTime.now(),
-          'Shopper Drug Mart',
-          'description',
-          [
-            Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
-                'category', 'description')
-          ],
-          1000),
-    ];
     return transactions;
   }
 
-  Transaction getTransactionByIndex(int index) {
-    return Transaction(
-        'transactionId',
-        DateTime.now(),
-        'Shopper Drug Mart',
-        'description',
-        [
-          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
-              'category', 'description'),
-          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
-              'category', 'description'),
-          Item('itemId', 'productKey', DateTime.now(), 1000, 'location', true,
-              'category', 'description')
-        ],
-        1000);
-    return index >= 0
-        ? transactions[index]
-        : Transaction.withId('No Transaction Found', []);
+  Transaction? getTransactionByIndex(int index) {
+    return index >= 0 ? transactions[index] : null;
   }
 }
 
