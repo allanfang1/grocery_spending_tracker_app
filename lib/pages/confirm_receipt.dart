@@ -430,7 +430,8 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
         content: Text('Receipt submitted successfully.'),
       ));
 
-      await navigator.push(MaterialPageRoute(builder: (context) => HomePage()));
+      await navigator
+          .push(MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred submitting the receipt.'),
