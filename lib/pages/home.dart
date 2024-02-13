@@ -3,15 +3,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
-import 'package:grocery_spending_tracker_app/controller/analytics_controller.dart';
+import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics.dart';
 import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
 import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
 
 import 'package:flutter/material.dart';
-import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -50,7 +50,7 @@ class HomePage extends ConsumerWidget {
                     child: OutlinedButton(
                       onPressed: () async {
                         var response = await ref
-                            .watch(analyticsControllerProvider.notifier)
+                            .watch(historyControllerProvider.notifier)
                             .loadTransactions();
                         if (response.statusCode == 200) {
                           Navigator.of(context).push(
@@ -81,8 +81,14 @@ class HomePage extends ConsumerWidget {
                   const SizedBox(height: 6),
                   SizedBox(
                     child: OutlinedButton(
-                      onPressed: null,
-                      child: const Text('Analysis'),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Analytics(),
+                          ),
+                        );
+                      },
+                      child: const Text('Analytics'),
                     ),
                   ),
                   const SizedBox(height: 6),

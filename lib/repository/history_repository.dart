@@ -7,10 +7,10 @@ import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart' as http;
 
-part 'analytics_repository.g.dart';
+part 'history_repository.g.dart';
 
-class AnalyticsRepository {
-  AnalyticsRepository(this.profileRepository);
+class HistoryRepository {
+  HistoryRepository(this.profileRepository);
   final ProfileRepository profileRepository;
   http.Client client = http.Client();
 
@@ -24,7 +24,6 @@ class AnalyticsRepository {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
           .map((e) => e as Map<String, dynamic>)
           .toList();
-      print(jsonList);
       transactions =
           jsonList.map((json) => Transaction.fromJson(json)).toList();
     }
@@ -41,7 +40,7 @@ class AnalyticsRepository {
 }
 
 @Riverpod(keepAlive: true)
-AnalyticsRepository analyticsRepository(AnalyticsRepositoryRef ref) {
+HistoryRepository historyRepository(HistoryRepositoryRef ref) {
   final profileRepository = ref.watch(profileRepositoryProvider);
-  return AnalyticsRepository(profileRepository);
+  return HistoryRepository(profileRepository);
 }

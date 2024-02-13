@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
-import 'package:grocery_spending_tracker_app/controller/analytics_controller.dart';
+import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -12,7 +12,7 @@ class ReceiptView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Transaction _transaction =
-        ref.watch(analyticsControllerProvider.notifier).getTransactionByIndex();
+        ref.watch(historyControllerProvider.notifier).getTransactionByIndex();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
