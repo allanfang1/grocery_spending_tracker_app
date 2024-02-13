@@ -4,18 +4,20 @@ import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class ConfirmReceipt extends StatefulWidget {
+class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
 
   const ConfirmReceipt({Key? key, required this.tripData}) : super(key: key);
 
   @override
-  State<ConfirmReceipt> createState() => _ConfirmReceiptState();
+  ConsumerState<ConfirmReceipt> createState() => _ConfirmReceiptState();
 }
 
-class _ConfirmReceiptState extends State<ConfirmReceipt> {
+class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   final DateFormat _dateFormat = DateFormat.yMMMMd('en_US').add_Hms();
   final List<Widget> _itemFields = [];
 
@@ -381,10 +383,7 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
                   ElevatedButton(
                       onPressed: () => {
                             if (_confirmReceiptKey.currentState!.validate())
-                              {
-                                // TODO Save Data, Update Grocery Trip, Send Data
-                                handleSubmit()
-                              }
+                              {handleSubmit()}
                             else
                               {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -423,14 +422,17 @@ class _ConfirmReceiptState extends State<ConfirmReceipt> {
     widget.tripData.updateGroceryTrip(
         _dateTime, _location, updatedItems, _subtotal, _total, _tripDesc);
 
-    int status = await ConfirmReceiptController().submitTrip(widget.tripData);
+    int status = await ref
+        .watch(confirmReceiptControllerProvider.notifier)
+        .submitTrip(widget.tripData);
 
     if (status == 200) {
       scaffold.showSnackBar(const SnackBar(
         content: Text('Receipt submitted successfully.'),
       ));
 
-      await navigator.push(MaterialPageRoute(builder: (context) => HomePage()));
+      await navigator
+          .push(MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred submitting the receipt.'),
