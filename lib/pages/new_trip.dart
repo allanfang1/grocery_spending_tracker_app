@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:grocery_spending_tracker_app/pages/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
+import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
+import 'package:grocery_spending_tracker_app/controller/extract_data.dart';
+import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'capture_receipt.dart';
 
 class NewTrip extends StatefulWidget {
@@ -38,7 +44,7 @@ class _NewTrip extends State<NewTrip> {
               const SizedBox(height: 6),
               SizedBox(
                 child: OutlinedButton(
-                  onPressed: null,
+                  onPressed: _selectImage,
                   child: const Text('Upload'),
                 ),
               ),
@@ -47,5 +53,31 @@ class _NewTrip extends State<NewTrip> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectImage() async {
+    final navigator = Navigator.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
+
+    try {
+      final receipt = await ImagePicker().pickImage(
+          source: ImageSource.gallery);
+
+      if (receipt == null) return;
+
+      final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
+
+      final receiptToList = ExtractData().textToList(scannedReceipt);
+
+      final GroceryTrip formattedReceipt = FormatReceipt()
+          .formatGroceryTrip(receiptToList);
+
+      await navigator.push(MaterialPageRoute(
+          builder: (context) => ConfirmReceipt(tripData: formattedReceipt)));
+    } catch (e) {
+      scaffold.showSnackBar(const SnackBar(
+        content: Text('An error occurred with the selected image.'),
+      ));
+    }
   }
 }
