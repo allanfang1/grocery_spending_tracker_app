@@ -9,7 +9,6 @@ import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
 import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
-
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 
@@ -22,7 +21,7 @@ class HomePage extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text("Hola Signora"),
+            title: Text("Grocery Spending Tracker"),
             automaticallyImplyLeading: false,
           ),
           body: Center(
