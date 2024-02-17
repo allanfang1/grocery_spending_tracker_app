@@ -7,6 +7,7 @@ import 'package:grocery_spending_tracker_app/controller/history_controller.dart'
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics.dart';
 import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
+import 'package:grocery_spending_tracker_app/pages/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
 import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
@@ -101,7 +102,8 @@ class HomePage extends ConsumerWidget {
                                 .logout();
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const LoginPage(),
+                                builder: (context) =>
+                                    const LoadingOverlay(child: LoginPage()),
                               ),
                             );
                           },

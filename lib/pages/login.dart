@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/pages/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
@@ -111,16 +112,25 @@ class LoginPageState extends ConsumerState<LoginPage> {
                     OutlinedButton(
                       onPressed: _enableBtn ?? false
                           ? () async {
+                              FocusScope.of(context).unfocus();
                               final navigator = Navigator.of(context);
+                              final loading = LoadingOverlay.of(context);
                               _formKey.currentState!.save();
                               setState(() => _enableBtn = false);
+
+                              loading.show();
+
                               final response = await ref
                                   .watch(profileControllerProvider.notifier)
                                   .login(_email!, _password!);
+
+                              loading.hide();
+
                               if (response.statusCode == 200) {
                                 navigator.push(
                                   MaterialPageRoute(
-                                    builder: (context) => const HomePage(),
+                                    builder: (context) =>
+                                        const LoadingOverlay(child: HomePage()),
                                   ),
                                 );
                               } else {
