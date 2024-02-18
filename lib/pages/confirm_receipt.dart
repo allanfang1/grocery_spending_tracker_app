@@ -6,7 +6,7 @@ import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_pic
 import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
@@ -70,7 +70,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
               return TextField(
                 readOnly: true,
                 decoration: const InputDecoration(
-                  labelText: 'Date and Time of Purchase',
+                  labelText: Constants.DATE_TIME_LABEL,
                 ),
                 controller: textValue,
               );
@@ -107,7 +107,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildLocation() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Location (Address)'),
+      decoration: const InputDecoration(labelText: Constants.LOCATION_LABEL),
       initialValue: _location,
       validator: (String? value) {
         if (value == null || value.isEmpty) return 'Location is required';
@@ -142,7 +142,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                   builder: (context) {
                     return StatefulBuilder(builder: (context, setState) {
                       return AlertDialog(
-                        title: const Text('Edit Item'),
+                        title: const Text(Constants.EDIT_ITEM_LABEL),
                         content: Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -165,7 +165,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                   children: [
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Item ID (SKU)'),
+                                          labelText: Constants.ITEM_ID_LABEL),
                                       initialValue: _items[index].itemKey,
                                       keyboardType: TextInputType.number,
                                       onSaved: (String? value) {
@@ -177,7 +177,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                     ),
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Item Name'),
+                                          labelText: Constants.ITEM_NAME_LABEL),
                                       initialValue: _items[index].itemDesc,
                                       validator: (String? value) {
                                         if (value == null || value.isEmpty) {
@@ -193,7 +193,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       },
                                     ),
                                     CheckboxListTile(
-                                      title: const Text('Taxed?'),
+                                      title: const Text(Constants.TAXED_LABEL),
                                       checkColor: Colors.white,
                                       fillColor:
                                           MaterialStateProperty.resolveWith(
@@ -208,7 +208,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                     ),
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Price'),
+                                          labelText:
+                                              Constants.ITEM_PRICE_LABEL),
                                       initialValue:
                                           _items[index].price.toString(),
                                       keyboardType:
@@ -242,7 +243,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                             Navigator.of(context).pop();
                                           }
                                         },
-                                        child: const Text('Confirm'))
+                                        child:
+                                            const Text(Constants.CONFIRM_LABEL))
                                   ],
                                 ))
                           ],
@@ -261,7 +263,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         const Padding(
             padding: EdgeInsets.only(top: 15),
             child: Text(
-              'Item List',
+              Constants.ITEM_LIST_LABEL,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline),
@@ -296,7 +298,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildSubtotal() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Subtotal'),
+      decoration:
+          const InputDecoration(labelText: Constants.TRIP_SUBTOTAL_LABEL),
       initialValue: _subtotal.toString(),
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
@@ -322,7 +325,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildTotal() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Total'),
+      decoration: const InputDecoration(labelText: Constants.TRIP_TOTAL_LABEL),
       initialValue: _total.toString(),
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
@@ -348,7 +351,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildTripDesc() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Trip Description'),
+      decoration: const InputDecoration(labelText: Constants.TRIP_DESC_LABEL),
       initialValue: _tripDesc,
       onChanged: (String? value) {
         setState(() {
@@ -362,7 +365,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Confirm Scanned Receipt'),
+        title: const Text(Constants.CONFIRM_RECEIPT_LABEL),
       ),
       body: Container(
         margin: const EdgeInsets.all(24.0),
@@ -393,7 +396,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                 )
                               }
                           },
-                      child: const Text('Confirm Receipt'))
+                      child: const Text(Constants.CONFIRM_LABEL))
                 ],
               )),
         ),
