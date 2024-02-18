@@ -58,7 +58,7 @@ class ReceiptView extends ConsumerWidget {
                                 : Text(""),
                           ),
                           Text(
-                            Helper.priceFormat(
+                            Helper.currencyFormat(
                                 _transaction.items![index].price),
                           ),
                         ],
@@ -73,7 +73,7 @@ class ReceiptView extends ConsumerWidget {
                     "Subtotal",
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
-                  Text(Helper.priceFormat(_transaction.subtotal),
+                  Text(Helper.currencyFormat(_transaction.subtotal),
                       style:
                           TextStyle(fontWeight: FontWeight.w500, fontSize: 16))
                 ],
@@ -85,7 +85,7 @@ class ReceiptView extends ConsumerWidget {
                     "Total",
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
-                  Text(Helper.priceFormat(_transaction.total),
+                  Text(Helper.currencyFormat(_transaction.total),
                       style:
                           TextStyle(fontWeight: FontWeight.w500, fontSize: 16))
                 ],

@@ -12,10 +12,11 @@ class ConfirmReceiptRepository {
 
   Future<int> submitTrip(String trip) async {
     final response = await client.post(
-      Uri.parse(Constants.HOST + Constants.SUBMIT_TRIP),
+      Uri.parse(Constants.HOST + Constants.SUBMIT_TRIP_PATH),
       headers: {
         'Content-Type': 'application/json',
-        'auth': profileRepository.user.token!},
+        'auth': profileRepository.user.token!
+      },
       body: trip,
     );
 
@@ -24,7 +25,8 @@ class ConfirmReceiptRepository {
 }
 
 @Riverpod(keepAlive: true)
-ConfirmReceiptRepository confirmReceiptRepository(ConfirmReceiptRepositoryRef ref) {
+ConfirmReceiptRepository confirmReceiptRepository(
+    ConfirmReceiptRepositoryRef ref) {
   final profileRepository = ref.watch(profileRepositoryProvider);
   return ConfirmReceiptRepository(profileRepository);
 }
