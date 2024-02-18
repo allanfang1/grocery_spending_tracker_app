@@ -1,19 +1,21 @@
-import 'dart:convert';
 import 'item.dart';
 
 class Transaction {
-  int? transactionId;
+  late int transactionId;
   DateTime? dateTime;
   String? location;
   String? description;
   List<Item>? items;
   double? subtotal;
-  double? total;
+  late double total;
 
   Transaction(this.transactionId, this.dateTime, this.location,
       this.description, this.items, this.subtotal, this.total);
 
-  Transaction.notFound(this.transactionId);
+  Transaction.notFound(int transactionId) {
+    this.transactionId = transactionId;
+    total = 0;
+  }
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     List<Item> items;
@@ -25,13 +27,13 @@ class Transaction {
           .toList();
     }
     return Transaction(
-      json['trip_id'] as int?,
+      json['trip_id'] as int,
       json['date_time'] != null ? DateTime.parse(json['date_time']) : null,
       json['location'] as String?,
       json['description'] as String?,
       items,
       double.tryParse(json['subtotal']),
-      double.tryParse(json['total']),
+      double.tryParse(json['total']) ?? 0,
     );
   }
 }

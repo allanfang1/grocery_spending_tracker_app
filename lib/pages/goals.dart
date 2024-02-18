@@ -44,7 +44,7 @@ class Goals extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      Helper.priceFormat(_transactions.first.total),
+                      Helper.currencyFormat(_transactions.first.total),
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
@@ -84,7 +84,7 @@ class Goals extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          Helper.priceFormat(_transactions[index].total),
+                          Helper.currencyFormat(_transactions[index].total),
                           style: TextStyle(fontSize: 16),
                         ),
                       ],
