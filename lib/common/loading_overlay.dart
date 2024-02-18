@@ -23,7 +23,7 @@ class _LoadingOverlayState extends State<LoadingOverlay> {
       widget.child,
       if (_isLoading)
         const Opacity(
-            opacity: 0.8,
+            opacity: 0.6,
             child: ModalBarrier(dismissible: false, color: Colors.black)),
       if (_isLoading)
         const Center(child: CircularProgressIndicator()),
