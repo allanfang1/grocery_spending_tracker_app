@@ -3,10 +3,11 @@ import 'package:grocery_spending_tracker_app/controller/confirm_receipt_controll
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/pages/navigation_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
@@ -434,8 +435,11 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         content: Text('Receipt submitted successfully.'),
       ));
 
-      await navigator
-          .push(MaterialPageRoute(builder: (context) => const HomePage()));
+      PersistentNavBarNavigator.pushNewScreen(
+          context,
+          screen: AppNavigation(),
+          withNavBar: true
+      );
     } else {
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred submitting the receipt.'),

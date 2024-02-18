@@ -10,6 +10,7 @@ import 'package:grocery_spending_tracker_app/pages/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
 import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -91,11 +92,10 @@ class HomePage extends ConsumerWidget {
                             ref
                                 .watch(profileControllerProvider.notifier)
                                 .logout();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const LoadingOverlay(child: LoginPage()),
-                              ),
+                            PersistentNavBarNavigator.pushNewScreen(
+                                context,
+                                screen: LoadingOverlay(child: LoginPage()),
+                                withNavBar: false
                             );
                           },
                           child: const Text('Logout'),

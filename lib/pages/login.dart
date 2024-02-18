@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
+import 'package:grocery_spending_tracker_app/pages/navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -128,7 +128,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const LoadingOverlay(child: HomePage()),
+                                        AppNavigation(),
                                   ),
                                 );
                               } else {

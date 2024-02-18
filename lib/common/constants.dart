@@ -26,8 +26,11 @@ class Constants {
   static const String TRIP_TOTAL_LABEL = "Total";
   static const String TRIP_DESC_LABEL = "Trip Description";
 
+  static const String HOME_LABEL = "Home";
+  static const String NEW_TRIP_LABEL = "New Trip";
   static const String PURCHASE_HISTORY_LABEL = "Purchase History";
   static const String ANALYTICS_LABEL = "Analytics";
+  static const String PROFILE_LABEL = "Profile";
   static const String CONFIRM_RECEIPT_LABEL = "Confirm Scanned Receipt";
   static const String EDIT_ITEM_LABEL = "Edit Item";
   static const String ITEM_LIST_LABEL = "Item List";
