@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:grocery_spending_tracker_app/model/user.dart';
 import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';

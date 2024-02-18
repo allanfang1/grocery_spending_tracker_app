@@ -1,7 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:grocery_spending_tracker_app/common/helper.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
-import 'package:grocery_spending_tracker_app/model/user.dart';
 import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +10,9 @@ class HistoryController extends _$HistoryController {
   int transactionIndex = -1;
 
   @override
-  FutureOr<void> build() {}
+  Future<FutureOr<void>> build() async {
+    state = await AsyncValue.guard(() => loadTransactions());
+  }
 
   Future<Response> loadTransactions() async {
     return await ref.read(historyRepositoryProvider).loadTransactions();

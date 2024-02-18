@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/pages/login.dart';
@@ -126,21 +124,21 @@ class _RegisterPage extends State<RegisterPage> {
                         return OutlinedButton(
                           onPressed: _enableBtn ?? false
                               ? () async {
-                                  final navigator = Navigator.of(context);
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
                                   final response = await ref
                                       .read(profileControllerProvider.notifier)
                                       .register(_firstname!, _lastname!,
                                           _email!, _password!);
-                                  if (response.statusCode == 200) {
-                                    navigator.push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const LoginPage(),
-                                      ),
-                                    );
-                                  } else {
-                                    if (context.mounted) {
+                                  if (context.mounted) {
+                                    if (response.statusCode == 200) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage(),
+                                        ),
+                                      );
+                                    } else {
                                       showErrorAlertDialog(
                                           context, response.body);
                                     }

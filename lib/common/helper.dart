@@ -9,7 +9,7 @@ class Helper {
     return hash.toString();
   }
 
-  static String priceFormat(double? val) {
+  static String currencyFormat(double? val) {
     return val != null ? NumberFormat.currency(symbol: "\$").format(val) : "";
   }
 
