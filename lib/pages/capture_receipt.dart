@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
@@ -15,7 +16,6 @@ class CaptureReceipt extends StatefulWidget {
 class _CaptureReceiptState extends State<CaptureReceipt>
     with WidgetsBindingObserver {
   bool _isPermissionGranted = false;
-  bool _isActive = true;
   late final Future<void> _future;
   CameraController? _cameraController;
 
@@ -84,23 +84,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: Center(
                               child: ElevatedButton(
-                                onPressed: _isActive
-                                    ? () {
-                                        setState(() {
-                                          _isActive = false;
-                                        });
-                                        scanReceipt();
-                                      }
-                                    : null,
-                                child: _isActive
-                                    ? const Text('Scan Receipt')
-                                    : Container(
-                                        width: 24,
-                                        height: 24,
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: const CircularProgressIndicator(
-                                          strokeWidth: 3,
-                                        )),
+                                onPressed: scanReceipt,
+                                child: const Text('Scan Receipt'),
                               ),
                             ))
                       ],
@@ -174,8 +159,11 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     if (_cameraController == null) return;
 
     final navigator = Navigator.of(context);
+    final loading = LoadingOverlay.of(context);
 
     try {
+      loading.show();
+
       _cameraController!.setFlashMode(FlashMode.off); // caused issues when on
       final receipt = await _cameraController!.takePicture();
 
@@ -183,17 +171,17 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       final receiptToList = ExtractData().textToList(scannedReceipt);
 
-      final GroceryTrip formattedReceipt = FormatReceipt()
-          .formatGroceryTrip(receiptToList);
+      final GroceryTrip formattedReceipt =
+          FormatReceipt().formatGroceryTrip(receiptToList);
 
-      // reset button for page returns
-      setState(() {
-        _isActive = true;
-      });
+      loading.hide();
 
       await navigator.push(MaterialPageRoute(
-          builder: (context) => ConfirmReceipt(tripData: formattedReceipt)));
+          builder: (context) => LoadingOverlay(
+              child: ConfirmReceipt(tripData: formattedReceipt))));
     } catch (e) {
+      loading.hide();
+
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),
       ));

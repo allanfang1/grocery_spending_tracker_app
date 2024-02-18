@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics.dart';
 import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
@@ -21,13 +22,12 @@ class AppNavigation extends StatelessWidget {
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white60,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
       hideNavigationBarWhenKeyboardShows: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
+      decoration: const NavBarDecoration(
         colorBehindNavBar: Colors.white,
       ),
       popAllScreensOnTapOfSelectedTab: true,
@@ -50,7 +50,7 @@ class AppNavigation extends StatelessWidget {
     return const [
       HomePage(),
       PurchaseHistory(),
-      NewTrip(),
+      LoadingOverlay(child: NewTrip()),
       Analytics(),
       EditProfile(),
     ];

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/confirm_receipt_controller.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:grocery_spending_tracker_app/pages/navigation_bar.dart';
+import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:intl/intl.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -415,9 +416,16 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   }
 
   Future<void> handleSubmit() async {
+    final loading = LoadingOverlay.of(context);
     final navigator = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
     List<Item> updatedItems = [];
+
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+
+    loading.show();
 
     for (Item item in _items) {
       if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
@@ -435,12 +443,12 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         content: Text('Receipt submitted successfully.'),
       ));
 
-      PersistentNavBarNavigator.pushNewScreen(
-          context,
-          screen: AppNavigation(),
-          withNavBar: true
-      );
+      loading.hide();
+
+      await navigator.push(MaterialPageRoute(
+          builder: (context) => const AppNavigation()));
     } else {
+      loading.hide();
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred submitting the receipt.'),
       ));

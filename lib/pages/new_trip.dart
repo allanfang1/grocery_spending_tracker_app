@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/pages/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
@@ -21,7 +23,7 @@ class _NewTrip extends State<NewTrip> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("New Shopping Trip Entry"),
+        title: const Text(Constants.NEW_TRIP_LABEL),
         // automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -35,11 +37,9 @@ class _NewTrip extends State<NewTrip> {
               SizedBox(
                 child: OutlinedButton(
                   onPressed: () {
-                    PersistentNavBarNavigator.pushNewScreen(
-                        context,
-                        screen: CaptureReceipt(),
-                        withNavBar: false
-                    );
+                    PersistentNavBarNavigator.pushNewScreen(context,
+                        screen: LoadingOverlay(child: CaptureReceipt()),
+                        withNavBar: false);
                   },
                   child: const Text('Take Photo'),
                 ),
@@ -60,12 +60,15 @@ class _NewTrip extends State<NewTrip> {
 
   Future<void> _selectImage() async {
     final scaffold = ScaffoldMessenger.of(context);
+    final loading = LoadingOverlay.of(context);
 
     try {
       final receipt =
           await ImagePicker().pickImage(source: ImageSource.gallery);
 
       if (receipt == null) return;
+
+      loading.show();
 
       final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
@@ -74,13 +77,14 @@ class _NewTrip extends State<NewTrip> {
       final GroceryTrip formattedReceipt =
           FormatReceipt().formatGroceryTrip(receiptToList);
 
-      PersistentNavBarNavigator.pushNewScreen(
-          context,
-          screen: ConfirmReceipt(tripData: formattedReceipt),
-          withNavBar: false
-      );
+      loading.hide();
 
+      PersistentNavBarNavigator.pushNewScreen(context,
+          screen:
+              LoadingOverlay(child: ConfirmReceipt(tripData: formattedReceipt)),
+          withNavBar: false);
     } catch (e) {
+      loading.hide();
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred with the selected image.'),
       ));
