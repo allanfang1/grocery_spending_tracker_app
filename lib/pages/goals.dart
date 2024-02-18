@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
-import 'package:grocery_spending_tracker_app/controller/analytics_controller.dart';
+import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/pages/receipt_view.dart';
 
@@ -13,7 +13,7 @@ class Goals extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Transaction> _transactions =
-        ref.watch(analyticsControllerProvider.notifier).getTransactions();
+        ref.watch(historyControllerProvider.notifier).getTransactions();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -44,7 +44,7 @@ class Goals extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      Helper.priceFormat(_transactions.first.total),
+                      Helper.currencyFormat(_transactions.first.total),
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
@@ -55,7 +55,7 @@ class Goals extends ConsumerWidget {
               return GestureDetector(
                 onTap: () {
                   ref
-                      .watch(analyticsControllerProvider.notifier)
+                      .watch(historyControllerProvider.notifier)
                       .transactionIndex = index;
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -84,7 +84,7 @@ class Goals extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          Helper.priceFormat(_transactions[index].total),
+                          Helper.currencyFormat(_transactions[index].total),
                           style: TextStyle(fontSize: 16),
                         ),
                       ],

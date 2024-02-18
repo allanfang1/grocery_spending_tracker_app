@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 
 showErrorAlertDialog(BuildContext context, String msg) {
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: const Text(Constants.OK_LABEL),
     onPressed: () => Navigator.pop(context),
   );
 

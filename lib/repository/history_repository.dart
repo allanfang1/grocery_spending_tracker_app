@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/model/item.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:http/http.dart' as http;
 
-part 'analytics_repository.g.dart';
+part 'history_repository.g.dart';
 
-class AnalyticsRepository {
-  AnalyticsRepository(this.profileRepository);
+class HistoryRepository {
+  HistoryRepository(this.profileRepository);
   final ProfileRepository profileRepository;
   http.Client client = http.Client();
 
@@ -18,13 +17,12 @@ class AnalyticsRepository {
 
   Future<Response> loadTransactions() async {
     final response = await client.get(
-        Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS),
+        Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS_PATH),
         headers: {'Auth': profileRepository.user.token!});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
           .map((e) => e as Map<String, dynamic>)
           .toList();
-      print(jsonList);
       transactions =
           jsonList.map((json) => Transaction.fromJson(json)).toList();
     }
@@ -41,7 +39,7 @@ class AnalyticsRepository {
 }
 
 @Riverpod(keepAlive: true)
-AnalyticsRepository analyticsRepository(AnalyticsRepositoryRef ref) {
+HistoryRepository historyRepository(HistoryRepositoryRef ref) {
   final profileRepository = ref.watch(profileRepositoryProvider);
-  return AnalyticsRepository(profileRepository);
+  return HistoryRepository(profileRepository);
 }

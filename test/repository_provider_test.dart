@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:grocery_spending_tracker_app/model/user.dart';
-import 'package:grocery_spending_tracker_app/repository/analytics_repository.dart';
+import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
 import 'package:http/http.dart';
@@ -43,7 +42,7 @@ void main() {
     });
 
     test("Test load transactions call", () async {
-      final analyticsRepository = AnalyticsRepository(profileRepository);
+      final analyticsRepository = HistoryRepository(profileRepository);
       analyticsRepository.client = MockClient((request) async {
         final mapJson = {
           'transactionId': "100",

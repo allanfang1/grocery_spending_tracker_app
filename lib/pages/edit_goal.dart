@@ -1,8 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/pages/register.dart';
-import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
 // ignore_for_file: prefer_const_constructors
