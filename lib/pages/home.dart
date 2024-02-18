@@ -31,19 +31,6 @@ class HomePage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const NewTrip(),
-                          ),
-                        );
-                      },
-                      child: const Text('New Trip'),
-                    ),
-                  ),
                   const SizedBox(height: 6),
                   SizedBox(
                     child: OutlinedButton(

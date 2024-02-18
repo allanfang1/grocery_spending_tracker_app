@@ -25,6 +25,7 @@ class Constants {
   static const String TRIP_SUBTOTAL_LABEL = "Subtotal";
   static const String TRIP_TOTAL_LABEL = "Total";
   static const String TRIP_DESC_LABEL = "Trip Description";
+  static const String NEW_ITEM_LABEL = "NEW\nITEM";
 
   static const String HOME_LABEL = "Home";
   static const String NEW_TRIP_LABEL = "New Trip";

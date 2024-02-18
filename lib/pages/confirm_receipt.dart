@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:intl/intl.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
@@ -410,7 +409,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
             _itemFields.add(_buildItem(context, _items.length - 1));
           });
         },
-        child: const Text('NEW\nITEM'),
+        child: const Text(Constants.NEW_ITEM_LABEL),
       ),
     );
   }
@@ -422,7 +421,6 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     List<Item> updatedItems = [];
 
     FocusScopeNode currentFocus = FocusScope.of(context);
-
     if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
 
     loading.show();
