@@ -71,7 +71,7 @@ class AppNavigation extends StatelessWidget {
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_box),
         title: (Constants.NEW_TRIP_LABEL),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
