@@ -3,7 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/analytics/analytics.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics/goals_list.dart';
 import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
@@ -74,7 +74,7 @@ class HomePage extends ConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const Analytics(),
+                            builder: (context) => const GoalsList(),
                           ),
                         );
                       },

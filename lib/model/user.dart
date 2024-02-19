@@ -19,11 +19,21 @@ class User {
   }
 
   void fromJson(dynamic json) {
-    id = json['user_id'] as int?;
-    email = json['email'] as String?;
-    token = json['token'] as String?;
-    firstName = json['first_name'] as String?;
-    lastName = json['last_name'] as String?;
+    if (json['user_id'] != null) {
+      id = json['user_id'] as int;
+    }
+    if (json['email'] != null) {
+      email = json['email'] as String;
+    }
+    if (json['token'] != null) {
+      token = json['token'] as String;
+    }
+    if (json['first_name'] != null) {
+      firstName = json['first_name'] as String;
+    }
+    if (json['last_name'] != null) {
+      lastName = json['last_name'] as String;
+    }
   }
 
   void clear() {

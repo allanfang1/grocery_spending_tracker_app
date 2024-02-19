@@ -3,7 +3,6 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
 
 // ignore_for_file: prefer_const_constructors
 

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics/create_goal.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
 // ignore_for_file: prefer_const_constructors
 
-class Analytics extends ConsumerWidget {
-  const Analytics({super.key});
+class GoalsList extends ConsumerWidget {
+  const GoalsList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,6 +101,14 @@ class Analytics extends ConsumerWidget {
               },
             ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const CreateGoal(),
+            ),
+          ),
+          child: Icon(Icons.add),
         ),
       );
     }, error: (Object error, StackTrace stackTrace) {
