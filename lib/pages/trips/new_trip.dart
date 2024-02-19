@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/pages/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/pages/trips/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/extract_data.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'capture_receipt.dart';
+import 'package:grocery_spending_tracker_app/pages/trips/capture_receipt.dart';
 
 class NewTrip extends StatefulWidget {
   const NewTrip({super.key});

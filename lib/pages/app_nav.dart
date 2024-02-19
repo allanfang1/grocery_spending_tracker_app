@@ -4,7 +4,7 @@ import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics/goals_list.dart';
 import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
-import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
+import 'package:grocery_spending_tracker_app/pages/trips/new_trip.dart';
 import 'package:grocery_spending_tracker_app/pages/history/purchase_history.dart';
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 

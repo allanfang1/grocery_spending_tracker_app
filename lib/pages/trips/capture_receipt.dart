@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
-import 'package:grocery_spending_tracker_app/pages/confirm_receipt.dart';
+import 'package:grocery_spending_tracker_app/pages/trips/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/extract_data.dart';
