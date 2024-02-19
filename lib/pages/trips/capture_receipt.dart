@@ -19,8 +19,11 @@ class CaptureReceipt extends StatefulWidget {
 class _CaptureReceiptState extends State<CaptureReceipt>
     with WidgetsBindingObserver {
   bool _isPermissionGranted = false;
+  bool _showFocusCircle = false;
   late final Future<void> _future;
   CameraController? _cameraController;
+  double _x = 0;
+  double _y = 0;
 
   @override
   void initState() {
@@ -58,48 +61,76 @@ class _CaptureReceiptState extends State<CaptureReceipt>
       builder: (context, snapshot) {
         return Stack(
           children: [
-            if (_isPermissionGranted)
-              FutureBuilder<List<CameraDescription>>(
-                future: availableCameras(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    _initCameraController(snapshot.data!);
+            _isPermissionGranted
+                ? FutureBuilder<List<CameraDescription>>(
+                    future: availableCameras(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        _initCameraController(snapshot.data!);
 
-                    return Center(child: CameraPreview(_cameraController!));
-                  } else {
-                    return const Center(
-                        child: Text('Camera permission not granted'));
-                  }
-                },
-              ),
-            Scaffold(
-              appBar: AppBar(
-                title: const Text(Constants.SCAN_RECEIPT_LABEL),
-              ),
-              backgroundColor: _isPermissionGranted ? Colors.transparent : null,
-              body: _isPermissionGranted
-                  ? null
-                  : Center(
-                      child: Container(
-                          padding:
-                              const EdgeInsets.only(left: 24.0, right: 24.0),
-                          child: const Text(
-                            'Camera permission denied',
-                            textAlign: TextAlign.center,
-                          ))),
-              floatingActionButton: _isPermissionGranted
-                  ? FloatingActionButton(
-                      backgroundColor: Colors.white,
-                      onPressed: scanReceipt,
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.black,
-                      ),
-                    )
-                  : null,
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
-            )
+                        return GestureDetector(
+                            onTapUp: (details) {
+                              _onTap(details);
+                            },
+                            child: Stack(
+                              children: [
+                                Center(
+                                    child: Scaffold(
+                                  appBar: AppBar(
+                                    title: const Text(
+                                        Constants.SCAN_RECEIPT_LABEL),
+                                  ),
+                                  body: Container(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 90.0),
+                                      child: Center(
+                                          child: CameraPreview(
+                                              _cameraController!))),
+                                  floatingActionButton: FloatingActionButton(
+                                    backgroundColor: Colors.white,
+                                    onPressed: scanReceipt,
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  floatingActionButtonLocation:
+                                      FloatingActionButtonLocation.centerFloat,
+                                  backgroundColor: Colors.black,
+                                )),
+                                if (_showFocusCircle)
+                                  Positioned(
+                                      top: _y - 20,
+                                      left: _x - 20,
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: Colors.white,
+                                                width: 1.5)),
+                                      ))
+                              ],
+                            ));
+                      } else {
+                        return Scaffold(
+                          appBar: AppBar(
+                            title: const Text(Constants.SCAN_RECEIPT_LABEL),
+                          ),
+                          body: const Center(
+                              child: Text('An error occurred with the camera')),
+                        );
+                      }
+                    },
+                  )
+                : Scaffold(
+                    appBar: AppBar(
+                      title: const Text(Constants.SCAN_RECEIPT_LABEL),
+                    ),
+                    body: const Center(
+                        child: Text('Camera permission not granted')),
+                  ),
           ],
         );
       },
@@ -154,6 +185,33 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     if (!mounted) return;
 
     setState(() {});
+  }
+
+  Future<void> _onTap(TapUpDetails details) async {
+    if (_cameraController!.value.isInitialized) {
+      _showFocusCircle = true;
+      _x = details.localPosition.dx;
+      _y = details.localPosition.dy;
+
+      double fullWidth = MediaQuery.of(context).size.width;
+      double cameraHeight = fullWidth * _cameraController!.value.aspectRatio;
+
+      double xp = _x / fullWidth;
+      double yp = _y / cameraHeight;
+
+      Offset point = Offset(xp, yp);
+
+      // Manually focus
+      await _cameraController!.setFocusPoint(point);
+
+      setState(() {
+        Future.delayed(const Duration(seconds: 2)).whenComplete(() {
+          setState(() {
+            _showFocusCircle = false;
+          });
+        });
+      });
+    }
   }
 
   Future<void> scanReceipt() async {
