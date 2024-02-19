@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:grocery_spending_tracker_app/pages/login.dart';
+import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 
 void main() {
   runApp(const ProviderScope(

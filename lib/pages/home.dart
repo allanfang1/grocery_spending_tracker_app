@@ -3,11 +3,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/analytics.dart';
-import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
-import 'package:grocery_spending_tracker_app/pages/login.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics/analytics.dart';
+import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
+import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
-import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
+import 'package:grocery_spending_tracker_app/pages/history/purchase_history.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends ConsumerWidget {
