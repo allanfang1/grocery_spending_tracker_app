@@ -31,6 +31,7 @@ class Constants {
   static const String HOME_LABEL = "Home";
   static const String NEW_TRIP_LABEL = "New Trip";
 
+  static const String SCAN_RECEIPT_LABEL = "Scan Receipt";
   static const String PURCHASE_HISTORY_LABEL = "Purchase History";
   static const String ANALYTICS_LABEL = "Analytics";
   static const String PROFILE_LABEL = "Profile";

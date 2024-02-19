@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/pages/trips/confirm_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/format_receipt.dart';
 import 'package:grocery_spending_tracker_app/controller/parse_receipt.dart';
@@ -9,6 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
 class CaptureReceipt extends StatefulWidget {
+  const CaptureReceipt({Key? key}) : super(key: key);
+
   @override
   State<CaptureReceipt> createState() => _CaptureReceiptState();
 }
@@ -71,25 +74,11 @@ class _CaptureReceiptState extends State<CaptureReceipt>
               ),
             Scaffold(
               appBar: AppBar(
-                title: const Text('Receipt Scanning'),
+                title: const Text(Constants.SCAN_RECEIPT_LABEL),
               ),
               backgroundColor: _isPermissionGranted ? Colors.transparent : null,
               body: _isPermissionGranted
-                  ? Column(
-                      children: [
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Container(
-                            padding: const EdgeInsets.only(bottom: 30.0),
-                            child: Center(
-                              child: ElevatedButton(
-                                onPressed: scanReceipt,
-                                child: const Text('Scan Receipt'),
-                              ),
-                            ))
-                      ],
-                    )
+                  ? null
                   : Center(
                       child: Container(
                           padding:
@@ -98,6 +87,18 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                             'Camera permission denied',
                             textAlign: TextAlign.center,
                           ))),
+              floatingActionButton: _isPermissionGranted
+                  ? FloatingActionButton(
+                      backgroundColor: Colors.white,
+                      onPressed: scanReceipt,
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.black,
+                      ),
+                    )
+                  : null,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
             )
           ],
         );
@@ -160,12 +161,14 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
     final navigator = Navigator.of(context);
     final loading = LoadingOverlay.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
 
     try {
       loading.show();
 
       _cameraController!.setFlashMode(FlashMode.off); // caused issues when on
       final receipt = await _cameraController!.takePicture();
+      await _cameraController!.pausePreview();
 
       final scannedReceipt = await ParseReceipt().scanReceipt(receipt);
 
@@ -175,14 +178,16 @@ class _CaptureReceiptState extends State<CaptureReceipt>
           FormatReceipt().formatGroceryTrip(receiptToList);
 
       loading.hide();
+      await _cameraController!.resumePreview();
 
       await navigator.push(MaterialPageRoute(
           builder: (context) => LoadingOverlay(
               child: ConfirmReceipt(tripData: formattedReceipt))));
     } catch (e) {
       loading.hide();
+      await _cameraController!.resumePreview();
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred scanning the receipt.'),
       ));
     }
