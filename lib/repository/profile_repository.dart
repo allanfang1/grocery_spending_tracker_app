@@ -58,6 +58,21 @@ class ProfileRepository {
     return response;
   }
 
+  Future<Response> updateUser(String firstname, String lastname) async {
+    final response = await client.patch(
+        Uri.parse(Constants.HOST + Constants.PATCH_USER + user.id!.toString()),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Auth': user.token!,
+        },
+        body: jsonEncode({
+          'first_name': firstname,
+          'last_name': lastname,
+        }));
+    await getUser();
+    return response;
+  }
+
   void logout() {
     user.clear();
   }

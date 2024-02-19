@@ -4,7 +4,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
 import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
-import 'package:grocery_spending_tracker_app/pages/receipt_view.dart';
+import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 
 // ignore_for_file: prefer_const_constructors
 

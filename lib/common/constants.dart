@@ -1,6 +1,7 @@
 class Constants {
   static const String HOST = "http://grocery-tracker.azurewebsites.net";
   static const String LOGIN_PATH = "/auth/login/";
+  static const String PATCH_USER = "/users/";
   static const String GET_USER_PATH = "/users/";
   static const String REGISTER_PATH = "/users/new-user/";
   static const String SUBMIT_TRIP_PATH = "/users/trip";
@@ -29,6 +30,7 @@ class Constants {
 
   static const String HOME_LABEL = "Home";
   static const String NEW_TRIP_LABEL = "New Trip";
+
   static const String PURCHASE_HISTORY_LABEL = "Purchase History";
   static const String ANALYTICS_LABEL = "Analytics";
   static const String PROFILE_LABEL = "Profile";

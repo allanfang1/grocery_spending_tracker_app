@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
-import 'package:grocery_spending_tracker_app/pages/analytics.dart';
-import 'package:grocery_spending_tracker_app/pages/edit_profile.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics/goals_list.dart';
+import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
 import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:grocery_spending_tracker_app/pages/new_trip.dart';
-import 'package:grocery_spending_tracker_app/pages/purchase_history.dart';
+import 'package:grocery_spending_tracker_app/pages/history/purchase_history.dart';
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 
 class AppNavigation extends StatelessWidget {
@@ -42,7 +42,8 @@ class AppNavigation extends StatelessWidget {
         duration: Duration(milliseconds: 200),
       ),
       navBarStyle:
-          NavBarStyle.style9, // Choose the nav bar style with this property.
+          NavBarStyle.style9,
+      navBarHeight: 65.0,
     );
   }
 
@@ -51,7 +52,7 @@ class AppNavigation extends StatelessWidget {
       HomePage(),
       PurchaseHistory(),
       LoadingOverlay(child: NewTrip()),
-      Analytics(),
+      GoalsList(),
       EditProfile(),
     ];
   }

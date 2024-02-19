@@ -27,15 +27,19 @@ class GoalsRepository {
     return response;
   }
 
-  Future<Response> createGoals(
-      DateTime startDate, DateTime endDate, double budget) async {
+  Future<Response> createGoal(
+      String startDate, String endDate, double budget) async {
     final response = await client.post(
         Uri.parse(Constants.HOST + Constants.CREATE_GOALS_PATH),
-        headers: {'Auth': profileRepository.user.token!},
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Auth': profileRepository.user.token!
+        },
         body: jsonEncode(
             {'start_date': startDate, 'end_date': endDate, 'budget': budget}));
     if (response.statusCode == 200) {
       print(response.body);
+      await getGoals();
     }
     return response;
   }

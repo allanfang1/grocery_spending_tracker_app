@@ -14,6 +14,9 @@ class LiveGoal {
         0.0, (prevValue, transaction) => prevValue + transaction.total);
     daysRemaining = goal.endDate.difference(DateTime.now()).inDays;
     progressPercent = spendingTotal / goal.budget;
+    if (goal.budget == 0) {
+      progressPercent = 0;
+    }
     if (daysRemaining < 0) {
       status = "expired";
     } else if (progressPercent >= 1) {
