@@ -304,6 +304,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           return 'Subtotal is required';
         } else if (!priceRegex.hasMatch(value)) {
           return 'Subtotal should follow format X.XX';
+        } else if (!_validateTotal(false)) {
+          return 'Sum of item prices should equal subtotal';
         }
         return null;
       },
@@ -330,6 +332,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           return 'Total is required';
         } else if (!priceRegex.hasMatch(value)) {
           return 'Total should follow format X.XX';
+        } else if (!_validateTotal(true)) {
+          return 'Sum of taxed item prices should equal total';
         }
         return null;
       },
@@ -351,6 +355,24 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         });
       },
     );
+  }
+
+  bool _validateTotal(bool includeTax) {
+    double localTotal = 0.00;
+
+    for (Item item in _items) {
+      if (item.itemDesc != 'USER REMOVED') {
+        if (!includeTax || !item.taxed) {
+          localTotal += item.price;
+        } else if (includeTax && item.taxed) {
+          localTotal += double.parse((item.price*1.13).toStringAsFixed(2));
+        }
+      }
+    }
+
+    if (includeTax) return _total == localTotal;
+
+    return _subtotal == localTotal;
   }
 
   @override
