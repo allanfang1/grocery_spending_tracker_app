@@ -25,18 +25,12 @@ class HomePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                        child: Text(
-                            'Welcome ${getUser.firstName} ${getUser.lastName}!',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 25)))
-                  ],
-                ),
-              ),
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    'Welcome ${getUser.firstName} ${getUser.lastName}!',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    textAlign: TextAlign.center,
+                  )),
               Container(
                 padding: EdgeInsets.all(20.0),
                 child: Row(
@@ -47,6 +41,7 @@ class HomePage extends ConsumerWidget {
                   ],
                 ),
               ),
+              // TODO: Set up a swipeable list to use for recommendation
             ],
           ),
         ),

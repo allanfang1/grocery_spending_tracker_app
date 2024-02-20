@@ -33,6 +33,14 @@ class _NewTrip extends State<NewTrip> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Container(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: const Text(
+                      'To add a grocery trip, you can take a photo of your '
+                      'receipt or upload a photo from your gallery.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.grey))),
               const SizedBox(height: 20),
               SizedBox(
                 child: OutlinedButton(
@@ -80,8 +88,8 @@ class _NewTrip extends State<NewTrip> {
       loading.hide();
 
       PersistentNavBarNavigator.pushNewScreen(context,
-          screen: LoadingOverlay(
-              child: ConfirmReceipt(tripData: formattedReceipt)),
+          screen:
+              LoadingOverlay(child: ConfirmReceipt(tripData: formattedReceipt)),
           withNavBar: false);
     } catch (e) {
       loading.hide();
