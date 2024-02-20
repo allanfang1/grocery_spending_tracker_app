@@ -2,14 +2,10 @@
 //ignore_for_file: prefer_const_constructors
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics/goals_list.dart';
 import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
-import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
-import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/pages/history/purchase_history.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -70,25 +66,6 @@ class HomePage extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  SizedBox(
-                    child: Consumer(
-                      builder: (_, WidgetRef ref, __) {
-                        return OutlinedButton(
-                          onPressed: () {
-                            ref
-                                .watch(profileControllerProvider.notifier)
-                                .logout();
-                            PersistentNavBarNavigator.pushNewScreen(
-                                context,
-                                screen: LoadingOverlay(child: LoginPage()),
-                                withNavBar: false
-                            );
-                          },
-                          child: const Text('Logout'),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),

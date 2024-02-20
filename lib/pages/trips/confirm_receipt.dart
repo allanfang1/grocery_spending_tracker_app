@@ -64,46 +64,37 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     var textValue = TextEditingController();
     textValue.text = _dateTimeString.value;
 
-    return ListTile(
-        title: ValueListenableBuilder<String>(
-            valueListenable: _dateTimeString,
-            builder: (context, String value, Widget? child) {
-              return TextField(
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: Constants.DATE_TIME_LABEL,
-                ),
-                controller: textValue,
-              );
-            }),
-        trailing: Material(
-          child: Ink(
-            decoration: ShapeDecoration(
-                color: Colors.purple[50], shape: const CircleBorder()),
-            child: IconButton(
-              onPressed: () {
-                return DatePicker.showDatePicker(context,
-                    pickerTheme: DateTimePickerTheme(
-                        pickerHeight: MediaQuery.of(context).size.height / 2),
-                    dateFormat: 'MMM dd yyyy HH:mm:ss',
-                    initialDateTime:
-                        DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
-                    minDateTime: DateTime(2000),
-                    maxDateTime: DateTime.now(),
-                    onMonthChangeStartWithFirstDate: false,
-                    onConfirm: (DateTime selected, List<int> index) {
-                  setState(() {
-                    _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
-                    _dateTimeString.value = _dateFormat.format(selected);
-                    textValue.text = _dateTimeString.value;
-                  });
-                });
-              },
-              icon: const Icon(Icons.edit_calendar_outlined),
-              color: Colors.purple[900],
+    return ValueListenableBuilder<String>(
+        valueListenable: _dateTimeString,
+        builder: (context, String value, Widget? child) {
+          return TextField(
+            readOnly: true,
+            decoration: const InputDecoration(
+              labelText: Constants.DATE_TIME_LABEL,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              suffixIcon: Icon(Icons.calendar_today)
             ),
-          ),
-        ));
+            onTap: () {
+              return DatePicker.showDatePicker(context,
+                  pickerTheme: DateTimePickerTheme(
+                      pickerHeight: MediaQuery.of(context).size.height / 2),
+                  dateFormat: 'MMM dd yyyy HH:mm:ss',
+                  initialDateTime:
+                  DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
+                  minDateTime: DateTime(2000),
+                  maxDateTime: DateTime.now(),
+                  onMonthChangeStartWithFirstDate: false,
+                  onConfirm: (DateTime selected, List<int> index) {
+                    setState(() {
+                      _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                      _dateTimeString.value = _dateFormat.format(selected);
+                      textValue.text = _dateTimeString.value;
+                    });
+                  });
+            },
+            controller: textValue,
+          );
+        });
   }
 
   Widget _buildLocation() {
@@ -443,8 +434,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
       loading.hide();
 
-      await navigator.push(MaterialPageRoute(
-          builder: (context) => const AppNavigation()));
+      await navigator
+          .push(MaterialPageRoute(builder: (context) => const AppNavigation()));
     } else {
       loading.hide();
       scaffold.showSnackBar(const SnackBar(

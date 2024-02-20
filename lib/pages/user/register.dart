@@ -166,8 +166,8 @@ class _RegisterPage extends State<RegisterPage> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            const LoadingOverlay(child: LoginPage()),
+                        builder: (context) => const LoadingOverlay(
+                            child: LoginPage()),
                       ),
                     );
                   },

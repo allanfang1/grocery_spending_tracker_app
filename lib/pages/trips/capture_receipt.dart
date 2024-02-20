@@ -240,7 +240,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
       await navigator.push(MaterialPageRoute(
           builder: (context) => LoadingOverlay(
-              child: ConfirmReceipt(tripData: formattedReceipt))));
+                child: ConfirmReceipt(tripData: formattedReceipt),
+              )));
     } catch (e) {
       loading.hide();
       await _cameraController!.resumePreview();

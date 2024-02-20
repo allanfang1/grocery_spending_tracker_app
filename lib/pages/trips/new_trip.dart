@@ -38,7 +38,7 @@ class _NewTrip extends State<NewTrip> {
                 child: OutlinedButton(
                   onPressed: () {
                     PersistentNavBarNavigator.pushNewScreen(context,
-                        screen: LoadingOverlay(child: CaptureReceipt()),
+                        screen: const LoadingOverlay(child: CaptureReceipt()),
                         withNavBar: false);
                   },
                   child: const Text('Take Photo'),
@@ -80,8 +80,8 @@ class _NewTrip extends State<NewTrip> {
       loading.hide();
 
       PersistentNavBarNavigator.pushNewScreen(context,
-          screen:
-              LoadingOverlay(child: ConfirmReceipt(tripData: formattedReceipt)),
+          screen: LoadingOverlay(
+              child: ConfirmReceipt(tripData: formattedReceipt)),
           withNavBar: false);
     } catch (e) {
       loading.hide();

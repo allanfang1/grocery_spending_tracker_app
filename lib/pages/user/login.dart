@@ -127,8 +127,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                                   context.mounted) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        AppNavigation(),
+                                    builder: (context) => AppNavigation(),
                                   ),
                                 );
                               } else {
@@ -145,8 +144,8 @@ class LoginPageState extends ConsumerState<LoginPage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoadingOverlay(child: RegisterPage()),
+                              builder: (context) => const LoadingOverlay(
+                                  child: RegisterPage()),
                             ),
                           );
                         },

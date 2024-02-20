@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/goals_controller.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
@@ -107,8 +108,15 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                             _budget != null &&
                             (_enableBtn ?? false))
                         ? () async {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            final loading = LoadingOverlay.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
                             // _formKey.currentState!.save();
                             setState(() => _enableBtn = false);
+                            loading.show();
                             final response = await ref
                                 .watch(goalsControllerProvider.notifier)
                                 .createGoal(
@@ -121,6 +129,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                                   .watch(analyticsServiceControllerProvider
                                       .notifier)
                                   .refreshGoals();
+                              loading.hide();
                               Navigator.of(context).pop();
                             } else {
                               setState(() {
