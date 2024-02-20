@@ -1,4 +1,5 @@
 class Constants {
+  //api paths
   static const String HOST = "http://grocery-tracker.azurewebsites.net";
   static const String LOGIN_PATH = "/auth/login/";
   static const String PATCH_USER = "/users/";
@@ -9,7 +10,16 @@ class Constants {
   static const String GET_GOALS_PATH = "/users/goal/";
   static const String CREATE_GOALS_PATH = "/users/goal/";
 
+  //app name
   static const String APP_NAME = "Grocery Spending Tracker";
+
+  //page titles
+  static const String HOME = "Home";
+  static const String NEW_TRIP = "New Trip";
+  static const String CREATE_GOAL = "Create Goal";
+  static const String PURCHASE_HISTORY = "Purchase History";
+  static const String ANALYTICS = "Analytics";
+  static const String PROFILE = "Profile";
 
   static const String FIRST_NAME_LABEL = "First Name";
   static const String LAST_NAME_LABEL = "Last Name";
@@ -28,13 +38,7 @@ class Constants {
   static const String TRIP_DESC_LABEL = "Trip Description";
   static const String NEW_ITEM_LABEL = "NEW\nITEM";
 
-  static const String HOME_LABEL = "Home";
-  static const String NEW_TRIP_LABEL = "New Trip";
-
   static const String SCAN_RECEIPT_LABEL = "Scan Receipt";
-  static const String PURCHASE_HISTORY_LABEL = "Purchase History";
-  static const String ANALYTICS_LABEL = "Analytics";
-  static const String PROFILE_LABEL = "Profile";
   static const String CONFIRM_RECEIPT_LABEL = "Confirm Scanned Receipt";
   static const String EDIT_ITEM_LABEL = "Edit Item";
   static const String ITEM_LIST_LABEL = "Item List";

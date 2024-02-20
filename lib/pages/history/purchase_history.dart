@@ -20,7 +20,7 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY_LABEL),
+          title: Text(Constants.PURCHASE_HISTORY),
         ),
         body: Center(
           child: Container(
@@ -107,7 +107,7 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY_LABEL),
+          title: Text(Constants.PURCHASE_HISTORY),
         ),
         body: Center(
           child: Container(

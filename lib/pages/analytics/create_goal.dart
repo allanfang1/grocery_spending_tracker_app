@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/controller/goals_controller.dart';
+import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
 // ignore_for_file: prefer_const_constructors
 
@@ -25,7 +27,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Create Goal"),
+        title: Text(Constants.CREATE_GOAL),
       ),
       body: Center(
         child: Container(
@@ -115,6 +117,10 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                                   _budget!,
                                 );
                             if (response.statusCode == 200 && context.mounted) {
+                              ref
+                                  .watch(analyticsServiceControllerProvider
+                                      .notifier)
+                                  .refreshGoals();
                               Navigator.of(context).pop();
                             } else {
                               setState(() {

@@ -17,7 +17,7 @@ class GoalsList extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.ANALYTICS_LABEL),
+          title: Text(Constants.ANALYTICS),
           actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
         ),
         body: Center(
@@ -117,7 +117,7 @@ class GoalsList extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.ANALYTICS_LABEL),
+          title: Text(Constants.ANALYTICS),
           actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
         ),
         body: Center(

@@ -1,4 +1,3 @@
-import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/goals_repository.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';

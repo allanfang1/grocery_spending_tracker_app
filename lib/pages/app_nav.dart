@@ -41,8 +41,7 @@ class AppNavigation extends StatelessWidget {
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
-      navBarStyle:
-          NavBarStyle.style9,
+      navBarStyle: NavBarStyle.style9,
       navBarHeight: 65.0,
     );
   }
@@ -61,31 +60,31 @@ class AppNavigation extends StatelessWidget {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home),
-        title: (Constants.HOME_LABEL),
+        title: (Constants.HOME),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.history),
-        title: (Constants.PURCHASE_HISTORY_LABEL),
+        title: (Constants.PURCHASE_HISTORY),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.add_box),
-        title: (Constants.NEW_TRIP_LABEL),
+        title: (Constants.NEW_TRIP),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.timeline),
-        title: (Constants.ANALYTICS_LABEL),
+        title: (Constants.ANALYTICS),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.account_circle),
-        title: (Constants.PROFILE_LABEL),
+        title: (Constants.PROFILE),
         activeColorPrimary: Colors.purple,
         inactiveColorPrimary: Colors.grey,
       ),

@@ -9,6 +9,14 @@ class AnalyticsServiceController extends _$AnalyticsServiceController {
   @override
   Future<List<LiveGoal>> build() async {
     final analyticsService = ref.read(analyticsServiceProvider);
+    await analyticsService.refreshGoals();
+    await analyticsService.refreshTransactions();
     return await analyticsService.getLiveGoals();
+  }
+
+  Future<void> refreshGoals() async {
+    final analyticsService = ref.read(analyticsServiceProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => analyticsService.getLiveGoals());
   }
 }

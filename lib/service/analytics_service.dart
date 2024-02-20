@@ -12,9 +12,15 @@ class AnalyticsService {
   AnalyticsService(this.ref);
   final Ref ref;
 
-  Future<List<LiveGoal>> getLiveGoals() async {
+  Future<void> refreshGoals() async {
     await ref.watch(goalsRepositoryProvider).getGoals();
+  }
+
+  Future<void> refreshTransactions() async {
     await ref.watch(historyRepositoryProvider).loadTransactions();
+  }
+
+  Future<List<LiveGoal>> getLiveGoals() async {
     final goals = ref.watch(goalsRepositoryProvider).goals;
     final transactions = ref.watch(historyRepositoryProvider).transactions;
 

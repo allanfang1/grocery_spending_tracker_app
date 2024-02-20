@@ -23,7 +23,7 @@ class _NewTrip extends State<NewTrip> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text(Constants.NEW_TRIP_LABEL),
+        title: const Text(Constants.NEW_TRIP),
         // automaticallyImplyLeading: false,
       ),
       body: Center(
