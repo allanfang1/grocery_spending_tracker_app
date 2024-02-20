@@ -24,90 +24,98 @@ class GoalsList extends ConsumerWidget {
         body: Center(
           child: Container(
             margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: ListView.builder(
-              padding: EdgeInsets.only(top: 14),
-              itemCount: liveGoals.length,
-              prototypeItem: GestureDetector(
-                onTap: () {},
-                child: Card(
-                  margin: EdgeInsets.only(bottom: 14),
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.ideographic,
-                          children: [
-                            Text(
-                              "0",
-                              style: TextStyle(
-                                  fontSize: 28), //fix this to be dynamic
-                            ),
-                            Text(
-                              "placeholder",
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: 0,
-                          minHeight: 10,
-                        ),
-                        SizedBox(height: 6),
-                        Text("placeholder")
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {},
-                  child: Card(
-                    margin: EdgeInsets.only(bottom: 14),
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Text(
-                                Helper.currencyFormat(
-                                    liveGoals[index].spendingTotal),
-                                style: TextStyle(
-                                    fontSize: 28), //fix this to be dynamic
+            child: liveGoals.isNotEmpty
+                ? ListView.builder(
+                    padding: EdgeInsets.only(top: 14),
+                    itemCount: liveGoals.length,
+                    prototypeItem: GestureDetector(
+                      onTap: () {},
+                      child: Card(
+                        margin: EdgeInsets.only(bottom: 14),
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: [
+                                  Text(
+                                    "0",
+                                    style: TextStyle(
+                                        fontSize: 28), //fix this to be dynamic
+                                  ),
+                                  Text(
+                                    "placeholder",
+                                  )
+                                ],
                               ),
-                              Text(
-                                " spent",
-                              )
+                              SizedBox(height: 6),
+                              LinearProgressIndicator(
+                                value: 0,
+                                minHeight: 10,
+                              ),
+                              SizedBox(height: 6),
+                              Text("placeholder")
                             ],
                           ),
-                          SizedBox(height: 6),
-                          LinearProgressIndicator(
-                            value: liveGoals[index].progressPercent,
-                            minHeight: 10,
-                          ),
-                          SizedBox(height: 6),
-                          Text("${liveGoals[index].daysRemaining} days left")
-                        ],
+                        ),
                       ),
                     ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Card(
+                          margin: EdgeInsets.only(bottom: 14),
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.ideographic,
+                                  children: [
+                                    Text(
+                                      Helper.currencyFormat(
+                                          liveGoals[index].spendingTotal),
+                                      style: TextStyle(
+                                          fontSize:
+                                              28), //fix this to be dynamic
+                                    ),
+                                    Text(
+                                      " spent",
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 6),
+                                LinearProgressIndicator(
+                                  value: liveGoals[index].progressPercent,
+                                  minHeight: 10,
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                    "${liveGoals[index].daysRemaining} days left")
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : Text(
+                    'You don\'t have any goals yet, try creating one.',
+                    style: TextStyle(
+                        fontStyle: FontStyle.italic, color: Colors.grey),
                   ),
-                );
-              },
-            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>
-                  const LoadingOverlay(child: CreateGoal()),
+              builder: (context) => const LoadingOverlay(child: CreateGoal()),
             ),
           ),
           child: Icon(Icons.add),

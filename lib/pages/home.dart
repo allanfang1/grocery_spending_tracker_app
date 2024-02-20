@@ -2,9 +2,7 @@
 //ignore_for_file: prefer_const_constructors
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
-import 'package:grocery_spending_tracker_app/pages/analytics/goals_list.dart';
-import 'package:grocery_spending_tracker_app/pages/user/edit_profile.dart';
-import 'package:grocery_spending_tracker_app/pages/history/purchase_history.dart';
+import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends ConsumerWidget {
@@ -12,67 +10,47 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text(Constants.APP_NAME),
-            automaticallyImplyLeading: false,
-          ),
-          body: Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 300.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  const SizedBox(height: 6),
-                  SizedBox(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PurchaseHistory(),
-                          ),
-                        );
-                      },
-                      child: const Text('History'),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  SizedBox(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfile(),
-                          ),
-                        );
-                      },
-                      child: const Text('Profile'),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  SizedBox(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const GoalsList(),
-                          ),
-                        );
-                      },
-                      child: const Text('Analytics'),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                ],
+    final getUser = ref.watch(profileControllerProvider.notifier).getUser();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(Constants.APP_NAME),
+        automaticallyImplyLeading: false,
+      ),
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 300.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                        child: Text(
+                            'Welcome ${getUser.firstName} ${getUser.lastName}!',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 25)))
+                  ],
+                ),
               ),
-            ),
+              Container(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('logout moved to profile page',
+                        style: TextStyle(fontSize: 18))
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        onWillPop: () async {
-          return false;
-        });
+      ),
+    );
   }
 }

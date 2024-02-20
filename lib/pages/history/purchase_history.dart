@@ -25,7 +25,7 @@ class PurchaseHistory extends ConsumerWidget {
         body: Center(
           child: Container(
             margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: ListView.builder(
+            child: _transactions.isNotEmpty ? ListView.builder(
               padding: EdgeInsets.only(top: 14),
               itemCount: _transactions.length,
               prototypeItem: Card(
@@ -97,6 +97,10 @@ class PurchaseHistory extends ConsumerWidget {
                   ),
                 );
               },
+            ) : Text(
+              'You don\'t have any trips yet.',
+              style: TextStyle(
+                  fontStyle: FontStyle.italic, color: Colors.grey),
             ),
           ),
         ),

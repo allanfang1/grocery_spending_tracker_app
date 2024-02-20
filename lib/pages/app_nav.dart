@@ -52,7 +52,7 @@ class AppNavigation extends StatelessWidget {
       PurchaseHistory(),
       LoadingOverlay(child: NewTrip()),
       GoalsList(),
-      EditProfile(),
+      LoadingOverlay(child: EditProfile()),
     ];
   }
 

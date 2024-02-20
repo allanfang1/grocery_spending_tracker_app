@@ -35,8 +35,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
                 ref.watch(profileControllerProvider.notifier).logout();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (BuildContext context) {
-                  return const LoadingOverlay(
-                      child: LoginPage());
+                  return const LoadingOverlay(child: LoginPage());
                 }), (route) => false);
               },
               icon: const Icon(Icons.logout))
@@ -81,7 +80,15 @@ class EditProfileState extends ConsumerState<EditProfile> {
                 OutlinedButton(
                     onPressed: _enableBtn ?? false
                         ? () async {
+                            final loading = LoadingOverlay.of(context);
+                            final scaffold = ScaffoldMessenger.of(context);
                             _formKey.currentState!.save();
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            loading.show();
                             setState(() => _enableBtn = false);
                             final response = await ref
                                 .watch(profileControllerProvider.notifier)
@@ -89,8 +96,13 @@ class EditProfileState extends ConsumerState<EditProfile> {
                                   _firstname!,
                                   _lastname!,
                                 );
+                            loading.hide();
                             if (response.statusCode == 200 && context.mounted) {
-                              Navigator.of(context).pop();
+                              setState(() {
+                                _enableBtn = true;
+                              });
+                              scaffold.showSnackBar(const SnackBar(
+                                  content: Text('Profile saved successfully')));
                             } else {
                               setState(() {
                                 _enableBtn = true;
