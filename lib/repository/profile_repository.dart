@@ -29,13 +29,11 @@ class ProfileRepository {
   }
 
   Future<Response> getUser() async {
-    final response = await client.get(
-        Uri.parse(
-            Constants.HOST + Constants.GET_USER_PATH + user.id!.toString()),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Auth': user.token!,
-        });
+    final response = await client
+        .get(Uri.parse(Constants.HOST + Constants.GET_USER_PATH), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Auth': user.token!,
+    });
     if (response.statusCode == 200) {
       user.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     }
@@ -59,16 +57,16 @@ class ProfileRepository {
   }
 
   Future<Response> updateUser(String firstname, String lastname) async {
-    final response = await client.patch(
-        Uri.parse(Constants.HOST + Constants.PATCH_USER + user.id!.toString()),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Auth': user.token!,
-        },
-        body: jsonEncode({
-          'first_name': firstname,
-          'last_name': lastname,
-        }));
+    final response =
+        await client.patch(Uri.parse(Constants.HOST + Constants.PATCH_USER),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Auth': user.token!,
+            },
+            body: jsonEncode({
+              'first_name': firstname,
+              'last_name': lastname,
+            }));
     await getUser();
     return response;
   }

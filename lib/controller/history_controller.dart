@@ -11,7 +11,7 @@ class HistoryController extends _$HistoryController {
 
   @override
   Future<FutureOr<void>> build() async {
-    state = await AsyncValue.guard(() => loadTransactions());
+    await AsyncValue.guard(() => loadTransactions());
   }
 
   Future<Response> loadTransactions() async {
