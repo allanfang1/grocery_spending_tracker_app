@@ -8,10 +8,15 @@ part 'profile_controller.g.dart';
 @riverpod
 class ProfileController extends _$ProfileController {
   @override
-  FutureOr<void> build() {}
+  FutureOr<User> build() {
+    return ref.read(profileRepositoryProvider).user;
+  }
 
   Future<Response> login(String email, String password) async {
-    return await ref.read(profileRepositoryProvider).login(email, password);
+    Response response =
+        await ref.read(profileRepositoryProvider).login(email, password);
+    state = AsyncValue.data(ref.read(profileRepositoryProvider).user);
+    return response;
   }
 
   Future<Response> register(
@@ -25,10 +30,12 @@ class ProfileController extends _$ProfileController {
     return ref.read(profileRepositoryProvider).user;
   }
 
-  Future<Response> updateUser(String firstname, String lastname) {
-    return ref
+  Future<Response> updateUser(String firstname, String lastname) async {
+    Response response = await ref
         .read(profileRepositoryProvider)
         .updateUser(firstname, lastname); // add redundancy logic
+    state = AsyncValue.data(ref.read(profileRepositoryProvider).user);
+    return response;
   }
 
   void logout() {

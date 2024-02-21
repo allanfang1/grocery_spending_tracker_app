@@ -10,7 +10,16 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final getUser = ref.watch(profileControllerProvider.notifier).getUser();
+    final getUser = ref.watch(profileControllerProvider);
+    final user = getUser.when(
+      data: (user) => user,
+      loading: () => null, // Handle loading state (e.g., show a spinner)
+      error: (error, stackTrace) {
+        // Handle error state (e.g., show an error message)
+        print('Error fetching user: $error');
+        return null;
+      },
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -27,7 +36,7 @@ class HomePage extends ConsumerWidget {
               Container(
                   padding: EdgeInsets.only(top: 20.0),
                   child: Text(
-                    'Welcome ${getUser.firstName} ${getUser.lastName}!',
+                    'Welcome ${user?.firstName} ${user?.lastName}!',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                     textAlign: TextAlign.center,
                   )),
