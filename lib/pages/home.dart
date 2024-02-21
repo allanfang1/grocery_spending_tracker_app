@@ -11,7 +11,8 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final getUser = ref.watch(profileControllerProvider);
-    return getUser.when(data: (user) {
+    return getUser.when(
+      data: (user) {
         final user = ref.watch(profileControllerProvider.notifier).getUser();
         return Scaffold(
           appBar: AppBar(
@@ -30,7 +31,8 @@ class HomePage extends ConsumerWidget {
                       padding: EdgeInsets.only(top: 20.0),
                       child: Text(
                         'Welcome ${user.firstName} ${user.lastName}!',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
                         textAlign: TextAlign.center,
                       )),
                   Container(

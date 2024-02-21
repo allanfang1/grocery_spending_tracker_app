@@ -70,27 +70,26 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           return TextField(
             readOnly: true,
             decoration: const InputDecoration(
-              labelText: Constants.DATE_TIME_LABEL,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: Icon(Icons.calendar_today)
-            ),
+                labelText: Constants.DATE_TIME_LABEL,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.calendar_today)),
             onTap: () {
               return DatePicker.showDatePicker(context,
                   pickerTheme: DateTimePickerTheme(
                       pickerHeight: MediaQuery.of(context).size.height / 2),
                   dateFormat: 'MMM dd yyyy HH:mm:ss',
                   initialDateTime:
-                  DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
+                      DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
                   minDateTime: DateTime(2000),
                   maxDateTime: DateTime.now(),
                   onMonthChangeStartWithFirstDate: false,
                   onConfirm: (DateTime selected, List<int> index) {
-                    setState(() {
-                      _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
-                      _dateTimeString.value = _dateFormat.format(selected);
-                      textValue.text = _dateTimeString.value;
-                    });
-                  });
+                setState(() {
+                  _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                  _dateTimeString.value = _dateFormat.format(selected);
+                  textValue.text = _dateTimeString.value;
+                });
+              });
             },
             controller: textValue,
           );
@@ -365,7 +364,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         if (!includeTax || !item.taxed) {
           localTotal += item.price;
         } else if (includeTax && item.taxed) {
-          localTotal += double.parse((item.price*1.13).toStringAsFixed(2));
+          localTotal += double.parse((item.price * 1.13).toStringAsFixed(2));
         }
       }
     }
@@ -429,7 +428,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Future<void> handleSubmit() async {
     final loading = LoadingOverlay.of(context);
-    final navigator = Navigator.of(context);
+    final navigator = Navigator.of(context, rootNavigator: true);
     final scaffold = ScaffoldMessenger.of(context);
     List<Item> updatedItems = [];
 
@@ -456,8 +455,9 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
       loading.hide();
 
-      await navigator
-          .push(MaterialPageRoute(builder: (context) => const AppNavigation()));
+      await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const AppNavigation()),
+          (route) => false);
     } else {
       loading.hide();
       scaffold.showSnackBar(const SnackBar(
