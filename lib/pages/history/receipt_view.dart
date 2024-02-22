@@ -16,7 +16,7 @@ class ReceiptView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(_transaction.transactionId.toString() ?? ""),
+        title: Text(_transaction.transactionId.toString()),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Card(

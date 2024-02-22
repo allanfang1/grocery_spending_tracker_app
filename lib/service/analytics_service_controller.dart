@@ -6,17 +6,27 @@ part 'analytics_service_controller.g.dart';
 
 @riverpod
 class AnalyticsServiceController extends _$AnalyticsServiceController {
+  int selectedIndex = -1;
+
   @override
   Future<List<LiveGoal>> build() async {
     final analyticsService = ref.read(analyticsServiceProvider);
     await analyticsService.refreshGoals();
     await analyticsService.refreshTransactions();
-    return await analyticsService.getLiveGoals();
+    await analyticsService.loadLiveGoals();
+    return analyticsService.liveGoals;
   }
 
   Future<void> refreshGoals() async {
     final analyticsService = ref.read(analyticsServiceProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => analyticsService.getLiveGoals());
+    await analyticsService.loadLiveGoals();
+    state = AsyncValue.data(analyticsService.liveGoals);
+  }
+
+  LiveGoal? getLiveGoalByIndex() {
+    return selectedIndex != -1
+        ? ref.read(analyticsServiceProvider).liveGoals[selectedIndex]
+        : null;
   }
 }

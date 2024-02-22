@@ -8,8 +8,8 @@ class LiveGoal {
   late int daysRemaining;
   late double progressPercent;
 
-  LiveGoal(Goal goal, List<Transaction> transactions) {
-    goal = goal;
+  LiveGoal(Goal inputGoal, List<Transaction> transactions) {
+    goal = inputGoal;
     spendingTotal = transactions.fold(
         0.0, (prevValue, transaction) => prevValue + transaction.total);
     daysRemaining = goal.endDate.difference(DateTime.now()).inDays;
