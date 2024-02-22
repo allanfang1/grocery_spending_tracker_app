@@ -59,118 +59,133 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-              child: Container(
-                padding: EdgeInsets.all(12),
-                child: Text(
-                    "Description placeholder i'm in detroit with khadija and my tempo"),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-              child: Container(
-                padding: EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.ideographic,
-                      children: [
-                        Text(
-                          Helper.currencyFormat(_liveGoal?.spendingTotal),
-                          style:
-                              TextStyle(fontSize: 28), //fix this to be dynamic
-                        ),
-                        Text(
-                          " spent",
-                        )
-                      ],
-                    ),
-                    LinearProgressIndicator(
-                      value: _liveGoal?.progressPercent,
-                      minHeight: 10,
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(Helper.currencyFormat(0)),
-                        SizedBox(width: 16),
-                        Flexible(
-                          child: Text(
-                            Helper.currencyFormat(_liveGoal?.goal.budget),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  child: Text(
+                      "Description placeholder i'm in detroit with khadija and my tempo"),
                 ),
               ),
-            ),
-            Card(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-              child: DefaultTabController(
-                animationDuration: Duration.zero,
-                length: 2, // Number of tabs
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.deepPurple,
-                      unselectedLabelColor: Colors.grey,
-                      labelStyle:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10)),
-                          color: Colors.white),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      overlayColor:
-                          MaterialStateProperty.all(Colors.transparent),
-                      tabs: const [
-                        Tab(
-                          height: 32,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("Day"),
+              Card(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Text(
+                            Helper.currencyFormat(_liveGoal?.spendingTotal),
+                            style: TextStyle(
+                                fontSize: 28), //fix this to be dynamic
                           ),
-                        ),
-                        Tab(
-                          height: 32,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("Week"),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      child: [
-                        BarChart(
-                          BarChartData(
-                            barGroups: ref
-                                .watch(
-                                    analyticsServiceControllerProvider.notifier)
-                                .getBarChartGroupDataByIndex(),
-                          ),
-                          // swapAnimationDuration: Duration(milliseconds: 150), // Optional
-                          // swapAnimationCurve: Curves.linear, // Optional
-                        ),
-                        Text("2st"),
-                      ][_tabIndex],
-                    )
-                  ],
+                          Text(
+                            " spent",
+                          )
+                        ],
+                      ),
+                      LinearProgressIndicator(
+                        value: _liveGoal?.progressPercent,
+                        minHeight: 10,
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(Helper.currencyFormat(0)),
+                          SizedBox(width: 16),
+                          Flexible(
+                            child: Text(
+                              Helper.currencyFormat(_liveGoal?.goal.budget),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              Card(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                child: DefaultTabController(
+                  animationDuration: Duration.zero,
+                  length: 2, // Number of tabs
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TabBar(
+                        controller: _tabController,
+                        labelColor: Colors.deepPurple,
+                        unselectedLabelColor: Colors.grey,
+                        labelStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                        indicator: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10)),
+                            color: Colors.white),
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent),
+                        tabs: const [
+                          Tab(
+                            height: 32,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text("Day"),
+                            ),
+                          ),
+                          Tab(
+                            height: 32,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text("Week"),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(12),
+                        child: [
+                          SingleChildScrollView(
+                            reverse: true,
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              padding: EdgeInsets.all(12),
+                              height: 360,
+                              width: 20000,
+                              child: BarChart(
+                                BarChartData(
+                                  titlesData: FlTitlesData(
+                                      bottomTitles:
+                                          AxisTitles(sideTitles: SideTitles())),
+                                  barGroups: ref
+                                      .watch(analyticsServiceControllerProvider
+                                          .notifier)
+                                      .getBarChartGroupDataByIndex(),
+                                ),
+                                // swapAnimationDuration: Duration(milliseconds: 150), // Optional
+                                // swapAnimationCurve: Curves.linear, // Optional
+                              ),
+                            ),
+                          ),
+                          Text("2st"),
+                        ][_tabIndex],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
