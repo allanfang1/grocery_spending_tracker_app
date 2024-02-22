@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
@@ -114,23 +115,54 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             Card(
               margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
               child: DefaultTabController(
+                animationDuration: Duration.zero,
                 length: 2, // Number of tabs
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     TabBar(
                       controller: _tabController,
-                      indicator: BoxDecoration(color: Colors.transparent),
+                      labelColor: Colors.deepPurple,
+                      unselectedLabelColor: Colors.grey,
+                      labelStyle:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      indicator: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
+                          color: Colors.white),
+                      indicatorSize: TabBarIndicatorSize.tab,
                       overlayColor:
                           MaterialStateProperty.all(Colors.transparent),
                       tabs: const [
-                        Tab(text: "Day"),
-                        Tab(text: "Week"),
+                        Tab(
+                          height: 32,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("Day"),
+                          ),
+                        ),
+                        Tab(
+                          height: 32,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("Week"),
+                          ),
+                        ),
                       ],
                     ),
                     Container(
                       child: [
-                        Text("first"),
+                        BarChart(
+                          BarChartData(
+                            barGroups: ref
+                                .watch(
+                                    analyticsServiceControllerProvider.notifier)
+                                .getBarChartGroupDataByIndex(),
+                          ),
+                          // swapAnimationDuration: Duration(milliseconds: 150), // Optional
+                          // swapAnimationCurve: Curves.linear, // Optional
+                        ),
                         Text("2st"),
                       ][_tabIndex],
                     )
