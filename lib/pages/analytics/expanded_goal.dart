@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
@@ -43,9 +44,97 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     }
   }
 
+  Widget getGraph(LiveGoal liveGoal) {
+    DateTime endDate = DateTime.now().isBefore(liveGoal.goal.endDate)
+        ? DateTime.now()
+        : liveGoal.goal.endDate;
+    double totalBars = endDate
+        .add(Duration(days: 1))
+        .difference(liveGoal.goal.startDate)
+        .inDays
+        .toDouble();
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Expanded(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child: Container(
+            padding: EdgeInsets.only(top: 10),
+            height: 350,
+            width: 20 * totalBars,
+            child: BarChart(
+              BarChartData(
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                    leftTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 25,
+                            getTitlesWidget: ((value, meta) {
+                              if (value % 3 != 0) {
+                                return SideTitleWidget(
+                                    axisSide: meta.axisSide, child: Text(""));
+                              }
+                              DateTime date = liveGoal.goal.startDate
+                                  .add(Duration(days: value.toInt()));
+                              return SideTitleWidget(
+                                  axisSide: meta.axisSide,
+                                  child: Text(
+                                      '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'));
+                            })))),
+                barGroups: getBarGroups(liveGoal, endDate),
+              ),
+              // swapAnimationDuration: Duration(milliseconds: 150), // Optional
+              // swapAnimationCurve: Curves.linear, // Optional
+            ),
+          ),
+        ),
+      ),
+      Container(
+          height: 336,
+          margin: EdgeInsets.only(left: 2),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [Text((68.2).toString()), Text((0).toString())]))
+    ]);
+  }
+
+  List<BarChartGroupData> getBarGroups(LiveGoal liveGoal, DateTime endDate) {
+    List<BarChartGroupData> barGroups = [];
+    int resultCounter = 0;
+    //for every day from start of goal to (today or goal end date)
+    for (DateTime date = liveGoal.goal.startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      double barLen = 0.0;
+      for (Transaction transaction in liveGoal.transactions) {
+        if (DateUtils.isSameDay(date, transaction.dateTime)) {
+          barLen += transaction.total;
+        }
+      }
+      barGroups.add(BarChartGroupData(
+          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
+      resultCounter += 1;
+    }
+    print(resultCounter);
+    print(endDate
+        .add(Duration(days: 1))
+        .difference(liveGoal.goal.startDate)
+        .inDays
+        .toDouble());
+    return barGroups;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final LiveGoal? _liveGoal = ref
+    final LiveGoal? liveGoal = ref
         .watch(analyticsServiceControllerProvider.notifier)
         .getLiveGoalByIndex();
     // if (_liveGoal == null) {
@@ -69,48 +158,6 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                   padding: EdgeInsets.all(12),
                   child: Text(
                       "Description placeholder i'm in detroit with khadija and my tempo"),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Text(
-                            Helper.currencyFormat(_liveGoal?.spendingTotal),
-                            style: TextStyle(
-                                fontSize: 28), //fix this to be dynamic
-                          ),
-                          Text(
-                            " spent",
-                          )
-                        ],
-                      ),
-                      LinearProgressIndicator(
-                        value: _liveGoal?.progressPercent,
-                        minHeight: 10,
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(Helper.currencyFormat(0)),
-                          SizedBox(width: 16),
-                          Flexible(
-                            child: Text(
-                              Helper.currencyFormat(_liveGoal?.goal.budget),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
                 ),
               ),
               Card(
@@ -153,33 +200,54 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.all(12),
+                        margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
                         child: [
-                          SingleChildScrollView(
-                            reverse: true,
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              padding: EdgeInsets.all(12),
-                              height: 360,
-                              width: 20000,
-                              child: BarChart(
-                                BarChartData(
-                                  titlesData: FlTitlesData(
-                                      bottomTitles:
-                                          AxisTitles(sideTitles: SideTitles())),
-                                  barGroups: ref
-                                      .watch(analyticsServiceControllerProvider
-                                          .notifier)
-                                      .getBarChartGroupDataByIndex(),
-                                ),
-                                // swapAnimationDuration: Duration(milliseconds: 150), // Optional
-                                // swapAnimationCurve: Curves.linear, // Optional
-                              ),
-                            ),
-                          ),
+                          getGraph(liveGoal!),
                           Text("2st"),
                         ][_tabIndex],
                       )
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Text(
+                            Helper.currencyFormat(liveGoal?.spendingTotal),
+                            style: TextStyle(
+                                fontSize: 28), //fix this to be dynamic
+                          ),
+                          Text(
+                            " spent",
+                          )
+                        ],
+                      ),
+                      LinearProgressIndicator(
+                        value: liveGoal?.progressPercent,
+                        minHeight: 10,
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(Helper.currencyFormat(0)),
+                          SizedBox(width: 16),
+                          Flexible(
+                            child: Text(
+                              Helper.currencyFormat(liveGoal?.goal.budget),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),

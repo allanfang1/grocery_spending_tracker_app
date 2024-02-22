@@ -34,10 +34,8 @@ class AnalyticsService {
           .toList();
 
       newLiveGoals.add(LiveGoal(goal, transactionsInRange));
-      print(newLiveGoals.last.goal.budget);
     }
     liveGoals = newLiveGoals;
-    print("jo" + liveGoals.last.goal.budget.toString());
   }
 }
 
