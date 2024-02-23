@@ -43,11 +43,29 @@ class _RecommendationObjectState extends State<RecommendationObject> {
       child: Card(
         child: Column(
           children: [
-            ListTile(
-              title: Center(child: Text(productName)),
-              subtitle:
-                  Text('This product was purchased for \$$price at $address!'),
-            ),
+            Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: Center(
+                    child: Text(productName,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20)))),
+            Container(
+                padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                child: Text.rich(TextSpan(
+                      children: <TextSpan>[
+                        const TextSpan(
+                          text: 'This product was purchased for ',
+                        ),
+                        TextSpan(
+                            text: '\$$price',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const TextSpan(text: ' at '),
+                        TextSpan(
+                            text: address,
+                            style: const TextStyle(fontWeight: FontWeight.bold))
+                      ])),
+                ),
             Image.network(
               "https://fevesclark.ca/media/1055/clark-398ml-maple-style-en.png",
               scale: 0.5,
