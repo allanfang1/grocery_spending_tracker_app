@@ -38,6 +38,10 @@ class GoalsList extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
+                              Text(
+                                "placeholder",
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.baseline,
                                 textBaseline: TextBaseline.ideographic,
@@ -49,6 +53,7 @@ class GoalsList extends ConsumerWidget {
                                   ),
                                   Text(
                                     "placeholder",
+                                    overflow: TextOverflow.ellipsis,
                                   )
                                 ],
                               ),
@@ -85,6 +90,10 @@ class GoalsList extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(
+                                  "Placeholder Goal Name",
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 Row(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.baseline,
@@ -98,7 +107,8 @@ class GoalsList extends ConsumerWidget {
                                               28), //fix this to be dynamic
                                     ),
                                     Text(
-                                      " spent",
+                                      " spent / ${Helper.currencyFormat(liveGoals[index].goal.budget - liveGoals[index].spendingTotal)} remaining",
+                                      overflow: TextOverflow.ellipsis,
                                     )
                                   ],
                                 ),

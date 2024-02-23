@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,11 +50,27 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     DateTime endDate = DateTime.now().isBefore(liveGoal.goal.endDate)
         ? DateTime.now()
         : liveGoal.goal.endDate;
-    double totalBars = endDate
-        .add(Duration(days: 1))
-        .difference(liveGoal.goal.startDate)
-        .inDays
-        .toDouble();
+    List<BarChartGroupData> barGroups = [];
+    int resultCounter = 0;
+    double maxY = 0;
+    //for every day from start of goal to (today or goal end date)
+    for (DateTime date = liveGoal.goal.startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      double barLen = 0.0;
+      for (Transaction transaction in liveGoal.transactions) {
+        if (DateUtils.isSameDay(date, transaction.dateTime)) {
+          barLen += transaction.total;
+        }
+      }
+      maxY = max(barLen, maxY);
+      barGroups.add(BarChartGroupData(
+          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
+      resultCounter += 1;
+    }
+
+    double totalBars = resultCounter.toDouble();
+    maxY = ((maxY * 1.1) / 10).ceilToDouble() * 10;
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
         child: SingleChildScrollView(
@@ -64,6 +82,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             width: 20 * totalBars,
             child: BarChart(
               BarChartData(
+                maxY: maxY,
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
                     leftTitles:
@@ -88,10 +107,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                                   child: Text(
                                       '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'));
                             })))),
-                barGroups: getBarGroups(liveGoal, endDate),
+                barGroups: barGroups,
               ),
-              // swapAnimationDuration: Duration(milliseconds: 150), // Optional
-              // swapAnimationCurve: Curves.linear, // Optional
             ),
           ),
         ),
@@ -102,34 +119,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text((68.2).toString()), Text((0).toString())]))
+              children: [Text(maxY.toString()), Text((0).toString())]))
     ]);
-  }
-
-  List<BarChartGroupData> getBarGroups(LiveGoal liveGoal, DateTime endDate) {
-    List<BarChartGroupData> barGroups = [];
-    int resultCounter = 0;
-    //for every day from start of goal to (today or goal end date)
-    for (DateTime date = liveGoal.goal.startDate;
-        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
-        date = date.add(const Duration(days: 1))) {
-      double barLen = 0.0;
-      for (Transaction transaction in liveGoal.transactions) {
-        if (DateUtils.isSameDay(date, transaction.dateTime)) {
-          barLen += transaction.total;
-        }
-      }
-      barGroups.add(BarChartGroupData(
-          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
-      resultCounter += 1;
-    }
-    print(resultCounter);
-    print(endDate
-        .add(Duration(days: 1))
-        .difference(liveGoal.goal.startDate)
-        .inDays
-        .toDouble());
-    return barGroups;
   }
 
   @override
@@ -174,11 +165,6 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         unselectedLabelColor: Colors.grey,
                         labelStyle: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w500),
-                        indicator: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            color: Colors.white),
                         indicatorSize: TabBarIndicatorSize.tab,
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
