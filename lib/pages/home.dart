@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/pages/recommendations/recommendation_modal.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -45,12 +46,21 @@ class HomePage extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('logout moved to profile page',
-                        style: TextStyle(fontSize: 18))
+                    Text('Your Recommendations', style: TextStyle(fontSize: 18))
                   ],
                 ),
               ),
-              // TODO: Set up a swipeable list to use for recommendation
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Here\'s some products we think you\'ll love',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey))
+                ],
+              ),
+              RecommendationModal(),
             ],
           ),
         ),
