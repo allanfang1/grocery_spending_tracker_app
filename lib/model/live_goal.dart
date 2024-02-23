@@ -3,13 +3,15 @@ import 'package:grocery_spending_tracker_app/model/transaction.dart';
 
 class LiveGoal {
   late Goal goal;
+  late List<Transaction> transactions;
   late String status;
   late double spendingTotal;
   late int daysRemaining;
   late double progressPercent;
 
-  LiveGoal(Goal goal, List<Transaction> transactions) {
-    goal = goal;
+  LiveGoal(Goal inputGoal, List<Transaction> inputTransactions) {
+    goal = inputGoal;
+    transactions = inputTransactions;
     spendingTotal = transactions.fold(
         0.0, (prevValue, transaction) => prevValue + transaction.total);
     daysRemaining = goal.endDate.difference(DateTime.now()).inDays;

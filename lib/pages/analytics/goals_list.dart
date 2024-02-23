@@ -4,6 +4,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics/create_goal.dart';
+import 'package:grocery_spending_tracker_app/pages/analytics/expanded_goal.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -19,7 +20,7 @@ class GoalsList extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(Constants.ANALYTICS),
-          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
+          // actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
         ),
         body: Center(
           child: Container(
@@ -37,6 +38,10 @@ class GoalsList extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: const [
+                              Text(
+                                "placeholder",
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.baseline,
                                 textBaseline: TextBaseline.ideographic,
@@ -48,6 +53,7 @@ class GoalsList extends ConsumerWidget {
                                   ),
                                   Text(
                                     "placeholder",
+                                    overflow: TextOverflow.ellipsis,
                                   )
                                 ],
                               ),
@@ -65,7 +71,18 @@ class GoalsList extends ConsumerWidget {
                     ),
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          ref
+                              .watch(
+                                  analyticsServiceControllerProvider.notifier)
+                              .selectedIndex = index;
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const LoadingOverlay(child: ExpandedGoal()),
+                            ),
+                          );
+                        },
                         child: Card(
                           margin: EdgeInsets.only(bottom: 14),
                           child: Container(
@@ -73,6 +90,10 @@ class GoalsList extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(
+                                  "Placeholder Goal Name",
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 Row(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.baseline,
@@ -86,7 +107,8 @@ class GoalsList extends ConsumerWidget {
                                               28), //fix this to be dynamic
                                     ),
                                     Text(
-                                      " spent",
+                                      " spent / ${Helper.currencyFormat(liveGoals[index].goal.budget - liveGoals[index].spendingTotal)} remaining",
+                                      overflow: TextOverflow.ellipsis,
                                     )
                                   ],
                                 ),

@@ -11,6 +11,7 @@ part 'analytics_service.g.dart';
 class AnalyticsService {
   AnalyticsService(this.ref);
   final Ref ref;
+  List<LiveGoal> liveGoals = [];
 
   Future<void> refreshGoals() async {
     await ref.watch(goalsRepositoryProvider).getGoals();
@@ -20,11 +21,11 @@ class AnalyticsService {
     await ref.watch(historyRepositoryProvider).loadTransactions();
   }
 
-  Future<List<LiveGoal>> getLiveGoals() async {
+  Future<void> loadLiveGoals() async {
     final goals = ref.watch(goalsRepositoryProvider).goals;
     final transactions = ref.watch(historyRepositoryProvider).transactions;
 
-    List<LiveGoal> response = [];
+    List<LiveGoal> newLiveGoals = [];
     for (Goal goal in goals) {
       List<Transaction> transactionsInRange = transactions
           .where((transaction) =>
@@ -32,9 +33,9 @@ class AnalyticsService {
               transaction.dateTime!.isBefore(goal.endDate))
           .toList();
 
-      response.add(LiveGoal(goal, transactionsInRange));
+      newLiveGoals.add(LiveGoal(goal, transactionsInRange));
     }
-    return response;
+    liveGoals = newLiveGoals;
   }
 }
 
