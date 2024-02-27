@@ -42,4 +42,10 @@ class Constants {
   static const String CONFIRM_RECEIPT_LABEL = "Confirm Scanned Receipt";
   static const String EDIT_ITEM_LABEL = "Edit Item";
   static const String ITEM_LIST_LABEL = "Item List";
+
+  static const List<String> ADDRESSES = [
+    '1579 Main Street West, Hamilton, ON L8S 1E6',
+    '845 King Street West, Hamilton, ON L8S 1K4',
+    '2 King Street West #445, Hamilton, ON L8P 1A2'
+  ];
 }

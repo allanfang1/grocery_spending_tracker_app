@@ -1,3 +1,6 @@
+import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:grocery_spending_tracker_app/common/levenshtein.dart';
+
 class ExtractData {
   // need to separate out the lines of text in order to more easily parse
   // and improve quality of outputs from RegExp
@@ -47,9 +50,20 @@ class ExtractData {
 
     // want to add optional city, province and postal
     final addressRegex = RegExp(r'([1-9]+) [a-zA-Z\s]');
+    int minDistance = 0x7FFFFFFFFFFFFFFF; // max int
+    String storeAddress = '';
 
     for (String line in receiptData) {
-      if (addressRegex.hasMatch(line)) return line;
+      if (addressRegex.hasMatch(line)) {
+        for (String address in Constants.ADDRESSES) {
+          int distance = levenshtein(line, address);
+          if (distance < minDistance) {
+            minDistance = distance;
+            storeAddress = address;
+          }
+        }
+        return storeAddress;
+      }
     }
 
     return "";
