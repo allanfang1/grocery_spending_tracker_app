@@ -21,7 +21,7 @@ class ExtractData {
     for (String line in receiptData) {
       if (dateTimeRegex.hasMatch(line)) {
         List<String> splitLine = line.split(' ');
-        splitLine.removeAt(0);
+        if (splitLine.length == 3) splitLine.removeAt(0);
         line = splitLine.join(' ');
 
         var temp = "20$line";
@@ -30,6 +30,7 @@ class ExtractData {
 
         try {
           parsedDate = DateTime.parse(temp);
+          break;
         } on FormatException {
           return DateTime.now().millisecondsSinceEpoch ~/ 1000;
         }
