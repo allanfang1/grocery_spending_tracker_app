@@ -159,7 +159,7 @@ void main() {
      * Derivation: The OCR finds an address string that references a supported grocery store but written
      * differently from how it is stored.
      */
-    test('Similar address is properly extracted and matched', () {
+    test('Similar address to Fortinos is properly extracted and matched', () {
       List<String> input = [
         '1579 Main Street West',
         'Product 4.99',
@@ -177,7 +177,7 @@ void main() {
      * Derivation: The OCR finds an address string that references a supported grocery store but written
      * differently from how it is stored.
      */
-    test('Similar address is properly extracted and matched', () {
+    test('Similar address to Food Basics is properly extracted and matched', () {
       List<String> input = ['Product 4.99', '845 King St W, L8S 1K4'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[1]);
@@ -192,7 +192,7 @@ void main() {
      * Derivation: The OCR finds an address string that references a supported grocery store but written
      * differently from how it is stored.
      */
-    test('Similar address is properly extracted and matched', () {
+    test('Similar address to Nations is properly extracted and matched', () {
       List<String> input = ['Product 4.99', '2 King St W #445'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[2]);
@@ -207,7 +207,7 @@ void main() {
      * Derivation: The OCR produces a typo when scanning for the address.
      */
     test('Similar address is properly extracted and matched', () {
-      List<String> input = ['1678 Main Street Wst'];
+      List<String> input = ['1678 Man Street Wst'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[0]);
     });
@@ -276,7 +276,7 @@ void main() {
      * Output: An empty array of items.
      * Derivation: The OCR is unable to pick up any text during scanning.
      */
-    test('Extraction of items if items are found', () {
+    test('Extraction of items from empty input', () {
       List<String> input = [];
       final extractedItems = ExtractData().getItems(input);
       expect(extractedItems, []);
@@ -308,7 +308,7 @@ void main() {
      * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings with a subtotal present.
      * Output: The subtotal string from the list.
-     * Derivation: The OCR is finds the subtotal of the trip while scanning.
+     * Derivation: The OCR finds the subtotal of the trip while scanning.
      */
     test('Extraction of subtotal if subtotal is found', () {
       List<String> input = [
@@ -329,7 +329,7 @@ void main() {
      * Output: A default string text that is returned if no subtotal is found.
      * Derivation: The OCR is unable to pick up any text during scanning.
      */
-    test('Extraction of subtotal if subtotal is found', () {
+    test('Extraction of subtotal from empty input', () {
       List<String> input = [];
       final extractedSubtotal = ExtractData().getSubtotal(input);
       expect(extractedSubtotal, 'SUBTOTAL 0.00');
@@ -337,5 +337,56 @@ void main() {
   });
 
   // Unit tests to verify the total extraction from strings/receipt text
-  group('Total Extraction Tests', () {});
+  group('Total Extraction Tests', () {
+    /**
+     * FRT-M3-20
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An array of strings without a total being present.
+     * Output: A default string text that is returned if no total is found.
+     * Derivation: The OCR is unable to find a total during scanning.
+     */
+    test('Extraction of total if total is not found', () {
+      List<String> input = [
+        'FORTINOS (1579 Main Street)',
+        'Thank you for visiting',
+        '413205 ProductOne H 3.00',
+        '3829 ProductTwo 4.00',
+        'Subtotal 3.00'
+      ];
+      final extractedSubtotal = ExtractData().getTotal(input);
+      expect(extractedSubtotal, 'TOTAL 0.00');
+    });
+
+    /**
+     * FRT-M3-21
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An array of strings with a total present.
+     * Output: The total string from the list.
+     * Derivation: The OCR finds the total of the trip while scanning.
+     */
+    test('Extraction of total if total is found', () {
+      List<String> input = [
+        'FORTINOS (1579 Main Street)',
+        'Thank you for visiting',
+        '413205 ProductOne H 3.00',
+        'Subtotal 3.00',
+        'Total 3.39'
+      ];
+      final extractedSubtotal = ExtractData().getTotal(input);
+      expect(extractedSubtotal, 'Total 3.39');
+    });
+
+    /**
+     * FRT-M3-22
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An empty array of strings.
+     * Output: A default string text that is returned if no total is found.
+     * Derivation: The OCR is unable to pick up any text during scanning.
+     */
+    test('Extraction of total from empty input', () {
+      List<String> input = [];
+      final extractedSubtotal = ExtractData().getTotal(input);
+      expect(extractedSubtotal, 'TOTAL 0.00');
+    });
+  });
 }
