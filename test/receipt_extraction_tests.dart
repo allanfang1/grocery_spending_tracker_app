@@ -7,6 +7,7 @@ void main() {
   group('DateTime Extraction Tests', () {
     /**
      * FRT-M3-1
+     * Initial State: The OCR has just scanned a receipt.
      * Input: A list of strings where no string has a valid date
      * Output: Unix timestamp for DateTime.now()
      * Derivation: No valid date is picked up from the OCR
@@ -25,6 +26,7 @@ void main() {
 
     /**
      * FRT-M3-2
+     * Initial State: The OCR has just scanned a receipt.
      * Input: A list of strings where one string has the format YY/MM/DD HH:MM
      * as would appear on a receipt
      * Output: Unix timestamp corresponding with extracted date
@@ -44,6 +46,7 @@ void main() {
 
     /**
      * FRT-M3-3
+     * Initial State: The OCR has just scanned a receipt.
      * Input: A list of strings where one string has the format YY/MM/DD HH:MM:SS
      * Output: Unix timestamp corresponding with extracted date
      * Derivation: The OCR finds a DateTime of format YY/MM/DD HH:MM:SS
@@ -63,6 +66,7 @@ void main() {
 
     /**
      * FRT-M3-4
+     * Initial State: The OCR has just scanned a receipt.
      * Input: A list of strings where one string has the format YY-MM-DD HH:MM:SS
      * Output: Unix timestamp corresponding with extracted date
      * Derivation: The OCR finds a DateTime of format YY-MM-DD HH:MM:SS
@@ -77,6 +81,7 @@ void main() {
 
     /**
      * FRT-M3-5
+     * Initial State: The OCR has just scanned a receipt.
      * Input: A list of strings where multiple strings have valid dates
      * Output: Unix timestamp corresponding with first match
      * Derivation: The OCR picks up multiple possible DateTimes
@@ -95,6 +100,7 @@ void main() {
 
     /**
      * FRT-M3-6
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An empty list of strings
      * Output: Unix timestamp for DateTime.now()
      * Derivation: The OCR is unable to find any text
@@ -110,6 +116,26 @@ void main() {
   group('Address Extraction Tests', () {
     /**
      * FRT-M3-7
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An array of strings where no string is an address
+     * Output: An empty string is returned
+     * Derivation: The OCR is unable to find any address and the user must manually
+     * input an address
+     */
+    test('Extraction of address from empty input', () {
+      List<String> input = [
+        'Fortinos',
+        'Product H 2.98',
+        'Product 3.99',
+        'Total 7.00'
+      ];
+      final extractedAddress = ExtractData().getLocation(input);
+      expect(extractedAddress, '');
+    });
+
+    /**
+     * FRT-M3-8
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings where one string matches a stored/expected grocery store
      * Output: The address of the corresponding grocery store
      * Derivation: The OCR finds an address string that matches an address supported by the app.
@@ -125,7 +151,8 @@ void main() {
     });
 
     /**
-     * FRT-M3-8
+     * FRT-M3-9
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings where one string contains the Hamilton Fortinos address but in
      * a different format from how it is stored
      * Output: The address of the corresponding grocery store
@@ -142,7 +169,8 @@ void main() {
     });
 
     /**
-     * FRT-M3-9
+     * FRT-M3-10
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings where one string contains the Hamilton Westside Food Basics address but in
      * a different format from how it is stored
      * Output: The address of the corresponding grocery store
@@ -150,16 +178,14 @@ void main() {
      * differently from how it is stored
      */
     test('Similar address is properly extracted and matched', () {
-      List<String> input = [
-        'Product 4.99',
-        '845 King St W, L8S 1K4'
-      ];
+      List<String> input = ['Product 4.99', '845 King St W, L8S 1K4'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[1]);
     });
 
     /**
-     * FRT-M3-10
+     * FRT-M3-11
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings where one string contains the Hamilton Nations address but in
      * a different format from how it is stored
      * Output: The address of the corresponding grocery store
@@ -167,33 +193,30 @@ void main() {
      * differently from how it is stored
      */
     test('Similar address is properly extracted and matched', () {
-      List<String> input = [
-        'Product 4.99',
-        '2 King St W #445'
-      ];
+      List<String> input = ['Product 4.99', '2 King St W #445'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[2]);
     });
 
     /**
-     * FRT-M3-11
+     * FRT-M3-12
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An array of strings where one string contains the address of an expected
      * grocery store with errors
      * Output: The address of the corresponding grocery store
      * Derivation: The OCR produces a typo when scanning for the address
      */
     test('Similar address is properly extracted and matched', () {
-      List<String> input = [
-        '1678 Main Street Wst'
-      ];
+      List<String> input = ['1678 Main Street Wst'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[0]);
     });
 
     /**
-     * FRT-M3-12
+     * FRT-M3-13
+     * Initial State: The OCR has just scanned a receipt.
      * Input: An empty array of strings
-     * Output: An empty string is returned
+     * Output: An empty string
      * Derivation: The OCR is unable to find any text and user must manually input an
      * address
      */
@@ -202,23 +225,71 @@ void main() {
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, '');
     });
+  });
+
+  // Unit tests to verify item extraction from strings/receipt text
+  group('Item Extraction Tests', () {
+    /**
+     * FRT-M3-14
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An array of strings without items
+     * Output: An empty array of strings is returned
+     * Derivation: The OCR is unable to find any items when scanning the receipt. This includes
+     * excluding subtotal and total which will be handled separately in the extraction process.
+     */
+    test('Extraction of items if no items are found', () {
+      List<String> input = [
+        'FORTINOS (1579 Main Street)',
+        'Thank you for visiting',
+        'Subtotal 4.99',
+        'Total 5.12'
+      ];
+      final extractedItems = ExtractData().getItems(input);
+      expect(extractedItems, []);
+    });
 
     /**
-     * FRT-M3-13
-     * Input: An array of strings where no string is an address
-     * Output: An empty string is returned
-     * Derivation: The OCR is unable to find any address and the user must manually
-     * input an address
+     * FRT-M3-15
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An array of strings with multiple items
+     * Output: An array of strings containing the expected items
+     * Derivation: The OCR finds various items from scanning the receipt.
      */
-    test('Extraction of address from empty input', () {
+    test('Extraction of items if items are found', () {
       List<String> input = [
-        'Fortinos',
-        'Product H 2.98',
-        'Product 3.99',
-        'Total 7.00'
+        'FORTINOS (1579 Main Street)',
+        'Thank you for visiting',
+        '413205 ProductOne H 3.00',
+        '3829 ProductTwo 4.00',
+        'Subtotal 7.00',
+        'Total 7.39'
       ];
-      final extractedAddress = ExtractData().getLocation(input);
-      expect(extractedAddress, '');
+      final extractedItems = ExtractData().getItems(input);
+      expect(
+          extractedItems, ['413205 ProductOne H 3.00', '3829 ProductTwo 4.00']);
     });
+
+    /**
+     * FRT-M3-16
+     * Initial State: The OCR has just scanned a receipt.
+     * Input: An empty array of strings
+     * Output: An empty array of items
+     * Derivation: The OCR is unable to pick up any text during scanning
+     */
+    test('Extraction of items if items are found', () {
+      List<String> input = [];
+      final extractedItems = ExtractData().getItems(input);
+      expect(extractedItems, []);
+    });
+  });
+
+  // Unit tests to verify the subtotal extraction from strings/receipt text
+  group('Subtotal Extraction Tests', () {
+
+  });
+
+  // Unit tests to verify the total extraction from strings/receipt text
+  group('Total Extraction Tests', () {
+
   });
 }

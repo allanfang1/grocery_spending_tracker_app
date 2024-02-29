@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 class GroceryTrip {
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-  int userId;
   int dateTime;
   String location;
   List<Item> items;
@@ -13,7 +12,7 @@ class GroceryTrip {
   String? tripDesc;
 
   // create grocery trip
-  GroceryTrip(this.userId, this.dateTime, this.location, this.items,
+  GroceryTrip(this.dateTime, this.location, this.items,
       this.subtotal, this.total, this.tripDesc);
 
   // update grocery trip
