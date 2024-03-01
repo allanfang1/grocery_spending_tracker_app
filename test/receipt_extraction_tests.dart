@@ -1,6 +1,8 @@
 import 'package:test/test.dart';
 import 'package:grocery_spending_tracker_app/controller/extract_data.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
+import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
+import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 
 void main() {
   // Unit tests to verify DateTime extraction from strings/receipt text
@@ -177,7 +179,8 @@ void main() {
      * Derivation: The OCR finds an address string that references a supported grocery store but written
      * differently from how it is stored.
      */
-    test('Similar address to Food Basics is properly extracted and matched', () {
+    test('Similar address to Food Basics is properly extracted and matched',
+        () {
       List<String> input = ['Product 4.99', '845 King St W, L8S 1K4'];
       final extractedAddress = ExtractData().getLocation(input);
       expect(extractedAddress, Constants.ADDRESSES[1]);
@@ -389,4 +392,65 @@ void main() {
       expect(extractedSubtotal, 'TOTAL 0.00');
     });
   });
+
+  group('Item and Grocery Trip Object Tests', () {
+    /**
+     * FRT-M3-23
+     * Initial State: An Item has been created.
+     * Input: An update is made to the product name and price.
+     * Output: The Item should be updated to match the new input data and non-updated
+     * fields should remain the same.
+     * Derivation: A user wants to update a grocery item after the OCR finishes
+     * scanning.
+     */
+    test('Item can be updated', () {
+      Item test = Item('1', 'ProductOne', 3.99, true);
+      test.updateItem(null, 'Updated Name', 5.99, null);
+      expect(_isMatch(test, Item('1', 'Updated Name', 5.99, true)), true);
+    });
+
+    /**
+     * FRT-M3-24
+     * Initial State: An Grocery Trip has been created.
+     * Input: An update is made to the date, items, subtotal, total, and trip description.
+     * Output: The Grocery Trip should be updated to match the new input data and non-updated
+     * fields should remain the same.
+     * Derivation: A user wants to update their grocery trip after the OCR finishes
+     * scanning.
+     */
+    test('Grocery Trip can be updated', () {
+      GroceryTrip trip = GroceryTrip(1706830924, 'FORTINOS (1579 Main Street)',
+          [Item('1', 'Product0', 3.89, false)], 3.89, 3.89, '');
+
+      trip.updateGroceryTrip(
+          1709336961,
+          null,
+          [
+            Item('1', 'Product0', 3.89, false),
+            Item('2', 'Product1', 1.00, true)
+          ],
+          4.89,
+          5.02,
+          'Test Trip');
+
+      expect(
+          trip.dateTime == 1709336961 &&
+              trip.location == 'FORTINOS (1579 Main Street)' &&
+              _isMatch(trip.items[0], Item('1', 'Product0', 3.89, false)) &&
+              _isMatch(trip.items[1], Item('2', 'Product1', 1.00, true)) &&
+              trip.subtotal == 4.89 &&
+              trip.total == 5.02,
+          true);
+    });
+  });
+}
+
+bool _isMatch(Item a, Item b) {
+  if (a.itemKey == b.itemKey &&
+      a.itemDesc == b.itemDesc &&
+      a.price == b.price &&
+      a.taxed == b.taxed) {
+    return true;
+  }
+  return false;
 }
