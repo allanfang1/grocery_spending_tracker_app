@@ -411,7 +411,7 @@ void main() {
 
     /**
      * FRT-M3-24
-     * Initial State: An Grocery Trip has been created.
+     * Initial State: A Grocery Trip has been created.
      * Input: An update is made to the date, items, subtotal, total, and trip description.
      * Output: The Grocery Trip should be updated to match the new input data and non-updated
      * fields should remain the same.
