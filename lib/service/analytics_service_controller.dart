@@ -27,9 +27,7 @@ class AnalyticsServiceController extends _$AnalyticsServiceController {
     state = AsyncValue.data(analyticsService.liveGoals);
   }
 
-  LiveGoal? getLiveGoalByIndex() {
-    return selectedIndex != -1
-        ? ref.read(analyticsServiceProvider).liveGoals[selectedIndex]
-        : null;
+  LiveGoal getLiveGoalByIndex() {
+    return ref.read(analyticsServiceProvider).liveGoals[selectedIndex];
   }
 }

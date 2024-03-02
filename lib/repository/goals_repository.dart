@@ -27,7 +27,7 @@ class GoalsRepository {
     return response;
   }
 
-  Future<Response> createGoal(
+  Future<Response> createGoal(String goalName, String goalDescription,
       String startDate, String endDate, double budget) async {
     final response = await client.post(
         Uri.parse(Constants.HOST + Constants.CREATE_GOALS_PATH),
@@ -35,8 +35,13 @@ class GoalsRepository {
           'Content-Type': 'application/json; charset=UTF-8',
           'Auth': profileRepository.user.token!
         },
-        body: jsonEncode(
-            {'start_date': startDate, 'end_date': endDate, 'budget': budget}));
+        body: jsonEncode({
+          'goal_name': goalName,
+          'goal_description': goalDescription,
+          'start_date': startDate,
+          'end_date': endDate,
+          'budget': budget
+        }));
     if (response.statusCode == 200) {
       print(response.body);
       await getGoals();

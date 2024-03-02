@@ -91,7 +91,7 @@ class GoalsList extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Placeholder Goal Name",
+                                  liveGoals[index].goal.goalName,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Row(
