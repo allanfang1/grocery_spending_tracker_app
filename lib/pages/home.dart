@@ -28,42 +28,43 @@ class HomePage extends ConsumerWidget {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 300.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: Text(
-                    'Welcome ${user?.firstName} ${user?.lastName}!',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-                    textAlign: TextAlign.center,
-                  )),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Row(
+        child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Text(
+                      'Welcome ${user?.firstName} ${user?.lastName}!',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                      textAlign: TextAlign.center,
+                    )),
+                Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Your Recommendations',
+                          style: TextStyle(fontSize: 18))
+                    ],
+                  ),
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Your Recommendations', style: TextStyle(fontSize: 18))
+                    Text('Here\'s some products we think you\'ll love',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey))
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Here\'s some products we think you\'ll love',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey))
-                ],
-              ),
-              RecommendationModal(),
-            ],
-          ),
-        ),
+                RecommendationModal(),
+              ],
+            )),
       ),
     );
   }
