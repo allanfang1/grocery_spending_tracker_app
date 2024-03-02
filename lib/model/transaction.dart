@@ -2,7 +2,7 @@ import 'item.dart';
 
 class Transaction {
   late int transactionId;
-  DateTime? dateTime;
+  late DateTime dateTime;
   String? location;
   String? description;
   List<Item>? items;
@@ -15,6 +15,7 @@ class Transaction {
   Transaction.notFound(int transactionId) {
     this.transactionId = transactionId;
     total = 0;
+    dateTime = DateTime.utc(1, 1, 1);
   }
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -28,7 +29,9 @@ class Transaction {
     }
     return Transaction(
       json['trip_id'] as int,
-      json['date_time'] != null ? DateTime.parse(json['date_time']) : null,
+      json['date_time'] != null
+          ? DateTime.tryParse(json['date_time']) ?? DateTime.utc(1, 1, 1)
+          : DateTime.utc(1, 1, 1),
       json['location'] as String?,
       json['description'] as String?,
       items,

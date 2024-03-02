@@ -46,7 +46,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     }
   }
 
-  Widget getGraph(LiveGoal liveGoal) {
+  Map<String, dynamic> chartDataDay(LiveGoal liveGoal, int labelFreq) {
     DateTime endDate = DateTime.now().isBefore(liveGoal.goal.endDate)
         ? DateTime.now()
         : liveGoal.goal.endDate;
@@ -68,21 +68,91 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
           x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
       resultCounter += 1;
     }
-
-    double totalBars = resultCounter.toDouble();
+    double barCount = resultCounter.toDouble();
     maxY = ((maxY * 1.1) / 10).ceilToDouble() * 10;
+    return {
+      'barGroups': barGroups,
+      'barCount': barCount,
+      'maxY': maxY,
+      'bottomTitleFunc': ((value, meta) {
+        if (value % labelFreq != 0) {
+          return SideTitleWidget(axisSide: meta.axisSide, child: Text(""));
+        }
+        DateTime date =
+            liveGoal.goal.startDate.add(Duration(days: value.toInt()));
+        return SideTitleWidget(
+            axisSide: meta.axisSide,
+            child: Text(
+                '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'));
+      })
+    };
+  }
+
+  Map<String, dynamic> chartDataWeek(LiveGoal liveGoal, int labelFreq) {
+    DateTime startDate = liveGoal.goal.startDate
+        .subtract(Duration(days: liveGoal.goal.startDate.weekday % 7));
+    DateTime endDate = DateTime.now().isBefore(liveGoal.goal.endDate)
+        ? DateTime.now()
+        : liveGoal.goal.endDate;
+    List<BarChartGroupData> barGroups = [];
+    int resultCounter = 0;
+    double maxY = 0;
+    //for every day from start of goal to (today or goal end date)
+    while (startDate.isBefore(endDate) || startDate.isAtSameMomentAs(endDate)) {
+      double barLen = 0.0;
+      for (Transaction transaction in liveGoal.transactions) {
+        if ((transaction.dateTime.isAfter(liveGoal.goal.startDate) ||
+                DateUtils.isSameDay(
+                    liveGoal.goal.startDate, transaction.dateTime)) &&
+            (transaction.dateTime.isAfter(startDate) ||
+                DateUtils.isSameDay(startDate, transaction.dateTime)) &&
+            (transaction.dateTime.isBefore(startDate.add(Duration(days: 6))) ||
+                DateUtils.isSameDay(
+                    startDate.add(Duration(days: 6)), transaction.dateTime))) {
+          barLen += transaction.total;
+        }
+      }
+      maxY = max(barLen, maxY);
+      barGroups.add(BarChartGroupData(
+          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
+      startDate = startDate.add(Duration(days: 7));
+      resultCounter += 1;
+    }
+    double barCount = resultCounter.toDouble();
+    maxY = ((maxY * 1.1) / 10).ceilToDouble() * 10;
+    return {
+      'barGroups': barGroups,
+      'barCount': barCount,
+      'maxY': maxY,
+      'bottomTitleFunc': ((value, meta) {
+        if (value % labelFreq != 0) {
+          return SideTitleWidget(axisSide: meta.axisSide, child: Text(""));
+        }
+        DateTime date = liveGoal.goal.startDate
+            .subtract(Duration(days: liveGoal.goal.startDate.weekday % 7))
+            .add(Duration(days: (7 * value).toInt()));
+        return SideTitleWidget(
+            axisSide: meta.axisSide,
+            child: Text(
+                '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'));
+      })
+    };
+  }
+
+  Widget getGraph(LiveGoal liveGoal, int labelFreq, Function chartDataFunc) {
+    Map<String, dynamic> chartData = chartDataFunc(liveGoal, labelFreq);
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           reverse: true,
           child: Container(
-            padding: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.fromLTRB(3, 10, 0, 0),
             height: 350,
-            width: 20 * totalBars,
+            width: 20 * chartData['barCount'] as double,
             child: BarChart(
               BarChartData(
-                maxY: maxY,
+                maxY: chartData['maxY'],
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
                     leftTitles:
@@ -95,19 +165,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         sideTitles: SideTitles(
                             showTitles: true,
                             reservedSize: 25,
-                            getTitlesWidget: ((value, meta) {
-                              if (value % 3 != 0) {
-                                return SideTitleWidget(
-                                    axisSide: meta.axisSide, child: Text(""));
-                              }
-                              DateTime date = liveGoal.goal.startDate
-                                  .add(Duration(days: value.toInt()));
-                              return SideTitleWidget(
-                                  axisSide: meta.axisSide,
-                                  child: Text(
-                                      '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'));
-                            })))),
-                barGroups: barGroups,
+                            getTitlesWidget: chartData['bottomTitleFunc']))),
+                barGroups: chartData['barGroups'],
               ),
             ),
           ),
@@ -119,22 +178,22 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text(maxY.toString()), Text((0).toString())]))
+              children: [
+                Text(chartData['maxY'].toString()),
+                Text((0).toString())
+              ]))
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final LiveGoal? liveGoal = ref
+    final LiveGoal liveGoal = ref
         .watch(analyticsServiceControllerProvider.notifier)
         .getLiveGoalByIndex();
-    // if (_liveGoal == null) {
-    //   return showErrorAlertDialog(context, "Invalid Goal");
-    // }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("placeholder Goal ID/name"),
+        title: Text(liveGoal!.goal.goalName),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Container(
@@ -147,8 +206,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                 margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
                 child: Container(
                   padding: EdgeInsets.all(12),
-                  child: Text(
-                      "Description placeholder i'm in detroit with khadija and my tempo"),
+                  child: Text(liveGoal.goal.goalDescription),
                 ),
               ),
               Card(
@@ -188,8 +246,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                       Container(
                         margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
                         child: [
-                          getGraph(liveGoal!),
-                          Text("2st"),
+                          getGraph(liveGoal, 3, chartDataDay),
+                          getGraph(liveGoal, 3, chartDataWeek),
                         ][_tabIndex],
                       )
                     ],
@@ -207,7 +265,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         textBaseline: TextBaseline.ideographic,
                         children: [
                           Text(
-                            Helper.currencyFormat(liveGoal?.spendingTotal),
+                            Helper.currencyFormat(liveGoal.spendingTotal),
                             style: TextStyle(
                                 fontSize: 28), //fix this to be dynamic
                           ),
@@ -217,7 +275,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         ],
                       ),
                       LinearProgressIndicator(
-                        value: liveGoal?.progressPercent,
+                        value: liveGoal.progressPercent,
                         minHeight: 10,
                       ),
                       SizedBox(height: 4),
@@ -228,7 +286,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                           SizedBox(width: 16),
                           Flexible(
                             child: Text(
-                              Helper.currencyFormat(liveGoal?.goal.budget),
+                              Helper.currencyFormat(liveGoal.goal.budget),
                               overflow: TextOverflow.ellipsis,
                             ),
                           )

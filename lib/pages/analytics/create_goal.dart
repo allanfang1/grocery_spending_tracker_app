@@ -19,6 +19,8 @@ class CreateGoal extends ConsumerStatefulWidget {
 class CreateGoalState extends ConsumerState<CreateGoal> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn = true;
+  String? _name;
+  String? _description;
   DateTime? _startDate;
   DateTime? _endDate;
   String? _budget;
@@ -30,7 +32,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(Constants.CREATE_GOAL),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Form(
@@ -39,6 +41,26 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                 setState(() => _enableBtn = _formKey.currentState?.validate()),
             child: Column(
               children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _name = value;
+                    });
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
+                    });
+                  },
+                ),
                 TextField(
                   readOnly: true,
                   decoration: InputDecoration(
@@ -106,6 +128,8 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     onPressed: (_startDate != null &&
                             _endDate != null &&
                             _budget != null &&
+                            _name != null &&
+                            _description != null &&
                             (_enableBtn ?? false))
                         ? () async {
                             FocusScopeNode currentFocus =
@@ -120,6 +144,8 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                             final response = await ref
                                 .watch(goalsControllerProvider.notifier)
                                 .createGoal(
+                                  _name!,
+                                  _description!,
                                   _startDate!,
                                   _endDate!,
                                   _budget!,
