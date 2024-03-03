@@ -9,13 +9,13 @@ class User {
 
   User(this.id, this.email, this.token, this.firstName, this.lastName);
 
-  void setUser(String id, String email, String token, String firstName,
-      String lastName) {
-    id = id;
-    email = email;
-    token = token;
-    firstName = firstName;
-    lastName = lastName;
+  void setUser(
+      int id, String email, String token, String firstName, String lastName) {
+    this.id = id;
+    this.email = email;
+    this.token = token;
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   void fromJson(dynamic json) {

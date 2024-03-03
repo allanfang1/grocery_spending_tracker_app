@@ -34,7 +34,9 @@ class HistoryRepository {
   }
 
   Transaction? getTransactionByIndex(int index) {
-    return index >= 0 ? transactions[index] : null;
+    return (index < 0 || index >= transactions.length)
+        ? null
+        : transactions[index];
   }
 }
 
