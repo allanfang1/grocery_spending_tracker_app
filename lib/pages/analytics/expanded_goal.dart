@@ -4,9 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
-import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/live_goal.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
@@ -193,7 +191,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(liveGoal!.goal.goalName),
+        title: Text(liveGoal.goal.goalName),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Container(

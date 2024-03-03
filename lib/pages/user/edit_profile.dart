@@ -5,7 +5,6 @@ import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 // ignore_for_file: prefer_const_constructors
 

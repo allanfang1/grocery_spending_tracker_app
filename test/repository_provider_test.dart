@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:grocery_spending_tracker_app/repository/goals_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
@@ -55,100 +56,52 @@ void main() {
     });
   });
 
-  group("Analytics Repository Tests", () {
+  group("Goals Repository Tests", () {
     late ProfileRepository profileRepository;
+    late GoalsRepository goalsRepository;
 
     setUp(() {
       profileRepository = ProfileRepository();
       profileRepository.user
           .setUser(1, "email", "token", "firstName", "lastName");
-    });
-
-    test("Test load transactions call", () async {
-      final analyticsRepository = HistoryRepository(profileRepository);
-      analyticsRepository.client = MockClient((request) async {
+      goalsRepository = GoalsRepository(profileRepository);
+      goalsRepository.client = MockClient((request) async {
         final mapJson = [
           {
-            'trip_id': 2,
-            'date_time': "20010701T12:30:24",
-            'location': "Fortinos 24",
-            'description': '',
-            'subtotal': "100.00",
-            'total': '100.00',
-            'items': [
-              {
-                'item_id': 1,
-                'item_key': "abcd",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-              {
-                'item_id': 3,
-                'item_key': "wxyz",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-            ],
+            'goal_name': "bob",
+            'goal_desc': "yes",
+            'start_date': "20010701T12:30:24",
+            'end_date': "20010701T12:30:24",
+            'budget': "100.00",
           }
         ];
         return Response(json.encode(mapJson), 200);
       });
-      await analyticsRepository.loadTransactions();
-      expect(analyticsRepository.transactions[0].transactionId, 2);
     });
 
-    test("Test load transactions by id call", () async {
-      final analyticsRepository = HistoryRepository(profileRepository);
-      analyticsRepository.client = MockClient((request) async {
-        final mapJson = [
-          {
-            'trip_id': 2,
-            'date_time': "20010701T12:30:24",
-            'location': "Fortinos 24",
-            'description': '',
-            'subtotal': "100.00",
-            'total': '100.00',
-            'items': [
-              {
-                'item_id': 1,
-                'item_key': "abcd",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-              {
-                'item_id': 3,
-                'item_key': "wxyz",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-            ],
-          }
-        ];
-        return Response(json.encode(mapJson), 200);
-      });
-      await analyticsRepository.loadTransactions();
-      expect(analyticsRepository.transactions[0].transactionId, 2);
+    test("Test get goals", () async {
+      await goalsRepository.loadGoals();
+      expect(goalsRepository.goals.length, 1);
+      expect(goalsRepository.goals[0].goalName, "bob");
     });
 
     test("Test get transactions by id call", () async {
-      final analyticsRepository = HistoryRepository(profileRepository);
-      analyticsRepository.client = MockClient((request) async {
+      final response = await goalsRepository.createGoal(
+          "goalName", "goalDescription", "startDate", "endDate", 20.0);
+      expect(response.statusCode, 200);
+    });
+  });
+
+  group("History Repository Tests", () {
+    late ProfileRepository profileRepository;
+    late HistoryRepository historyRepository;
+
+    setUp(() {
+      profileRepository = ProfileRepository();
+      profileRepository.user
+          .setUser(1, "email", "token", "firstName", "lastName");
+      historyRepository = HistoryRepository(profileRepository);
+      historyRepository.client = MockClient((request) async {
         final mapJson = [
           {
             'trip_id': 2,
@@ -183,49 +136,21 @@ void main() {
         ];
         return Response(json.encode(mapJson), 200);
       });
-      await analyticsRepository.loadTransactions();
-      expect(analyticsRepository.transactions[0].transactionId, 2);
+    });
+
+    test("Test load transactions call", () async {
+      await historyRepository.loadTransactions();
+      expect(historyRepository.transactions[0].transactionId, 2);
+    });
+
+    test("Test get transactions by id call", () async {
+      await historyRepository.loadTransactions();
+      expect(historyRepository.transactions[0].transactionId, 2);
     });
 
     test("Test get transactions by id null call", () async {
-      final analyticsRepository = HistoryRepository(profileRepository);
-      analyticsRepository.client = MockClient((request) async {
-        final mapJson = [
-          {
-            'trip_id': 2,
-            'date_time': "20010701T12:30:24",
-            'location': "Fortinos 24",
-            'description': '',
-            'subtotal': "100.00",
-            'total': '100.00',
-            'items': [
-              {
-                'item_id': 1,
-                'item_key': "abcd",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-              {
-                'item_id': 3,
-                'item_key': "wxyz",
-                'dateTime': "20010701T12:30:24",
-                'price': "1400.00",
-                'location': "Fortinos 24",
-                'isTaxed': true,
-                'category': "cheese",
-                'description': ''
-              },
-            ],
-          }
-        ];
-        return Response(json.encode(mapJson), 200);
-      });
-      await analyticsRepository.loadTransactions();
-      expect(analyticsRepository.getTransactionByIndex(-1), null);
+      await historyRepository.loadTransactions();
+      expect(historyRepository.getTransactionByIndex(-1), null);
     });
   });
 }
