@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/repository/goals_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
@@ -11,7 +12,8 @@ void main() {
     late ProfileRepository profileRepository;
     late GoalsRepository goalsRepository;
 
-    setUp(() {
+    setUp(() async {
+      await dotenv.load(fileName: ".env");
       profileRepository = ProfileRepository();
       profileRepository.user
           .setUser(1, "email", "token", "firstName", "lastName");

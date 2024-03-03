@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
 import 'package:http/http.dart';
@@ -7,6 +8,10 @@ import 'package:http/testing.dart';
 
 void main() {
   group("Profile Repository Tests", () {
+    setUp(() async {
+      await dotenv.load(fileName: ".env");
+    });
+
     /*
     FRT-M10-1
     Initial State: A user account has been created
