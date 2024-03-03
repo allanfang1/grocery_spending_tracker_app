@@ -67,7 +67,6 @@ class ProfileRepository {
               'first_name': firstname,
               'last_name': lastname,
             }));
-    await getUser();
     return response;
   }
 

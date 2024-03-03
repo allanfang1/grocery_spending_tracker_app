@@ -34,6 +34,7 @@ class ProfileController extends _$ProfileController {
     Response response = await ref
         .read(profileRepositoryProvider)
         .updateUser(firstname, lastname); // add redundancy logic
+    await ref.read(profileRepositoryProvider).getUser();
     state = AsyncValue.data(ref.read(profileRepositoryProvider).user);
     return response;
   }
