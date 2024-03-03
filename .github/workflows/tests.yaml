@@ -16,6 +16,6 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       - name: Setup repositories files
-        run: dart run build_runner watch -d
+        run: dart run build_runner
       - name: Run tests
         run: flutter test
