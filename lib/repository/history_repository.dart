@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
@@ -17,7 +18,7 @@ class HistoryRepository {
 
   Future<Response> loadTransactions() async {
     final response = await client.get(
-        Uri.parse(Constants.HOST + Constants.LOAD_TRANSACTIONS_PATH),
+        Uri.parse(dotenv.env['BASE_URL']! + Constants.LOAD_TRANSACTIONS_PATH),
         headers: {'Auth': profileRepository.user.token!});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)

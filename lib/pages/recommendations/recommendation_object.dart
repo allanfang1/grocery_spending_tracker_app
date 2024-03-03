@@ -40,8 +40,8 @@ class _RecommendationObjectState extends State<RecommendationObject> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-          width: MediaQuery.of(context).size.width - 100,
+      child: Container(
+          padding: EdgeInsets.fromLTRB(50, 0, 50, 0),
           child: Card(
             child: Column(
               children: [
@@ -66,10 +66,15 @@ class _RecommendationObjectState extends State<RecommendationObject> {
                         style: const TextStyle(fontWeight: FontWeight.bold))
                   ])),
                 ),
-                Image.network(
-                  "https://fevesclark.ca/media/1055/clark-398ml-maple-style-en.png",
-                  scale: 0.5,
-                ),
+                Container(
+                  child: AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Image.network(
+                      "https://fevesclark.ca/media/1055/clark-398ml-maple-style-en.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
               ],
             ),
           )),

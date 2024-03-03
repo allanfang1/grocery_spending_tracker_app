@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/goal.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
@@ -16,7 +17,7 @@ class GoalsRepository {
 
   Future<Response> loadGoals() async {
     final response = await client.get(
-        Uri.parse(Constants.HOST + Constants.GET_GOALS_PATH),
+        Uri.parse(dotenv.env['BASE_URL']! + Constants.GET_GOALS_PATH),
         headers: {'Auth': profileRepository.user.token!});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
@@ -30,7 +31,7 @@ class GoalsRepository {
   Future<Response> createGoal(String goalName, String goalDescription,
       String startDate, String endDate, double budget) async {
     final response = await client.post(
-        Uri.parse(Constants.HOST + Constants.CREATE_GOALS_PATH),
+        Uri.parse(dotenv.env['BASE_URL']! + Constants.CREATE_GOALS_PATH),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Auth': profileRepository.user.token!

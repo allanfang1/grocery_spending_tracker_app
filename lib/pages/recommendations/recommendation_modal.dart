@@ -31,7 +31,7 @@ class _RecommendationModalState extends State<RecommendationModal> {
     return Column(
       children: [
         SizedBox(
-            height: MediaQuery.of(context).size.height - 450,
+            height: (MediaQuery.of(context).size.width - 100) * 1.3,
             child: PageView.builder(
                 controller: _pageController,
                 itemCount: _pageCount,
