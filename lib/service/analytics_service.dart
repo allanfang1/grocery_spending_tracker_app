@@ -29,8 +29,8 @@ class AnalyticsService {
     for (Goal goal in goals) {
       List<Transaction> transactionsInRange = transactions
           .where((transaction) =>
-              transaction.dateTime!.isAfter(goal.startDate) &&
-              transaction.dateTime!.isBefore(goal.endDate))
+              transaction.dateTime.isAfter(goal.startDate) &&
+              transaction.dateTime.isBefore(goal.endDate))
           .toList();
 
       newLiveGoals.add(LiveGoal(goal, transactionsInRange));
