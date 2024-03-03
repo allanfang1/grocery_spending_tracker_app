@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/confirm_receipt_controller.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
@@ -63,51 +64,41 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     var textValue = TextEditingController();
     textValue.text = _dateTimeString.value;
 
-    return ListTile(
-        title: ValueListenableBuilder<String>(
-            valueListenable: _dateTimeString,
-            builder: (context, String value, Widget? child) {
-              return TextField(
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Date and Time of Purchase',
-                ),
-                controller: textValue,
-              );
-            }),
-        trailing: Material(
-          child: Ink(
-            decoration: ShapeDecoration(
-                color: Colors.purple[50], shape: const CircleBorder()),
-            child: IconButton(
-              onPressed: () {
-                return DatePicker.showDatePicker(context,
-                    pickerTheme: DateTimePickerTheme(
-                        pickerHeight: MediaQuery.of(context).size.height / 2),
-                    dateFormat: 'MMM dd yyyy HH:mm:ss',
-                    initialDateTime:
-                        DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
-                    minDateTime: DateTime(2000),
-                    maxDateTime: DateTime.now(),
-                    onMonthChangeStartWithFirstDate: false,
-                    onConfirm: (DateTime selected, List<int> index) {
-                  setState(() {
-                    _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
-                    _dateTimeString.value = _dateFormat.format(selected);
-                    textValue.text = _dateTimeString.value;
-                  });
+    return ValueListenableBuilder<String>(
+        valueListenable: _dateTimeString,
+        builder: (context, String value, Widget? child) {
+          return TextField(
+            readOnly: true,
+            decoration: const InputDecoration(
+                labelText: Constants.DATE_TIME_LABEL,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: Icon(Icons.calendar_today)),
+            onTap: () {
+              return DatePicker.showDatePicker(context,
+                  pickerTheme: DateTimePickerTheme(
+                      pickerHeight: MediaQuery.of(context).size.height / 2),
+                  dateFormat: 'MMM dd yyyy HH:mm:ss',
+                  initialDateTime:
+                      DateTime.fromMillisecondsSinceEpoch(_dateTime * 1000),
+                  minDateTime: DateTime(2000),
+                  maxDateTime: DateTime.now(),
+                  onMonthChangeStartWithFirstDate: false,
+                  onConfirm: (DateTime selected, List<int> index) {
+                setState(() {
+                  _dateTime = selected.millisecondsSinceEpoch ~/ 1000;
+                  _dateTimeString.value = _dateFormat.format(selected);
+                  textValue.text = _dateTimeString.value;
                 });
-              },
-              icon: const Icon(Icons.edit_calendar_outlined),
-              color: Colors.purple[900],
-            ),
-          ),
-        ));
+              });
+            },
+            controller: textValue,
+          );
+        });
   }
 
   Widget _buildLocation() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Location (Address)'),
+      decoration: const InputDecoration(labelText: Constants.LOCATION_LABEL),
       initialValue: _location,
       validator: (String? value) {
         if (value == null || value.isEmpty) return 'Location is required';
@@ -142,7 +133,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                   builder: (context) {
                     return StatefulBuilder(builder: (context, setState) {
                       return AlertDialog(
-                        title: const Text('Edit Item'),
+                        title: const Text(Constants.EDIT_ITEM_LABEL),
                         content: Stack(
                           clipBehavior: Clip.none,
                           children: [
@@ -165,7 +156,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                   children: [
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Item ID (SKU)'),
+                                          labelText: Constants.ITEM_ID_LABEL),
                                       initialValue: _items[index].itemKey,
                                       keyboardType: TextInputType.number,
                                       onSaved: (String? value) {
@@ -177,7 +168,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                     ),
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Item Name'),
+                                          labelText: Constants.ITEM_NAME_LABEL),
                                       initialValue: _items[index].itemDesc,
                                       validator: (String? value) {
                                         if (value == null || value.isEmpty) {
@@ -193,7 +184,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       },
                                     ),
                                     CheckboxListTile(
-                                      title: const Text('Taxed?'),
+                                      title: const Text(Constants.TAXED_LABEL),
                                       checkColor: Colors.white,
                                       fillColor:
                                           MaterialStateProperty.resolveWith(
@@ -208,7 +199,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                     ),
                                     TextFormField(
                                       decoration: const InputDecoration(
-                                          labelText: 'Price'),
+                                          labelText:
+                                              Constants.ITEM_PRICE_LABEL),
                                       initialValue:
                                           _items[index].price.toString(),
                                       keyboardType:
@@ -242,7 +234,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                             Navigator.of(context).pop();
                                           }
                                         },
-                                        child: const Text('Confirm'))
+                                        child:
+                                            const Text(Constants.CONFIRM_LABEL))
                                   ],
                                 ))
                           ],
@@ -261,7 +254,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         const Padding(
             padding: EdgeInsets.only(top: 15),
             child: Text(
-              'Item List',
+              Constants.ITEM_LIST_LABEL,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline),
@@ -296,7 +289,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildSubtotal() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Subtotal'),
+      decoration:
+          const InputDecoration(labelText: Constants.TRIP_SUBTOTAL_LABEL),
       initialValue: _subtotal.toString(),
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
@@ -309,6 +303,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           return 'Subtotal is required';
         } else if (!priceRegex.hasMatch(value)) {
           return 'Subtotal should follow format X.XX';
+        } else if (!_validateTotal(false)) {
+          return 'Sum of item prices should equal subtotal';
         }
         return null;
       },
@@ -322,7 +318,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildTotal() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Total'),
+      decoration: const InputDecoration(labelText: Constants.TRIP_TOTAL_LABEL),
       initialValue: _total.toString(),
       keyboardType: const TextInputType.numberWithOptions(
         decimal: true,
@@ -335,6 +331,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           return 'Total is required';
         } else if (!priceRegex.hasMatch(value)) {
           return 'Total should follow format X.XX';
+        } else if (!_validateTotal(true)) {
+          return 'Sum of taxed item prices should equal total';
         }
         return null;
       },
@@ -348,7 +346,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
 
   Widget _buildTripDesc() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: 'Trip Description'),
+      decoration: const InputDecoration(labelText: Constants.TRIP_DESC_LABEL),
       initialValue: _tripDesc,
       onChanged: (String? value) {
         setState(() {
@@ -358,11 +356,29 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  bool _validateTotal(bool includeTax) {
+    double localTotal = 0.00;
+
+    for (Item item in _items) {
+      if (item.itemDesc != 'USER REMOVED') {
+        if (!includeTax || !item.taxed) {
+          localTotal += item.price;
+        } else if (includeTax && item.taxed) {
+          localTotal += double.parse((item.price * 1.13).toStringAsFixed(2));
+        }
+      }
+    }
+
+    if (includeTax) return _total == localTotal;
+
+    return _subtotal == localTotal;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Confirm Scanned Receipt'),
+        title: const Text(Constants.CONFIRM_RECEIPT_LABEL),
       ),
       body: Container(
         margin: const EdgeInsets.all(24.0),
@@ -393,7 +409,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                 )
                               }
                           },
-                      child: const Text('Confirm Receipt'))
+                      child: const Text(Constants.CONFIRM_LABEL))
                 ],
               )),
         ),
@@ -405,15 +421,21 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
             _itemFields.add(_buildItem(context, _items.length - 1));
           });
         },
-        child: const Text('NEW\nITEM'),
+        child: const Text(Constants.NEW_ITEM_LABEL),
       ),
     );
   }
 
   Future<void> handleSubmit() async {
-    final navigator = Navigator.of(context);
+    final loading = LoadingOverlay.of(context);
+    final navigator = Navigator.of(context, rootNavigator: true);
     final scaffold = ScaffoldMessenger.of(context);
     List<Item> updatedItems = [];
+
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+
+    loading.show();
 
     for (Item item in _items) {
       if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
@@ -431,9 +453,13 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         content: Text('Receipt submitted successfully.'),
       ));
 
-      await navigator
-          .push(MaterialPageRoute(builder: (context) => const HomePage()));
+      loading.hide();
+
+      await navigator.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const AppNavigation()),
+          (route) => false);
     } else {
+      loading.hide();
       scaffold.showSnackBar(const SnackBar(
         content: Text('An error occurred submitting the receipt.'),
       ));

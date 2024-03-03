@@ -14,7 +14,7 @@ class GoalsRepository {
 
   List<Goal> goals = [];
 
-  Future<Response> getGoals() async {
+  Future<Response> loadGoals() async {
     final response = await client.get(
         Uri.parse(Constants.HOST + Constants.GET_GOALS_PATH),
         headers: {'Auth': profileRepository.user.token!});
@@ -27,15 +27,24 @@ class GoalsRepository {
     return response;
   }
 
-  Future<Response> createGoals(
-      DateTime startDate, DateTime endDate, double budget) async {
+  Future<Response> createGoal(String goalName, String goalDescription,
+      String startDate, String endDate, double budget) async {
     final response = await client.post(
         Uri.parse(Constants.HOST + Constants.CREATE_GOALS_PATH),
-        headers: {'Auth': profileRepository.user.token!},
-        body: jsonEncode(
-            {'start_date': startDate, 'end_date': endDate, 'budget': budget}));
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Auth': profileRepository.user.token!
+        },
+        body: jsonEncode({
+          'goal_name': goalName,
+          'goal_description': goalDescription,
+          'start_date': startDate,
+          'end_date': endDate,
+          'budget': budget
+        }));
     if (response.statusCode == 200) {
       print(response.body);
+      await loadGoals();
     }
     return response;
   }

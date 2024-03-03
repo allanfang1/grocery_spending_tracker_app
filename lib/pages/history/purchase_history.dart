@@ -4,7 +4,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
 import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
-import 'package:grocery_spending_tracker_app/pages/receipt_view.dart';
+import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 
 // ignore_for_file: prefer_const_constructors
 
@@ -20,12 +20,12 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY_LABEL),
+          title: Text(Constants.PURCHASE_HISTORY),
         ),
         body: Center(
           child: Container(
             margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: ListView.builder(
+            child: _transactions.isNotEmpty ? ListView.builder(
               padding: EdgeInsets.only(top: 14),
               itemCount: _transactions.length,
               prototypeItem: Card(
@@ -97,6 +97,10 @@ class PurchaseHistory extends ConsumerWidget {
                   ),
                 );
               },
+            ) : Text(
+              'You don\'t have any trips yet.',
+              style: TextStyle(
+                  fontStyle: FontStyle.italic, color: Colors.grey),
             ),
           ),
         ),
@@ -107,7 +111,7 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY_LABEL),
+          title: Text(Constants.PURCHASE_HISTORY),
         ),
         body: Center(
           child: Container(

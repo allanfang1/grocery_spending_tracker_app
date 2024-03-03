@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
-import 'package:grocery_spending_tracker_app/pages/login.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
+import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -126,16 +127,24 @@ class _RegisterPage extends State<RegisterPage> {
                               ? () async {
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
+                                  final loading = LoadingOverlay.of(context);
+
+                                  loading.show();
+
                                   final response = await ref
                                       .read(profileControllerProvider.notifier)
                                       .register(_firstname!, _lastname!,
                                           _email!, _password!);
+
+                                  loading.hide();
+
                                   if (context.mounted) {
                                     if (response.statusCode == 200) {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const LoginPage(),
+                                              const LoadingOverlay(
+                                                  child: LoginPage()),
                                         ),
                                       );
                                     } else {
@@ -157,7 +166,8 @@ class _RegisterPage extends State<RegisterPage> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
+                        builder: (context) => const LoadingOverlay(
+                            child: LoginPage()),
                       ),
                     );
                   },

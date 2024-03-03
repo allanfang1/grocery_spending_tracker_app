@@ -4,15 +4,13 @@ import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 
 class FormatReceipt {
   GroceryTrip formatGroceryTrip(List<String> receipt) {
-    int userId = 123; // TODO
     int dateTime = ExtractData().getDateTime(receipt);
     String location = ExtractData().getLocation(receipt);
     List<Item> groceries = _formatItems(receipt);
     double subtotal = _formatPrice(ExtractData().getSubtotal(receipt));
     double total = _formatPrice(ExtractData().getTotal(receipt));
 
-    return GroceryTrip(
-        userId, dateTime, location, groceries, subtotal, total, "");
+    return GroceryTrip(dateTime, location, groceries, subtotal, total, "");
   }
 
   // for formatting String items into Item object

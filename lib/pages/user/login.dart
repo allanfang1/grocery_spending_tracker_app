@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:grocery_spending_tracker_app/pages/register.dart';
+import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
+import 'package:grocery_spending_tracker_app/pages/user/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
-import 'package:grocery_spending_tracker_app/pages/home.dart';
+import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:flutter/material.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -108,16 +109,25 @@ class LoginPageState extends ConsumerState<LoginPage> {
                     OutlinedButton(
                       onPressed: _enableBtn ?? false
                           ? () async {
+                              FocusScope.of(context).unfocus();
+                              final loading = LoadingOverlay.of(context);
+
                               _formKey.currentState!.save();
                               setState(() => _enableBtn = false);
+
+                              loading.show();
+
                               final response = await ref
                                   .watch(profileControllerProvider.notifier)
                                   .login(_email!, _password!);
+
+                              loading.hide();
+
                               if (response.statusCode == 200 &&
                                   context.mounted) {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => const HomePage(),
+                                    builder: (context) => AppNavigation(),
                                   ),
                                 );
                               } else {
@@ -134,7 +144,8 @@ class LoginPageState extends ConsumerState<LoginPage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
+                              builder: (context) => const LoadingOverlay(
+                                  child: RegisterPage()),
                             ),
                           );
                         },
