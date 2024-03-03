@@ -14,7 +14,7 @@ class AnalyticsService {
   List<LiveGoal> liveGoals = [];
 
   Future<void> refreshGoals() async {
-    await ref.watch(goalsRepositoryProvider).getGoals();
+    await ref.watch(goalsRepositoryProvider).loadGoals();
   }
 
   Future<void> refreshTransactions() async {

@@ -80,7 +80,7 @@ void main() {
     });
 
     test("Test get goals", () async {
-      await goalsRepository.getGoals();
+      await goalsRepository.loadGoals();
       expect(goalsRepository.goals.length, 1);
       expect(goalsRepository.goals[0].goalName, "bob");
     });

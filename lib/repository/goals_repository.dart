@@ -14,7 +14,7 @@ class GoalsRepository {
 
   List<Goal> goals = [];
 
-  Future<Response> getGoals() async {
+  Future<Response> loadGoals() async {
     final response = await client.get(
         Uri.parse(Constants.HOST + Constants.GET_GOALS_PATH),
         headers: {'Auth': profileRepository.user.token!});
@@ -44,7 +44,7 @@ class GoalsRepository {
         }));
     if (response.statusCode == 200) {
       print(response.body);
-      await getGoals();
+      await loadGoals();
     }
     return response;
   }
