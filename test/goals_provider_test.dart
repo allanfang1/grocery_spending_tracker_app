@@ -33,7 +33,7 @@ void main() {
     });
 
     /*
-    FRT-M9-5
+    FRT-M5-4
     Initial State: A user is successfully logged in
     Input: n/a
     Output: List of all goals of the user
@@ -46,7 +46,7 @@ void main() {
     });
 
     /*
-    FRT-M9-4
+    FRT-M5-5
     Initial State: A user is successfully logged in
     Input: Goal name, description, start date, end date, budget
     Output: Success of goal creation

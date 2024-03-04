@@ -38,7 +38,7 @@ class GoalsRepository {
         },
         body: jsonEncode({
           'goal_name': goalName,
-          'goal_description': goalDescription,
+          'goal_desc': goalDescription,
           'start_date': startDate,
           'end_date': endDate,
           'budget': budget
