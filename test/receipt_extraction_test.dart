@@ -405,7 +405,7 @@ void main() {
      */
     test('Item can be updated', () {
       Item test = Item('1', 'ProductOne', 3.99, true);
-      test.updateItem(null, 'Updated Name', 5.99, null);
+      test.updateItem(null, 'Updated Name', 5.99, null, null);
       expect(_isMatch(test, Item('1', 'Updated Name', 5.99, true)), true);
     });
 
