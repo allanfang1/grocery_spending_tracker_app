@@ -162,7 +162,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       onSaved: (String? value) {
                                         setState(() {
                                           _items[index].updateItem(
-                                              value!, null, null, null);
+                                              value!, null, null, null, null);
                                         });
                                       },
                                     ),
@@ -179,7 +179,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       onSaved: (String? value) {
                                         setState(() {
                                           _items[index].updateItem(
-                                              null, value!, null, null);
+                                              null, value!, null, null, null);
                                         });
                                       },
                                     ),
@@ -193,7 +193,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       onChanged: (bool? value) {
                                         setState(() {
                                           _items[index].updateItem(
-                                              null, null, null, value!);
+                                              null, null, null, value!, null);
                                         });
                                       },
                                     ),
@@ -221,7 +221,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                       onSaved: (String? value) {
                                         setState(() {
                                           _items[index].updateItem(null, null,
-                                              double.parse(value!), null);
+                                              double.parse(value!), null, null);
                                         });
                                       },
                                     ),
@@ -274,10 +274,23 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
               ),
               key: UniqueKey(),
               onDismissed: (DismissDirection direction) {
+                Widget deletedField = _itemFields[index];
                 setState(() {
-                  _items[index].updateItem(null, 'USER REMOVED', null, null);
+                  _items[index].updateItem(null, null, null, null, true);
                   _itemFields[index] = Container();
                 });
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Deleted ${_items[index].itemDesc}'),
+                    action: SnackBarAction(
+                      label: 'UNDO',
+                      onPressed: () {
+                        setState(() {
+                          _itemFields[index] = deletedField;
+                          _items[index]
+                              .updateItem(null, null, null, null, false);
+                        });
+                      },
+                    )));
               },
               child: _itemFields[index],
             );
@@ -360,7 +373,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     double localTotal = 0.00;
 
     for (Item item in _items) {
-      if (item.itemDesc != 'USER REMOVED') {
+      if (!item.deleted) {
         if (!includeTax || !item.taxed) {
           localTotal += item.price;
         } else if (includeTax && item.taxed) {
@@ -369,9 +382,10 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
       }
     }
 
-    if (includeTax) return _total == localTotal;
-
-    return _subtotal == localTotal;
+    if (includeTax) {
+      return _total == double.parse(localTotal.toStringAsFixed(2));
+    }
+    return _subtotal == double.parse(localTotal.toStringAsFixed(2));
   }
 
   @override
@@ -438,7 +452,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     loading.show();
 
     for (Item item in _items) {
-      if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
+      if (!item.deleted) updatedItems.add(item);
     }
 
     widget.tripData.updateGroceryTrip(
