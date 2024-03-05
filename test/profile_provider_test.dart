@@ -13,7 +13,7 @@ void main() {
     });
 
     /*
-    FRT-M10-1
+    FRT-M7-1
     Initial State: A user account has been created
     Input: The correct credentials (email, password)
     Output: A temporary authentication JSON web token
@@ -32,7 +32,7 @@ void main() {
     });
 
     /*
-    FRT-M10-2
+    FRT-M7-2
     Initial State: A user account has not been created
     Input: Credentials that do not exist in the database (email, password)
     Output: A temporary authentication JSON web token
@@ -50,7 +50,7 @@ void main() {
     });
 
     /*
-    FRT-M10-3
+    FRT-M7-3
     Initial State: User profile has changed while user is logged in
     Input: n/a 
     Output: User profile (email, firstname, lastname)
@@ -71,7 +71,7 @@ void main() {
     });
 
     /*
-    FRT-M10-4
+    FRT-M7-4
     Initial State: n/a
     Input: First name, last name, email, password
     Output: User profile created
@@ -88,7 +88,7 @@ void main() {
     });
 
     /*
-    FRT-M10-5
+    FRT-M7-5
     Initial State: Existing valid user profile currently logged in
     Input: First name, last name
     Output: Confirmation of success

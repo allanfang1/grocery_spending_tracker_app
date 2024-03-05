@@ -150,22 +150,46 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             width: 20 * chartData['barCount'] as double,
             child: BarChart(
               BarChartData(
-                maxY: chartData['maxY'],
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                    leftTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 25,
-                            getTitlesWidget: chartData['bottomTitleFunc']))),
-                barGroups: chartData['barGroups'],
-              ),
+                  maxY: chartData['maxY'],
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                      leftTitles:
+                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles:
+                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles:
+                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 25,
+                              getTitlesWidget: chartData['bottomTitleFunc']))),
+                  barGroups: chartData['barGroups'],
+                  barTouchData:
+                      BarTouchData(touchTooltipData: BarTouchTooltipData(
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final color = rod.gradient?.colors.first ?? rod.color;
+                      final textStyle = TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      );
+                      return BarTooltipItem(
+                          Helper.currencyFormat(rod.toY), textStyle,
+                          children: [
+                            TextSpan(
+                                text: '\n' +
+                                    Helper.dateTimeToString(liveGoal
+                                        .goal.startDate
+                                        .subtract(Duration(
+                                            days: liveGoal
+                                                    .goal.startDate.weekday %
+                                                7))
+                                        .add(Duration(
+                                            days: (7 * group.x).toInt()))))
+                          ]);
+                    },
+                  ))),
             ),
           ),
         ),

@@ -56,7 +56,7 @@ void main() {
     });
 
     /*
-    FRT-M9-1
+    FRT-M5-1
     Initial State: A user is successfully logged in
     Input: n/a
     Output: List of all transactions of the user ordered by recency 
@@ -68,7 +68,7 @@ void main() {
     });
 
     /*
-    FRT-M9-2
+    FRT-M5-2
     Initial State: A user is successfully logged in
     Input: Index number
     Output: Transaction instance
@@ -80,7 +80,7 @@ void main() {
     });
 
     /*
-    FRT-M9-3
+    FRT-M5-3
     Initial State: A user is successfully logged in
     Input: Index number
     Output: null

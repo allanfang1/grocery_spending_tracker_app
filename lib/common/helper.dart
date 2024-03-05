@@ -14,6 +14,6 @@ class Helper {
   }
 
   static String dateTimeToString(DateTime? dateTime) {
-    return dateTime != null ? DateFormat('MMM dd yyyy').format(dateTime) : "";
+    return dateTime != null ? DateFormat('MMM d yyyy').format(dateTime) : "";
   }
 }
