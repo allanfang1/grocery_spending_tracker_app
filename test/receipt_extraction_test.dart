@@ -4,6 +4,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 void main() {
   // Unit tests to verify DateTime extraction from strings/receipt text
@@ -419,7 +420,8 @@ void main() {
     test('Item to  JSON conversion is working', () {
       Item test = Item('1', 'ProductOne', 3.99, true);
       String json = jsonEncode(test);
-      expect(json, '{"item_key":"1","item_desc":"ProductOne","price":3.99,"taxed":true}');
+      expect(json,
+          '{"item_key":"1","item_desc":"ProductOne","price":3.99,"taxed":true}');
     });
 
     /**
@@ -462,15 +464,20 @@ void main() {
      * Output: The JSON form of the Grocery Trip.
      * Derivation: A user tries to submit their grocery trip to the backend.
      */
-    test('Grocery Trip can be updated', () {
+    test('Grocery Trip to JSON Conversion is Working', () {
       GroceryTrip trip = GroceryTrip(1706830924, 'FORTINOS (1579 Main Street)',
           [Item('1', 'Product0', 3.89, false)], 3.89, 3.89, '');
       String json = jsonEncode(trip);
 
-      expect(json,
-          '{"date_time":"2024-02-01 18:42:04","location":"FORTINOS (1579 Main Street)",'
-              '"items":[{"item_key":"1","item_desc":"Product0","price":3.89,"taxed":false}],'
-              '"subtotal":3.89,"total":3.89,"trip_desc":""}');
+      final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String expectedDateTime = dateFormat
+          .format(DateTime.fromMillisecondsSinceEpoch(1706830924 * 1000));
+
+      expect(
+          json,
+          '{"date_time":"$expectedDateTime","location":"FORTINOS (1579 Main Street)",'
+          '"items":[{"item_key":"1","item_desc":"Product0","price":3.89,"taxed":false}],'
+          '"subtotal":3.89,"total":3.89,"trip_desc":""}');
     });
   });
 }
