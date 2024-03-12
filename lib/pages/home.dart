@@ -22,13 +22,13 @@ class HomePage extends ConsumerWidget {
       },
     );
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(Constants.APP_NAME),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(Constants.APP_NAME),
+          automaticallyImplyLeading: false,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
             physics: ClampingScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -64,8 +64,8 @@ class HomePage extends ConsumerWidget {
                 ),
                 RecommendationModal(),
               ],
-            )),
-      ),
-    );
+            ),
+          ),
+        ));
   }
 }
