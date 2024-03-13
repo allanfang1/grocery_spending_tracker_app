@@ -4,6 +4,7 @@ import 'package:grocery_spending_tracker_app/model/live_goal.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/repository/goals_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
+import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'analytics_service.g.dart';
@@ -36,6 +37,14 @@ class AnalyticsService {
       newLiveGoals.add(LiveGoal(goal, transactionsInRange));
     }
     liveGoals = newLiveGoals;
+  }
+
+  Future<void> deleteGoal(int index) async {
+    Response response =
+        await ref.watch(goalsRepositoryProvider).deleteGoal(index);
+    if (response.statusCode == 200) {
+      liveGoals.removeAt(index);
+    }
   }
 }
 

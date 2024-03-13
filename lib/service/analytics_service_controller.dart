@@ -27,4 +27,11 @@ class AnalyticsServiceController extends _$AnalyticsServiceController {
   LiveGoal getLiveGoalByIndex() {
     return ref.read(analyticsServiceProvider).liveGoals[selectedIndex];
   }
+
+  Future<void> deleteGoal(int index) async {
+    final analyticsService = ref.read(analyticsServiceProvider);
+    // state = const AsyncLoading();
+    await analyticsService.deleteGoal(index);
+    state = AsyncValue.data(analyticsService.liveGoals);
+  }
 }

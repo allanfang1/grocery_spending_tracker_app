@@ -9,6 +9,7 @@ class Constants {
   static const String LOAD_TRANSACTIONS_PATH = "/users/trip/";
   static const String GET_GOALS_PATH = "/users/goal/";
   static const String CREATE_GOALS_PATH = "/users/goal/";
+  static const String DELETE_GOALS_PATH = "/users/goal/";
 
   //app name
   static const String APP_NAME = "Grocery Spending Tracker";
