@@ -4,11 +4,10 @@ class Recommendation {
   String price;
   String imageUrl;
   String location;
-  String dateTime;
-  String frequency;
+  DateTime dateTime;
 
   Recommendation(this.itemKey, this.itemName, this.price, this.imageUrl,
-      this.location, this.dateTime, this.frequency);
+      this.location, this.dateTime);
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
     return Recommendation(
@@ -17,9 +16,7 @@ class Recommendation {
       json['price'],
       json['image_url'],
       json['location'],
-      json['date_time'],
-      json['frequency']
+      DateTime.parse(json['date_time']),
     );
   }
-
 }
