@@ -44,8 +44,19 @@ class GoalsRepository {
           'budget': budget
         }));
     if (response.statusCode == 200) {
-      print(response.body);
       await loadGoals();
+    }
+    return response;
+  }
+
+  Future<Response> deleteGoal(int index) async {
+    final response = await client.delete(
+        Uri.parse(dotenv.env['BASE_URL']! +
+            Constants.DELETE_GOALS_PATH +
+            goals[index].goalId.toString()),
+        headers: {'Auth': profileRepository.user.token!});
+    if (response.statusCode == 200) {
+      goals.removeAt(index);
     }
     return response;
   }

@@ -21,6 +21,7 @@ void main() {
       goalsRepository.client = MockClient((request) async {
         final mapJson = [
           {
+            'goal_id': 1,
             'goal_name': "bob",
             'goal_desc': "yes",
             'start_date': "20010701T12:30:24",

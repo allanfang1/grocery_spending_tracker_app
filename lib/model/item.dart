@@ -11,7 +11,6 @@ class Item {
       this.category, this.description);
 
   factory Item.fromJson(Map<String, dynamic> json) {
-    print(json);
     return Item(
       json['item_id'] as int?,
       json['item_key'] as String?,

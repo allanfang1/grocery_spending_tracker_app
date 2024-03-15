@@ -29,98 +29,121 @@ class GoalsList extends ConsumerWidget {
                 ? ListView.builder(
                     padding: EdgeInsets.only(top: 14),
                     itemCount: liveGoals.length,
-                    prototypeItem: GestureDetector(
-                      onTap: () {},
-                      child: Card(
-                        margin: EdgeInsets.only(bottom: 14),
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "placeholder",
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.ideographic,
-                                children: [
-                                  Text(
-                                    "0",
-                                    style: TextStyle(
-                                        fontSize: 28), //fix this to be dynamic
-                                  ),
+                    prototypeItem: Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Dismissible(
+                          key: Key("placeholder"),
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
                                   Text(
                                     "placeholder",
                                     overflow: TextOverflow.ellipsis,
-                                  )
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.ideographic,
+                                    children: [
+                                      Text(
+                                        "0",
+                                        style: TextStyle(
+                                            fontSize:
+                                                28), //fix this to be dynamic
+                                      ),
+                                      Text(
+                                        "placeholder",
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 6),
+                                  LinearProgressIndicator(
+                                    value: 0,
+                                    minHeight: 10,
+                                  ),
+                                  SizedBox(height: 6),
+                                  Text("placeholder")
                                 ],
                               ),
-                              SizedBox(height: 6),
-                              LinearProgressIndicator(
-                                value: 0,
-                                minHeight: 10,
-                              ),
-                              SizedBox(height: 6),
-                              Text("placeholder")
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                     itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          ref
-                              .watch(
-                                  analyticsServiceControllerProvider.notifier)
-                              .selectedIndex = index;
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoadingOverlay(child: ExpandedGoal()),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          margin: EdgeInsets.only(bottom: 14),
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  liveGoals[index].goal.goalName,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.ideographic,
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: Dismissible(
+                            key: Key(index.toString()),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              ref
+                                  .watch(analyticsServiceControllerProvider
+                                      .notifier)
+                                  .deleteGoal(index);
+                            },
+                            background: Container(color: Colors.red),
+                            child: GestureDetector(
+                              onTap: () {
+                                ref
+                                    .watch(analyticsServiceControllerProvider
+                                        .notifier)
+                                    .selectedIndex = index;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoadingOverlay(
+                                        child: ExpandedGoal()),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                color: Color.fromARGB(255, 250, 240, 255),
+                                padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      Helper.currencyFormat(
-                                          liveGoals[index].spendingTotal),
-                                      style: TextStyle(
-                                          fontSize:
-                                              28), //fix this to be dynamic
-                                    ),
-                                    Text(
-                                      " spent / ${Helper.currencyFormat(liveGoals[index].goal.budget - liveGoals[index].spendingTotal)} remaining",
+                                      liveGoals[index].goal.goalName,
                                       overflow: TextOverflow.ellipsis,
-                                    )
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.ideographic,
+                                      children: [
+                                        Text(
+                                          Helper.currencyFormat(
+                                              liveGoals[index].spendingTotal),
+                                          style: TextStyle(
+                                              fontSize:
+                                                  28), //fix this to be dynamic
+                                        ),
+                                        Text(
+                                          " spent / ${Helper.currencyFormat(liveGoals[index].goal.budget - liveGoals[index].spendingTotal)} remaining",
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 6),
+                                    LinearProgressIndicator(
+                                      value: liveGoals[index].progressPercent,
+                                      minHeight: 10,
+                                    ),
+                                    SizedBox(height: 6),
+                                    Text(
+                                        "${liveGoals[index].daysRemaining} days left")
                                   ],
                                 ),
-                                SizedBox(height: 6),
-                                LinearProgressIndicator(
-                                  value: liveGoals[index].progressPercent,
-                                  minHeight: 10,
-                                ),
-                                SizedBox(height: 6),
-                                Text(
-                                    "${liveGoals[index].daysRemaining} days left")
-                              ],
+                              ),
                             ),
                           ),
                         ),
