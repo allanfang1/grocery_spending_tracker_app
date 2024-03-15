@@ -39,11 +39,30 @@ class RecommendationModal extends ConsumerWidget {
                         }
                       },
                     ),
-                    title: Text(rec.itemName),
-                    subtitle: Text('Purchased for ${rec.price}'),
+                    title: Text(
+                      rec.itemName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('Purchased for \$${rec.price}'),
                     children: <Widget>[
-                      Text('Purchase Date:'),
-                      Text('Purchase Location: ${rec.location}')
+                      const SizedBox(height: 10),
+                      RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                              style: const TextStyle(color: Colors.black),
+                              children: [
+                            const TextSpan(text: 'Product purchased at '),
+                            TextSpan(
+                                text: rec.location,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            const TextSpan(text: ' on '),
+                            TextSpan(
+                                text: '${rec.dateTime}.',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold))
+                          ])),
+                      const SizedBox(height: 10),
                     ],
                   ));
                 },
