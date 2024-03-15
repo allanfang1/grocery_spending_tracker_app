@@ -55,6 +55,10 @@ class RecommendationsRepository {
   List<Recommendation> getRecommendations() {
     return recommendations;
   }
+
+  void logout() {
+    recommendations = [];
+  }
 }
 
 @Riverpod(keepAlive: true)

@@ -28,4 +28,8 @@ class RecommendationsController extends _$RecommendationsController {
   List<Recommendation> getRecommendations() {
     return ref.read(recommendationsRepositoryProvider).getRecommendations();
   }
+
+  void logout() {
+    return ref.read(recommendationsRepositoryProvider).logout();
+  }
 }

@@ -78,7 +78,13 @@ class RecommendationModal extends ConsumerWidget {
     }, loading: () {
       return Container(
         margin: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: const CircularProgressIndicator(),
+        child: const SizedBox(
+          height: 50,
+          width: 50,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
       );
     });
   }

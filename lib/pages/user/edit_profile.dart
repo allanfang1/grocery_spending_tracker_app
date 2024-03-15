@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
+import 'package:grocery_spending_tracker_app/controller/recommendations_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -32,6 +33,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
           IconButton(
               onPressed: () {
                 ref.watch(profileControllerProvider.notifier).logout();
+                ref.watch(recommendationsControllerProvider.notifier).logout();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (BuildContext context) {
                   return const LoadingOverlay(child: LoginPage());
