@@ -17,7 +17,6 @@ class ReceiptView extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_transaction.transactionId.toString()),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: Card(
         margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
