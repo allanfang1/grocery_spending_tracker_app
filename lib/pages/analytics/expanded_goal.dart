@@ -22,6 +22,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _tabIndex = 0;
+  int _showingTooltip = -1;
 
   @override
   void dispose() {
@@ -40,8 +41,19 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     if (_tabController.indexIsChanging) {
       setState(() {
         _tabIndex = _tabController.index;
+        _showingTooltip = -1;
       });
     }
+  }
+
+  BarChartGroupData generateGroupData(int x, double y) {
+    return BarChartGroupData(
+      x: x,
+      showingTooltipIndicators: _showingTooltip == x ? [0] : [],
+      barRods: [
+        BarChartRodData(toY: y),
+      ],
+    );
   }
 
   Map<String, dynamic> chartDataDay(LiveGoal liveGoal, int labelFreq) {
@@ -62,8 +74,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         }
       }
       maxY = max(barLen, maxY);
-      barGroups.add(BarChartGroupData(
-          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
+      barGroups.add(generateGroupData(resultCounter, barLen));
       resultCounter += 1;
     }
     double barCount = resultCounter.toDouble();
@@ -111,8 +122,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         }
       }
       maxY = max(barLen, maxY);
-      barGroups.add(BarChartGroupData(
-          x: resultCounter, barRods: [BarChartRodData(toY: barLen)]));
+      barGroups.add(generateGroupData(resultCounter, barLen));
       startDate = startDate.add(Duration(days: 7));
       resultCounter += 1;
     }
@@ -165,31 +175,52 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                               reservedSize: 25,
                               getTitlesWidget: chartData['bottomTitleFunc']))),
                   barGroups: chartData['barGroups'],
-                  barTouchData:
-                      BarTouchData(touchTooltipData: BarTouchTooltipData(
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      final color = rod.gradient?.colors.first ?? rod.color;
-                      final textStyle = TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      );
-                      return BarTooltipItem(
-                          Helper.currencyFormat(rod.toY), textStyle,
-                          children: [
-                            TextSpan(
-                                text: '\n' +
-                                    Helper.dateTimeToString(liveGoal
-                                        .goal.startDate
-                                        .subtract(Duration(
-                                            days: liveGoal
-                                                    .goal.startDate.weekday %
-                                                7))
-                                        .add(Duration(
-                                            days: (7 * group.x).toInt()))))
-                          ]);
-                    },
-                  ))),
+                  barTouchData: BarTouchData(
+                      handleBuiltInTouches: false,
+                      touchCallback: (FlTouchEvent event,
+                          BarTouchResponse? touchResponse) {
+                        if (touchResponse == null ||
+                            touchResponse.spot == null) {
+                          setState(() {
+                            _showingTooltip = -1;
+                          });
+                        } else if (event is FlTapUpEvent) {
+                          final sectionIndex =
+                              touchResponse.spot!.touchedBarGroupIndex;
+                          setState(() {
+                            if (_showingTooltip == sectionIndex) {
+                              _showingTooltip = -1;
+                            } else {
+                              _showingTooltip = sectionIndex;
+                            }
+                          });
+                        }
+                      },
+                      touchTooltipData: BarTouchTooltipData(
+                        fitInsideVertically: true,
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          final color = rod.gradient?.colors.first ?? rod.color;
+                          final textStyle = TextStyle(
+                            color: color,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          );
+                          return BarTooltipItem(
+                              Helper.currencyFormat(rod.toY), textStyle,
+                              children: [
+                                TextSpan(
+                                    text: '\n' +
+                                        Helper.dateTimeToString(liveGoal
+                                            .goal.startDate
+                                            .subtract(Duration(
+                                                days: liveGoal.goal.startDate
+                                                        .weekday %
+                                                    7))
+                                            .add(Duration(
+                                                days: (7 * group.x).toInt()))))
+                              ]);
+                        },
+                      ))),
             ),
           ),
         ),
@@ -218,107 +249,115 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         title: Text(liveGoal.goal.goalName),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Card(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Text(liveGoal.goal.goalDescription),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-                child: DefaultTabController(
-                  animationDuration: Duration.zero,
-                  length: 2, // Number of tabs
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      TabBar(
-                        controller: _tabController,
-                        labelColor: Colors.deepPurple,
-                        unselectedLabelColor: Colors.grey,
-                        labelStyle: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w500),
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                        tabs: const [
-                          Tab(
-                            height: 32,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text("Day"),
-                            ),
-                          ),
-                          Tab(
-                            height: 32,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text("Week"),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
-                        child: [
-                          getGraph(liveGoal, 3, chartDataDay),
-                          getGraph(liveGoal, 3, chartDataWeek),
-                        ][_tabIndex],
-                      )
-                    ],
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          setState(() {
+            _showingTooltip = -1;
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Card(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: Text(liveGoal.goal.goalDescription),
                   ),
                 ),
-              ),
-              Card(
-                margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Text(
-                            Helper.currencyFormat(liveGoal.spendingTotal),
-                            style: TextStyle(
-                                fontSize: 28), //fix this to be dynamic
-                          ),
-                          Text(
-                            " spent",
-                          )
-                        ],
-                      ),
-                      LinearProgressIndicator(
-                        value: liveGoal.progressPercent,
-                        minHeight: 10,
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(Helper.currencyFormat(0)),
-                          SizedBox(width: 16),
-                          Flexible(
-                            child: Text(
-                              Helper.currencyFormat(liveGoal.goal.budget),
-                              overflow: TextOverflow.ellipsis,
+                Card(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  child: DefaultTabController(
+                    animationDuration: Duration.zero,
+                    length: 2, // Number of tabs
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TabBar(
+                          controller: _tabController,
+                          labelColor: Colors.deepPurple,
+                          unselectedLabelColor: Colors.grey,
+                          labelStyle: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w500),
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                          tabs: const [
+                            Tab(
+                              height: 32,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text("Day"),
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                    ],
+                            Tab(
+                              height: 32,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text("Week"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
+                          child: [
+                            getGraph(liveGoal, 3, chartDataDay),
+                            getGraph(liveGoal, 3, chartDataWeek),
+                          ][_tabIndex],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Card(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.ideographic,
+                          children: [
+                            Text(
+                              Helper.currencyFormat(liveGoal.spendingTotal),
+                              style: TextStyle(
+                                  fontSize: 28), //fix this to be dynamic
+                            ),
+                            Text(
+                              " spent",
+                            )
+                          ],
+                        ),
+                        LinearProgressIndicator(
+                          value: liveGoal.progressPercent,
+                          minHeight: 10,
+                        ),
+                        SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(Helper.currencyFormat(0)),
+                            SizedBox(width: 16),
+                            Flexible(
+                              child: Text(
+                                Helper.currencyFormat(liveGoal.goal.budget),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
