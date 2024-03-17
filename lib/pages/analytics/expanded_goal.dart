@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocery_spending_tracker_app/common/helper.dart';
+import 'package:grocery_spending_tracker_app/controller/history_controller.dart';
 import 'package:grocery_spending_tracker_app/model/live_goal.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
+import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
 // ignore_for_file: prefer_const_constructors
@@ -155,7 +156,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
           scrollDirection: Axis.horizontal,
           reverse: true,
           child: Container(
-            padding: EdgeInsets.fromLTRB(3, 10, 0, 0),
+            padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
             height: 350,
             width: 20 * chartData['barCount'] as double,
             child: BarChart(
@@ -179,7 +180,9 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                       handleBuiltInTouches: false,
                       touchCallback: (FlTouchEvent event,
                           BarTouchResponse? touchResponse) {
-                        if (touchResponse == null ||
+                        if (touchResponse == null) {
+                          return;
+                        } else if (event is FlTapUpEvent &&
                             touchResponse.spot == null) {
                           setState(() {
                             _showingTooltip = -1;
@@ -197,17 +200,23 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         }
                       },
                       touchTooltipData: BarTouchTooltipData(
-                        fitInsideVertically: true,
+                        fitInsideHorizontally: true,
+                        tooltipPadding: EdgeInsets.fromLTRB(8, 2, 8, 1),
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
                           final color = rod.gradient?.colors.first ?? rod.color;
                           final textStyle = TextStyle(
                             color: color,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 14,
                           );
                           return BarTooltipItem(
-                              Helper.currencyFormat(rod.toY), textStyle,
+                              textAlign: TextAlign.start,
+                              "TOTAL",
+                              textStyle,
                               children: [
+                                TextSpan(
+                                    text: '\n${Helper.currencyFormat(rod.toY)}',
+                                    style: TextStyle(fontSize: 24)),
                                 TextSpan(
                                     text: '\n' +
                                         Helper.dateTimeToString(liveGoal
@@ -226,7 +235,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         ),
       ),
       Container(
-          height: 336,
+          height: 335,
           margin: EdgeInsets.only(left: 2),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -256,9 +265,9 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             _showingTooltip = -1;
           });
         },
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -355,6 +364,59 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                       ],
                     ),
                   ),
+                ),
+                Card(
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 6),
+                  child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: liveGoal.transactions.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            ref
+                                .watch(historyControllerProvider.notifier)
+                                .transactionIndex = index;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ReceiptView(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          liveGoal.transactions[index]
+                                                  .location ??
+                                              "",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18)),
+                                      Text(Helper.dateTimeToString(liveGoal
+                                          .transactions[index].dateTime)),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  Helper.currencyFormat(
+                                      liveGoal.transactions[index].total),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               ],
             ),
