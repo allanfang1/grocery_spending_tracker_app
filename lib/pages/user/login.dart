@@ -153,11 +153,11 @@ class LoginPageState extends ConsumerState<LoginPage> {
                         loading.hide();
 
                         if (response.statusCode == 200 && context.mounted) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => AppNavigation(),
-                            ),
-                          );
+                          Navigator.of(context, rootNavigator: true)
+                              .pushAndRemoveUntil(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                            return AppNavigation();
+                          }), (route) => false);
                         } else {
                           setState(() {
                             _enableBtn = true;
@@ -200,8 +200,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                 style: TextStyle(fontSize: 22))),
         Container(
             margin: const EdgeInsets.only(bottom: 20),
-            child: const Text(
-                'Check your connection and refresh the page.')),
+            child: const Text('Check your connection and refresh the page.')),
         ElevatedButton(
             onPressed: () async {
               ConnectivityResult result =
