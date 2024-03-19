@@ -112,20 +112,19 @@ class EditProfileState extends ConsumerState<EditProfile> {
                     child: Text("Save")),
                 SizedBox(height: 10),
                 OutlinedButton.icon(
-                    onPressed: () {
-                      ref.watch(profileControllerProvider.notifier).logout();
-                      ref
-                          .watch(recommendationsControllerProvider.notifier)
-                          .logout();
-                      Navigator.of(context, rootNavigator: true)
-                          .pushAndRemoveUntil(MaterialPageRoute(
-                              builder: (BuildContext context) {
-                        return const LoadingOverlay(child: LoginPage());
-                      }), (route) => false);
-                    },
-                    label: Text(Constants.LOGOUT_LABEL),
-                    icon: const Icon(Icons.logout),
-
+                  onPressed: () {
+                    ref.watch(profileControllerProvider.notifier).logout();
+                    ref
+                        .watch(recommendationsControllerProvider.notifier)
+                        .logout();
+                    Navigator.of(context, rootNavigator: true)
+                        .pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (BuildContext context) {
+                      return const LoadingOverlay(child: LoginPage());
+                    }), (route) => false);
+                  },
+                  label: Text(Constants.LOGOUT_LABEL),
+                  icon: const Icon(Icons.logout),
                 ),
               ],
             ),
