@@ -29,18 +29,6 @@ class EditProfileState extends ConsumerState<EditProfile> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Edit Profile"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                ref.watch(profileControllerProvider.notifier).logout();
-                ref.watch(recommendationsControllerProvider.notifier).logout();
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return const LoadingOverlay(child: LoginPage());
-                }), (route) => false);
-              },
-              icon: const Icon(Icons.logout))
-        ],
       ),
       body: Center(
         child: Container(
@@ -51,6 +39,13 @@ class EditProfileState extends ConsumerState<EditProfile> {
                 setState(() => _enableBtn = _formKey.currentState?.validate()),
             child: Column(
               children: [
+                TextFormField(
+                  readOnly: true,
+                  initialValue: initUser.email,
+                  decoration: InputDecoration(
+                    labelText: Constants.EMAIL_LABEL,
+                  ),
+                ),
                 TextFormField(
                   onSaved: (newValue) => setState(() => _firstname = newValue),
                   initialValue: initUser.firstName,
@@ -114,7 +109,24 @@ class EditProfileState extends ConsumerState<EditProfile> {
                             }
                           }
                         : null,
-                    child: Text("Save"))
+                    child: Text("Save")),
+                SizedBox(height: 10),
+                OutlinedButton.icon(
+                    onPressed: () {
+                      ref.watch(profileControllerProvider.notifier).logout();
+                      ref
+                          .watch(recommendationsControllerProvider.notifier)
+                          .logout();
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                        return const LoadingOverlay(child: LoginPage());
+                      }), (route) => false);
+                    },
+                    label: Text(Constants.LOGOUT_LABEL),
+                    icon: const Icon(Icons.logout),
+
+                ),
               ],
             ),
           ),
