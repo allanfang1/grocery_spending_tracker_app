@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/user/register.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
@@ -63,7 +64,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Grocery Spending Tracker',
+          Constants.APP_NAME,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 24.0,
@@ -81,8 +82,12 @@ class LoginPageState extends ConsumerState<LoginPage> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 onSaved: (newValue) => setState(() => _email = newValue),
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Email",
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onPrimary,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      borderSide: BorderSide.none),
+                  hintText: Constants.EMAIL_LABEL,
                   hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 0.0,
@@ -91,7 +96,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Invalid input';
+                    return Constants.GENERIC_INVALID_INPUT;
                   }
                   return null;
                 },
@@ -102,28 +107,25 @@ class LoginPageState extends ConsumerState<LoginPage> {
                 onSaved: (newValue) => setState(() => _password = newValue),
                 obscureText: true,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Password",
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.onPrimary,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      borderSide: BorderSide.none),
+                  hintText: Constants.PASSWORD_LABEL,
                   hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 0.0,
                     horizontal: 10.0,
                   ),
                   errorStyle: TextStyle(
-                    color: Colors.transparent,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 0,
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black54),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.deepPurple, width: 2.0),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Invalid input';
+                    return Constants.GENERIC_INVALID_INPUT;
                   }
                   return null;
                 },
@@ -132,26 +134,30 @@ class LoginPageState extends ConsumerState<LoginPage> {
               if (_responseMsg != null)
                 Text(
                   _responseMsg!,
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               const SizedBox(height: 4),
-              OutlinedButton(
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  disabledBackgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceTint
+                      .withOpacity(0.5),
+                  elevation: 0,
+                  padding: EdgeInsets.fromLTRB(22, 12, 22, 12),
+                ),
                 onPressed: _enableBtn ?? false
                     ? () async {
                         FocusScope.of(context).unfocus();
                         final loading = LoadingOverlay.of(context);
-
                         _formKey.currentState!.save();
                         setState(() => _enableBtn = false);
-
                         loading.show();
-
                         final response = await ref
                             .watch(profileControllerProvider.notifier)
                             .login(_email!, _password!);
-
                         loading.hide();
-
                         if (response.statusCode == 200 && context.mounted) {
                           Navigator.of(context, rootNavigator: true)
                               .pushAndRemoveUntil(MaterialPageRoute(
@@ -166,21 +172,28 @@ class LoginPageState extends ConsumerState<LoginPage> {
                         }
                       }
                     : null,
-                child: const Text('Login'),
+                child: Text(
+                  Constants.LOGIN_BUTTON_LABEL,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 16),
+                ),
               ),
+              const SizedBox(height: 4),
               GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const LoadingOverlay(child: RegisterPage()),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(color: Colors.blue),
-                  )),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const LoadingOverlay(child: RegisterPage()),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Register',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
             ],
           ),
         ),

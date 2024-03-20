@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
@@ -29,12 +30,15 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(Constants.CREATE_GOAL),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(
+          Constants.CREATE_GOAL,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Form(
             key: _formKey,
             onChanged: () =>
@@ -69,6 +73,14 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintText: _startDate == null
                         ? 'Select a date'
                         : _startDate.toString().split(' ')[0],
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: _startDate == null
+                            ? Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withOpacity(0.8)
+                            : Theme.of(context).colorScheme.onBackground),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
@@ -93,6 +105,14 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintText: _endDate == null
                         ? 'Select a date'
                         : _endDate.toString().split(' ')[0],
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: _startDate == null
+                            ? Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withOpacity(0.8)
+                            : Theme.of(context).colorScheme.onBackground),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
@@ -124,50 +144,63 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                   },
                 ),
                 SizedBox(height: 10),
-                OutlinedButton(
-                    onPressed: (_startDate != null &&
-                            _endDate != null &&
-                            _budget != null &&
-                            _name != null &&
-                            _description != null &&
-                            (_enableBtn ?? false))
-                        ? () async {
-                            FocusScopeNode currentFocus =
-                                FocusScope.of(context);
-                            final loading = LoadingOverlay.of(context);
-                            if (!currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                            // _formKey.currentState!.save();
-                            setState(() => _enableBtn = false);
-                            loading.show();
-                            final response = await ref
-                                .watch(goalsControllerProvider.notifier)
-                                .createGoal(
-                                  _name!,
-                                  _description!,
-                                  _startDate!,
-                                  _endDate!,
-                                  _budget!,
-                                );
-                            if (response.statusCode == 200 && context.mounted) {
-                              ref
-                                  .watch(analyticsServiceControllerProvider
-                                      .notifier)
-                                  .refreshGoals();
-                              loading.hide();
-                              Navigator.of(context).pop();
-                            } else {
-                              setState(() {
-                                _enableBtn = true;
-                              });
-                              if (context.mounted) {
-                                showErrorAlertDialog(context, response.body);
-                              }
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceTint
+                          .withOpacity(0.5),
+                      elevation: 0,
+                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                  onPressed: (_startDate != null &&
+                          _endDate != null &&
+                          _budget != null &&
+                          _name != null &&
+                          _description != null &&
+                          (_enableBtn ?? false))
+                      ? () async {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          final loading = LoadingOverlay.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                          // _formKey.currentState!.save();
+                          setState(() => _enableBtn = false);
+                          loading.show();
+                          final response = await ref
+                              .watch(goalsControllerProvider.notifier)
+                              .createGoal(
+                                _name!,
+                                _description!,
+                                _startDate!,
+                                _endDate!,
+                                _budget!,
+                              );
+                          if (response.statusCode == 200 && context.mounted) {
+                            ref
+                                .watch(
+                                    analyticsServiceControllerProvider.notifier)
+                                .refreshGoals();
+                            loading.hide();
+                            Navigator.of(context).pop();
+                          } else {
+                            setState(() {
+                              _enableBtn = true;
+                            });
+                            if (context.mounted) {
+                              showErrorAlertDialog(context, response.body);
                             }
                           }
-                        : null,
-                    child: Text("Save"))
+                        }
+                      : null,
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 16),
+                  ),
+                ),
               ],
             ),
           ),

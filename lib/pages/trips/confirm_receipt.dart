@@ -392,7 +392,11 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.CONFIRM_RECEIPT_LABEL),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(
+          Constants.CONFIRM_RECEIPT_LABEL,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: Container(
         margin: const EdgeInsets.all(24.0),

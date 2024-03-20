@@ -22,9 +22,11 @@ class _NewTrip extends State<NewTrip> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text(Constants.NEW_TRIP),
-        // automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(
+          Constants.ANALYTICS,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: Center(
         child: Container(
@@ -35,28 +37,53 @@ class _NewTrip extends State<NewTrip> {
             children: <Widget>[
               Container(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: const Text(
-                      'To add a grocery trip, you can take a photo of your '
-                      'receipt or upload a photo from your gallery.',
+                  child: Text(
+                      'To add a grocery trip, you can take a photo of your receipt or upload a photo from your gallery.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontStyle: FontStyle.italic, color: Colors.grey))),
+                          fontStyle: FontStyle.italic,
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant))),
               const SizedBox(height: 20),
               SizedBox(
-                child: OutlinedButton(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceTint
+                          .withOpacity(0.5),
+                      elevation: 0,
+                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: () {
                     PersistentNavBarNavigator.pushNewScreen(context,
                         screen: const LoadingOverlay(child: CaptureReceipt()),
                         withNavBar: false);
                   },
-                  child: const Text('Take Photo'),
+                  child: Text(
+                    'Take Photo',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 16),
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
               SizedBox(
-                child: OutlinedButton(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceTint
+                          .withOpacity(0.5),
+                      elevation: 0,
+                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: _selectImage,
-                  child: const Text('Upload'),
+                  child: Text('Upload',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontSize: 16)),
                 ),
               ),
             ],

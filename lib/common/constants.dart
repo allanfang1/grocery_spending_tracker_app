@@ -24,10 +24,16 @@ class Constants {
   static const String ANALYTICS = "Analytics";
   static const String PROFILE = "Profile";
 
+  //user pages
+  static const String NEW_ACCOUNT_TITLE = "New Account";
   static const String FIRST_NAME_LABEL = "First Name";
   static const String LAST_NAME_LABEL = "Last Name";
   static const String EMAIL_LABEL = "Email";
+  static const String PASSWORD_LABEL = "Password";
   static const String OK_LABEL = "OK";
+  static const String LOGIN_BUTTON_LABEL = "Login";
+  static const String CREATE_ACCOUNT_BUTTON_LABEL = "Create Account";
+  static const String GENERIC_INVALID_INPUT = "Invalid input";
 
   static const String DATE_TIME_LABEL = "Date and Time of Purchase";
   static const String LOCATION_LABEL = "Location (Address)";

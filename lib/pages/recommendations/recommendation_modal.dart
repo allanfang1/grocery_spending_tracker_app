@@ -17,54 +17,66 @@ class RecommendationModal extends ConsumerWidget {
           .watch(recommendationsControllerProvider.notifier)
           .getRecommendations();
       return Container(
-        margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: recommendations.isNotEmpty
             ? ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 14),
                 itemCount: recommendations.length,
                 itemBuilder: (context, index) {
                   Recommendation rec = recommendations[index];
                   return Card(
-                      child: ExpansionTile(
-                    leading: FutureBuilder<ByteBuffer?>(
-                      future: resizeImage(rec.imageUrl),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<ByteBuffer?> snapshot) {
-                        if (snapshot.hasData) {
-                          return Image.memory(snapshot.data!.asUint8List());
-                        } else {
-                          return const CircularProgressIndicator();
-                        }
-                      },
-                    ),
-                    title: Text(
-                      rec.itemName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text('Purchased for \$${rec.price}'),
-                    children: <Widget>[
-                      const SizedBox(height: 10),
-                      RichText(
+                    color: Theme.of(context).colorScheme.surface,
+                    margin: EdgeInsets.zero,
+                    shape: Border(
+                        bottom: BorderSide(
+                            width: 1,
+                            color:
+                                Theme.of(context).colorScheme.outlineVariant)),
+                    elevation: 0,
+                    child: ExpansionTile(
+                      shape: Border(
+                          bottom: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.onPrimary)),
+                      leading: FutureBuilder<ByteBuffer?>(
+                        future: resizeImage(rec.imageUrl),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<ByteBuffer?> snapshot) {
+                          if (snapshot.hasData) {
+                            return Image.memory(snapshot.data!.asUint8List());
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                      title: Text(
+                        rec.itemName,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text('Purchased for \$${rec.price}'),
+                      children: <Widget>[
+                        const SizedBox(height: 10),
+                        RichText(
                           textAlign: TextAlign.center,
-                          text: TextSpan(
-                              style: const TextStyle(color: Colors.black),
-                              children: [
-                            const TextSpan(text: 'Product purchased at '),
+                          text: TextSpan(children: [
                             TextSpan(
                                 text: rec.location,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            const TextSpan(text: ' on '),
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface)),
                             TextSpan(
-                                text: '${rec.dateTime}.',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold))
-                          ])),
-                      const SizedBox(height: 10),
-                    ],
-                  ));
+                                text: '\n${rec.dateTime}',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface))
+                          ]),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  );
                 },
               )
             : const Text(
