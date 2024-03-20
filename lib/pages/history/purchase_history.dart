@@ -106,8 +106,11 @@ class PurchaseHistory extends ConsumerWidget {
     }, loading: () {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            Constants.PURCHASE_HISTORY,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         body: Center(
           child: Container(

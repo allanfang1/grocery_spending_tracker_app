@@ -140,9 +140,11 @@ class GoalsList extends ConsumerWidget {
     }, loading: () {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.ANALYTICS),
-          actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            Constants.ANALYTICS,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         body: Center(
           child: Container(
