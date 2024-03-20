@@ -254,8 +254,11 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         .getLiveGoalByIndex();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(liveGoal.goal.goalName),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(
+          liveGoal.goal.goalName,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
       body: GestureDetector(
@@ -272,14 +275,16 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  elevation: 0,
+                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: Container(
                     padding: EdgeInsets.all(12),
                     child: Text(liveGoal.goal.goalDescription),
                   ),
                 ),
                 Card(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  elevation: 0,
+                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: DefaultTabController(
                     animationDuration: Duration.zero,
                     length: 2, // Number of tabs
@@ -288,10 +293,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                       children: <Widget>[
                         TabBar(
                           controller: _tabController,
-                          labelColor: Colors.deepPurple,
-                          unselectedLabelColor: Colors.grey,
                           labelStyle: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w500),
+                              fontSize: 15, fontWeight: FontWeight.w600),
                           indicatorSize: TabBarIndicatorSize.tab,
                           overlayColor:
                               MaterialStateProperty.all(Colors.transparent),
@@ -324,7 +327,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                   ),
                 ),
                 Card(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                  elevation: 0,
+                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: Container(
                     padding: EdgeInsets.all(12),
                     child: Column(
@@ -345,6 +349,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         ),
                         LinearProgressIndicator(
                           value: liveGoal.progressPercent,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
                           minHeight: 10,
                         ),
                         SizedBox(height: 4),
@@ -366,11 +372,20 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                   ),
                 ),
                 Card(
-                  margin: EdgeInsets.fromLTRB(0, 10, 0, 6),
-                  child: ListView.builder(
+                  elevation: 0,
+                  margin: EdgeInsets.fromLTRB(0, 6, 0, 10),
+                  child: ListView.separated(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: liveGoal.transactions.length,
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          height: 0,
+                          thickness: 1,
+                          indent: 54,
+                          endIndent: 54,
+                        );
+                      },
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
@@ -388,6 +403,12 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                             padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
                             child: Row(
                               children: [
+                                Icon(
+                                  Icons.receipt_long,
+                                  size: 38,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -406,11 +427,11 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                SizedBox(width: 12),
                                 Text(
                                   Helper.currencyFormat(
                                       liveGoal.transactions[index].total),
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 17),
                                 ),
                               ],
                             ),

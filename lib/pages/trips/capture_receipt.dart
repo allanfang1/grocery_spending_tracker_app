@@ -77,8 +77,14 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                                 Center(
                                     child: Scaffold(
                                   appBar: AppBar(
-                                    title: const Text(
-                                        Constants.SCAN_RECEIPT_LABEL),
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .background,
+                                    title: Text(
+                                      Constants.SCAN_RECEIPT_LABEL,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                   body: Container(
                                       padding:
@@ -116,7 +122,12 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                       } else {
                         return Scaffold(
                           appBar: AppBar(
-                            title: const Text(Constants.SCAN_RECEIPT_LABEL),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.background,
+                            title: Text(
+                              Constants.SCAN_RECEIPT_LABEL,
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
                           body: const Center(
                               child: Text('An error occurred with the camera')),
@@ -126,7 +137,11 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                   )
                 : Scaffold(
                     appBar: AppBar(
-                      title: const Text(Constants.SCAN_RECEIPT_LABEL),
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      title: Text(
+                        Constants.SCAN_RECEIPT_LABEL,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
                     body: const Center(
                         child: Text('Camera permission not granted')),

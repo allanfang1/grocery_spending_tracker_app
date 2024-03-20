@@ -15,10 +15,14 @@ class ReceiptView extends ConsumerWidget {
         ref.watch(historyControllerProvider.notifier).getTransactionByIndex();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(_transaction.transactionId.toString()),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text(
+          _transaction.transactionId.toString(),
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: Card(
+        elevation: 0,
         margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
         child: Container(
           padding: EdgeInsets.all(20),

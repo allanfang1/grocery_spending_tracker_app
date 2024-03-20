@@ -19,63 +19,75 @@ class PurchaseHistory extends ConsumerWidget {
           ref.watch(historyControllerProvider.notifier).getTransactions();
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            Constants.PURCHASE_HISTORY,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         body: _transactions.isNotEmpty
             ? ListView.builder(
-                padding: EdgeInsets.fromLTRB(20, 14, 20, 6),
+                padding: EdgeInsets.only(top: 4),
                 itemCount: _transactions.length,
                 //TODO: prototypeItem:
                 itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Dismissible(
-                        key: Key(index.toString()),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (direction) {}, //TODO
-                        background: Container(color: Colors.red),
-                        child: GestureDetector(
-                          onTap: () {
-                            ref
-                                .watch(historyControllerProvider.notifier)
-                                .transactionIndex = index;
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const ReceiptView(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: Color.fromARGB(255, 250, 240, 255),
-                            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(_transactions[index].location ?? "",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 18)),
-                                      Text(Helper.dateTimeToString(
-                                          _transactions[index].dateTime)),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  Helper.currencyFormat(
-                                      _transactions[index].total),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
+                  return Card(
+                    color: Theme.of(context).colorScheme.surface,
+                    margin: EdgeInsets.zero,
+                    elevation: 0,
+                    shape: Border(
+                        bottom: BorderSide(
+                            width: 1,
+                            color:
+                                Theme.of(context).colorScheme.outlineVariant)),
+                    child: Dismissible(
+                      key: Key(index.toString()),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {}, //TODO
+                      background:
+                          Container(color: Theme.of(context).colorScheme.error),
+                      child: GestureDetector(
+                        onTap: () {
+                          ref
+                              .watch(historyControllerProvider.notifier)
+                              .transactionIndex = index;
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ReceiptView(),
                             ),
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.receipt_long,
+                                size: 38,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(_transactions[index].location ?? "",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18)),
+                                    Text(Helper.dateTimeToString(
+                                        _transactions[index].dateTime)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                Helper.currencyFormat(
+                                    _transactions[index].total),
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
                           ),
                         ),
                       ),

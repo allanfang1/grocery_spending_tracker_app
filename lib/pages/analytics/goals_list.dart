@@ -18,18 +18,26 @@ class GoalsList extends ConsumerWidget {
     return liveGoalsAsync.when(data: (liveGoals) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.ANALYTICS),
-          // actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            Constants.ANALYTICS,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         body: liveGoals.isNotEmpty
-            ? ListView.separated(
-                padding: EdgeInsets.fromLTRB(20, 12, 20, 6),
+            ? ListView.builder(
+                padding: EdgeInsets.only(top: 4),
                 itemCount: liveGoals.length,
-                separatorBuilder: (context, index) => SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
+                  return Card(
+                    color: Theme.of(context).colorScheme.surface,
+                    margin: EdgeInsets.zero,
+                    elevation: 0,
+                    shape: Border(
+                        bottom: BorderSide(
+                            width: 1,
+                            color:
+                                Theme.of(context).colorScheme.outlineVariant)),
                     child: Dismissible(
                       key: Key(index.toString()),
                       direction: DismissDirection.endToStart,
@@ -38,7 +46,8 @@ class GoalsList extends ConsumerWidget {
                             .watch(analyticsServiceControllerProvider.notifier)
                             .deleteGoal(index);
                       },
-                      background: Container(color: Colors.red),
+                      background:
+                          Container(color: Theme.of(context).colorScheme.error),
                       child: GestureDetector(
                         onTap: () {
                           ref
@@ -53,14 +62,33 @@ class GoalsList extends ConsumerWidget {
                           );
                         },
                         child: Container(
-                          color: Color.fromARGB(255, 250, 240, 255),
-                          padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                          padding: EdgeInsets.fromLTRB(14, 10, 14, 16),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
-                                liveGoals[index].goal.goalName,
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    liveGoals[index].goal.goalName,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    liveGoals[index].daysRemaining >= 0
+                                        ? "${liveGoals[index].daysRemaining} days left"
+                                        : "Expired",
+                                    style: TextStyle(
+                                      color: liveGoals[index].daysRemaining >= 0
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                          : Theme.of(context).colorScheme.error,
+                                    ),
+                                  ),
+                                ],
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -80,12 +108,11 @@ class GoalsList extends ConsumerWidget {
                               ),
                               SizedBox(height: 6),
                               LinearProgressIndicator(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
                                 value: liveGoals[index].progressPercent,
                                 minHeight: 10,
                               ),
-                              SizedBox(height: 6),
-                              Text(
-                                  "${liveGoals[index].daysRemaining} days left")
                             ],
                           ),
                         ),
