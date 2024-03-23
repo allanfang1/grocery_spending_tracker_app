@@ -76,10 +76,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: _startDate == null
-                            ? Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant
-                                .withOpacity(0.8)
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
                             : Theme.of(context).colorScheme.onBackground),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
@@ -108,10 +105,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintStyle: TextStyle(
                         fontWeight: FontWeight.w400,
                         color: _startDate == null
-                            ? Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant
-                                .withOpacity(0.8)
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
                             : Theme.of(context).colorScheme.onBackground),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),

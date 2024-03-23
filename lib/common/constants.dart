@@ -40,7 +40,7 @@ class Constants {
   static const String LOCATION_LABEL = "Location (Address)";
   static const String ITEM_ID_LABEL = "Item ID (SKU)";
   static const String ITEM_NAME_LABEL = "Item Name";
-  static const String TAXED_LABEL = "Taxed?";
+  static const String TAXED_LABEL = "Taxed";
   static const String ITEM_PRICE_LABEL = "Price";
   static const String CONFIRM_LABEL = "Confirm";
   static const String TRIP_SUBTOTAL_LABEL = "Subtotal";

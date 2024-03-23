@@ -31,7 +31,8 @@ class _RegisterPage extends State<RegisterPage> {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
             borderSide: BorderSide.none),
-        hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
+        hintStyle:
+            TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
         contentPadding: EdgeInsets.symmetric(
           vertical: 0.0,
           horizontal: 10.0,

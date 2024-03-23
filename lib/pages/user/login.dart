@@ -113,7 +113,8 @@ class LoginPageState extends ConsumerState<LoginPage> {
                       borderRadius: BorderRadius.circular(12.0),
                       borderSide: BorderSide.none),
                   hintText: Constants.PASSWORD_LABEL,
-                  hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
+                  hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 0.0,
                     horizontal: 10.0,
