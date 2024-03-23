@@ -12,6 +12,7 @@ class Constants {
   static const String RECOMMENDATIONS_PATH = "/recommendations";
   static const String RECOMMENDATIONS_LOWEST_PATH = "/recommendations/lowest";
   static const String DELETE_GOALS_PATH = "/users/goal/";
+  static const String DELETE_TRANSACTION_PATH = "/users/trip/";
 
   //app name
   static const String APP_NAME = "Grocery Spending Tracker";

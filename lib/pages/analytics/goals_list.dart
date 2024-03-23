@@ -29,38 +29,39 @@ class GoalsList extends ConsumerWidget {
                 padding: EdgeInsets.only(top: 4),
                 itemCount: liveGoals.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    color: Theme.of(context).colorScheme.surface,
-                    margin: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: Border(
-                        bottom: BorderSide(
-                            width: 1,
-                            color:
-                                Theme.of(context).colorScheme.outlineVariant)),
-                    child: Dismissible(
-                      key: Key(index.toString()),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        ref
-                            .watch(analyticsServiceControllerProvider.notifier)
-                            .deleteGoal(index);
-                      },
-                      background:
-                          Container(color: Theme.of(context).colorScheme.error),
-                      child: GestureDetector(
-                        onTap: () {
+                  return GestureDetector(
+                    onTap: () {
+                      ref
+                          .watch(analyticsServiceControllerProvider.notifier)
+                          .selectedIndex = index;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const LoadingOverlay(child: ExpandedGoal()),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      color: Theme.of(context).colorScheme.surface,
+                      margin: EdgeInsets.zero,
+                      elevation: 0,
+                      shape: Border(
+                          bottom: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant)),
+                      child: Dismissible(
+                        key: Key(index.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
                           ref
                               .watch(
                                   analyticsServiceControllerProvider.notifier)
-                              .selectedIndex = index;
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const LoadingOverlay(child: ExpandedGoal()),
-                            ),
-                          );
+                              .deleteGoal(index);
                         },
+                        background: Container(
+                            color: Theme.of(context).colorScheme.error),
                         child: Container(
                           padding: EdgeInsets.fromLTRB(14, 10, 14, 16),
                           child: Column(

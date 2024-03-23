@@ -34,10 +34,6 @@ class RecommendationModal extends ConsumerWidget {
                                 Theme.of(context).colorScheme.outlineVariant)),
                     elevation: 0,
                     child: ExpansionTile(
-                      shape: Border(
-                          bottom: BorderSide(
-                              width: 2,
-                              color: Theme.of(context).colorScheme.onPrimary)),
                       leading: FutureBuilder<ByteBuffer?>(
                         future: resizeImage(rec.imageUrl),
                         builder: (BuildContext context,

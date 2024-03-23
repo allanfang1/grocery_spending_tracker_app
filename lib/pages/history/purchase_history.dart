@@ -31,32 +31,37 @@ class PurchaseHistory extends ConsumerWidget {
                 itemCount: _transactions.length,
                 //TODO: prototypeItem:
                 itemBuilder: (context, index) {
-                  return Card(
-                    color: Theme.of(context).colorScheme.surface,
-                    margin: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: Border(
-                        bottom: BorderSide(
-                            width: 1,
-                            color:
-                                Theme.of(context).colorScheme.outlineVariant)),
-                    child: Dismissible(
-                      key: Key(index.toString()),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {}, //TODO
-                      background:
-                          Container(color: Theme.of(context).colorScheme.error),
-                      child: GestureDetector(
-                        onTap: () {
+                  return GestureDetector(
+                    onTap: () {
+                      ref
+                          .watch(historyControllerProvider.notifier)
+                          .transactionIndex = index;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ReceiptView(),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      color: Theme.of(context).colorScheme.surface,
+                      margin: EdgeInsets.zero,
+                      elevation: 0,
+                      shape: Border(
+                          bottom: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant)),
+                      child: Dismissible(
+                        key: Key(index.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
                           ref
                               .watch(historyControllerProvider.notifier)
-                              .transactionIndex = index;
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ReceiptView(),
-                            ),
-                          );
-                        },
+                              .deleteGoal(index);
+                        }, //TODO
+                        background: Container(
+                            color: Theme.of(context).colorScheme.error),
                         child: Container(
                           padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
                           child: Row(

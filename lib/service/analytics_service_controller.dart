@@ -30,7 +30,6 @@ class AnalyticsServiceController extends _$AnalyticsServiceController {
 
   Future<void> deleteGoal(int index) async {
     final analyticsService = ref.read(analyticsServiceProvider);
-    // state = const AsyncLoading();
     await analyticsService.deleteGoal(index);
     state = AsyncValue.data(analyticsService.liveGoals);
   }

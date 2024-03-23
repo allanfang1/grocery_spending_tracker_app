@@ -24,17 +24,18 @@ class MyApp extends StatelessWidget {
         dividerColor: Colors.transparent,
         appBarTheme: AppBarTheme(foregroundColor: Color(0xFF333333)),
         colorScheme: const ColorScheme(
-          primary: Color(0xFF38A3A5), //used verdigris
-          secondary: Color(0xFFe2f4e9), //used honeydew
-          surface: Color(0xFFFdfdfd), //used
-          onSurfaceVariant: Color(0xFF9d9d9d), //used
-          outlineVariant: Color(0xFFe6e6e6), //used
-          background: Color(0xFFF5f5f5), //used
-          error: Colors.red, //used
-          onPrimary: Color(0xFFFFFFFF), //used
+          primary: Color(0xFF38A3A5), //used verdigris: anything accented
+          secondary: Color(0xFFe2f4e9), //used honeydew:
+          surface: Color(0xFFFdfdfd), //used: card background
+          onSurfaceVariant:
+              Color(0xFF9d9d9d), //used: navbarinactive, text on background
+          outlineVariant: Color(0xFFe6e6e6), //used: card bottom border
+          background: Color(0xFFF5f5f5), //used: background
+          error: Colors.red, //used: error
+          onPrimary: Color(0xFFFFFFFF), //used: top navbar border, on buttons
           onSecondary: Color(0xFF000000),
-          onSurface: Color(0xFF333333), //used
-          onBackground: Color(0xFF333333), // used
+          onSurface: Color(0xFF333333), //used: card content
+          onBackground: Color(0xFF333333), // used: textfield border
           onError: Color(0xFFFFFFFF),
           brightness: Brightness.light,
         ),

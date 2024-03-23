@@ -5,7 +5,7 @@ class Transaction {
   late DateTime dateTime;
   String? location;
   String? description;
-  List<Item>? items;
+  late List<Item> items;
   double? subtotal;
   late double total;
 
@@ -16,6 +16,7 @@ class Transaction {
     this.transactionId = transactionId;
     total = 0;
     dateTime = DateTime.utc(1, 1, 1);
+    items = [];
   }
 
   factory Transaction.fromJson(Map<String, dynamic> json) {

@@ -279,7 +279,16 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                   margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: Container(
                     padding: EdgeInsets.all(12),
-                    child: Text(liveGoal.goal.goalDescription),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${Helper.dateTimeToString(liveGoal.goal.startDate)}  -  ${Helper.dateTimeToString(liveGoal.goal.endDate)}",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          Text(liveGoal.goal.goalDescription)
+                        ]),
                   ),
                 ),
                 Card(
@@ -392,7 +401,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                           onTap: () {
                             ref
                                 .watch(historyControllerProvider.notifier)
-                                .transactionIndex = index;
+                                .setIndexById(
+                                    liveGoal.transactions[index].transactionId);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const ReceiptView(),
