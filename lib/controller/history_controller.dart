@@ -22,7 +22,24 @@ class HistoryController extends _$HistoryController {
     return ref.read(historyRepositoryProvider).getTransactions();
   }
 
+  Future<void> deleteGoal(int index) async {
+    await ref.read(historyRepositoryProvider).deleteTransaction(index);
+  }
+
+  void setIndexById(int transactionId) {
+    List<Transaction> transactions =
+        ref.read(historyRepositoryProvider).getTransactions();
+    for (int i = 0; i < transactions.length; i++) {
+      if (transactions[i].transactionId == transactionId) {
+        transactionIndex = i;
+        return;
+      }
+    }
+    transactionIndex = -1;
+  }
+
   Transaction getTransactionByIndex() {
+    print("here");
     Transaction? transaction = ref
         .read(historyRepositoryProvider)
         .getTransactionByIndex(transactionIndex);

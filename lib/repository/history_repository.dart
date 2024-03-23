@@ -30,6 +30,18 @@ class HistoryRepository {
     return response;
   }
 
+  Future<Response> deleteTransaction(int index) async {
+    final response = await client.delete(
+        Uri.parse(dotenv.env['BASE_URL']! +
+            Constants.DELETE_TRANSACTION_PATH +
+            transactions[index].transactionId.toString()),
+        headers: {'Auth': profileRepository.user.token!});
+    if (response.statusCode == 200) {
+      transactions.removeAt(index);
+    }
+    return response;
+  }
+
   List<Transaction> getTransactions() {
     return transactions;
   }

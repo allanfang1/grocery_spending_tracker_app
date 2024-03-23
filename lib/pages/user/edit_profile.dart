@@ -27,9 +27,49 @@ class EditProfileState extends ConsumerState<EditProfile> {
     final initUser = ref.watch(profileControllerProvider.notifier).getUser();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Edit Profile"),
-      ),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: Text(
+            initUser.email ?? "",
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          actions: [
+            IconButton(
+                onPressed: _enableBtn ?? false
+                    ? () async {
+                        final loading = LoadingOverlay.of(context);
+                        final scaffold = ScaffoldMessenger.of(context);
+                        _formKey.currentState!.save();
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        loading.show();
+                        setState(() => _enableBtn = false);
+                        final response = await ref
+                            .watch(profileControllerProvider.notifier)
+                            .updateUser(
+                              _firstname!,
+                              _lastname!,
+                            );
+                        loading.hide();
+                        if (response.statusCode == 200 && context.mounted) {
+                          setState(() {
+                            _enableBtn = true;
+                          });
+                          scaffold.showSnackBar(const SnackBar(
+                              content: Text('Profile saved successfully')));
+                        } else {
+                          setState(() {
+                            _enableBtn = true;
+                          });
+                          if (context.mounted) {
+                            showErrorAlertDialog(context, response.body);
+                          }
+                        }
+                      }
+                    : null,
+                icon: const Icon(Icons.save))
+          ]),
       body: Center(
         child: Container(
           margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -40,17 +80,19 @@ class EditProfileState extends ConsumerState<EditProfile> {
             child: Column(
               children: [
                 TextFormField(
-                  readOnly: true,
-                  initialValue: initUser.email,
-                  decoration: InputDecoration(
-                    labelText: Constants.EMAIL_LABEL,
-                  ),
-                ),
-                TextFormField(
                   onSaved: (newValue) => setState(() => _firstname = newValue),
                   initialValue: initUser.firstName,
                   decoration: InputDecoration(
                     labelText: Constants.FIRST_NAME_LABEL,
+                    errorStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 0,
+                    ),
+                    focusedErrorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -63,7 +105,16 @@ class EditProfileState extends ConsumerState<EditProfile> {
                   onSaved: (newValue) => setState(() => _lastname = newValue),
                   initialValue: initUser.lastName,
                   decoration: InputDecoration(
-                    labelText: Constants.LAST_NAME_LABEL,
+                    labelText: Constants.FIRST_NAME_LABEL,
+                    errorStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 0,
+                    ),
+                    focusedErrorBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -72,46 +123,16 @@ class EditProfileState extends ConsumerState<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
-                OutlinedButton(
-                    onPressed: _enableBtn ?? false
-                        ? () async {
-                            final loading = LoadingOverlay.of(context);
-                            final scaffold = ScaffoldMessenger.of(context);
-                            _formKey.currentState!.save();
-                            FocusScopeNode currentFocus =
-                                FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                            loading.show();
-                            setState(() => _enableBtn = false);
-                            final response = await ref
-                                .watch(profileControllerProvider.notifier)
-                                .updateUser(
-                                  _firstname!,
-                                  _lastname!,
-                                );
-                            loading.hide();
-                            if (response.statusCode == 200 && context.mounted) {
-                              setState(() {
-                                _enableBtn = true;
-                              });
-                              scaffold.showSnackBar(const SnackBar(
-                                  content: Text('Profile saved successfully')));
-                            } else {
-                              setState(() {
-                                _enableBtn = true;
-                              });
-                              if (context.mounted) {
-                                showErrorAlertDialog(context, response.body);
-                              }
-                            }
-                          }
-                        : null,
-                    child: Text("Save")),
-                SizedBox(height: 10),
-                OutlinedButton.icon(
+                SizedBox(height: 14),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceTint
+                          .withOpacity(0.5),
+                      elevation: 0,
+                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: () {
                     ref.watch(profileControllerProvider.notifier).logout();
                     ref
@@ -123,8 +144,14 @@ class EditProfileState extends ConsumerState<EditProfile> {
                       return const LoadingOverlay(child: LoginPage());
                     }), (route) => false);
                   },
-                  label: Text(Constants.LOGOUT_LABEL),
-                  icon: const Icon(Icons.logout),
+                  label: Text(
+                    Constants.LOGOUT_LABEL,
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 16),
+                  ),
+                  icon: Icon(Icons.logout,
+                      color: Theme.of(context).colorScheme.onPrimary),
                 ),
               ],
             ),
