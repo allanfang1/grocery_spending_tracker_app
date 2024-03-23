@@ -27,6 +27,10 @@ class RecommendationsRepository {
           .toList();
 
       for (var json in jsonList) {
+        Recommendation rec = Recommendation.fromJson(json);
+        if (recommendations.any((item) => rec.itemName == item.itemName)) {
+          continue;
+        }
         recommendations.add(Recommendation.fromJson(json));
       }
     }
@@ -45,10 +49,6 @@ class RecommendationsRepository {
           .toList();
 
       for (var json in jsonList) {
-        Recommendation rec = Recommendation.fromJson(json);
-        if (recommendations.any((item) => rec.itemName == item.itemName)) {
-          continue;
-        }
         recommendations.add(Recommendation.fromJson(json));
       }
     }

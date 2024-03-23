@@ -9,8 +9,8 @@ part 'recommendations_controller.g.dart';
 class RecommendationsController extends _$RecommendationsController {
   @override
   Future<FutureOr<void>> build() async {
-    await AsyncValue.guard(() => getRecommendationsByHistory());
     await AsyncValue.guard(() => getRecommendationsByPrice());
+    await AsyncValue.guard(() => getRecommendationsByHistory());
   }
 
   Future<Response> getRecommendationsByHistory() async {
