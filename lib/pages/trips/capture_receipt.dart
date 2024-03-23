@@ -165,7 +165,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
 
   Widget _showHelp() {
     return AlertDialog(
-      title: const Text('Receipt Capture Tips'),
+      title: const Text(Constants.SCAN_RECEIPT_HELP_LABEL),
       content: Stack(clipBehavior: Clip.none, children: [
         Positioned(
             right: -40,

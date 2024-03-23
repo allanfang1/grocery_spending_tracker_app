@@ -49,6 +49,7 @@ class Constants {
   static const String LOGOUT_LABEL = "Logout";
 
   static const String SCAN_RECEIPT_LABEL = "Scan Receipt";
+  static const String SCAN_RECEIPT_HELP_LABEL= "Receipt Capture Tips";
   static const String CONFIRM_RECEIPT_LABEL = "Confirm Scanned Receipt";
   static const String EDIT_ITEM_LABEL = "Edit Item";
   static const String ITEM_LIST_LABEL = "Item List";
