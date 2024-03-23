@@ -80,11 +80,22 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                                     backgroundColor: Theme.of(context)
                                         .colorScheme
                                         .background,
-                                    title: Text(
+                                    title: const Text(
                                       Constants.SCAN_RECEIPT_LABEL,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w600),
                                     ),
+                                    actions: <Widget>[
+                                      IconButton(
+                                          onPressed: () async {
+                                            await showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return _showHelp();
+                                                });
+                                          },
+                                          icon: const Icon(Icons.help))
+                                    ],
                                   ),
                                   body: Container(
                                       padding:
@@ -124,7 +135,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                           appBar: AppBar(
                             backgroundColor:
                                 Theme.of(context).colorScheme.background,
-                            title: Text(
+                            title: const Text(
                               Constants.SCAN_RECEIPT_LABEL,
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
@@ -138,7 +149,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
                 : Scaffold(
                     appBar: AppBar(
                       backgroundColor: Theme.of(context).colorScheme.background,
-                      title: Text(
+                      title: const Text(
                         Constants.SCAN_RECEIPT_LABEL,
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
@@ -149,6 +160,75 @@ class _CaptureReceiptState extends State<CaptureReceipt>
           ],
         );
       },
+    );
+  }
+
+  Widget _showHelp() {
+    return AlertDialog(
+      title: const Text('Receipt Capture Tips'),
+      content: Stack(clipBehavior: Clip.none, children: [
+        Positioned(
+            right: -40,
+            top: -40,
+            child: InkResponse(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.close),
+              ),
+            )),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'For the best results:',
+              style: TextStyle(
+                height: 1.5,
+                fontSize: 16.0,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+                child: Text(
+              '\u2022 Get as close to the receipt as possible while keeping all'
+              ' data in frame.',
+              softWrap: true,
+              style: TextStyle(
+                height: 1.5,
+                fontSize: 15.0,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            )),
+            const SizedBox(height: 5),
+            Flexible(
+                child: Text(
+              '\u2022 Ensure the receipt is in focus. You can utilize tap focus'
+                  ' to help with this.',
+              softWrap: true,
+              style: TextStyle(
+                height: 1.5,
+                fontSize: 15.0,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            )),
+            const SizedBox(height: 5),
+            Flexible(
+                child: Text(
+              '\u2022 Try to ensure that lighting is as even and bright as'
+              ' possible.',
+              softWrap: true,
+              style: TextStyle(
+                height: 1.5,
+                fontSize: 15.0,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            )),
+          ],
+        )
+      ]),
     );
   }
 
