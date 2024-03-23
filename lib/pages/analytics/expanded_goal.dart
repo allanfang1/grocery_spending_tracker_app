@@ -52,7 +52,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
       x: x,
       showingTooltipIndicators: _showingTooltip == x ? [0] : [],
       barRods: [
-        BarChartRodData(toY: y),
+        BarChartRodData(toY: y, color: Theme.of(context).colorScheme.primary),
       ],
     );
   }
