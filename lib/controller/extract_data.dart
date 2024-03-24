@@ -79,7 +79,8 @@ class ExtractData {
     for (String line in receiptData) {
       if (itemRegex.hasMatch(line) &&
           !line.contains(RegExp('TOTAL', caseSensitive: false)) &&
-          !line.contains(RegExp('SUBTOTAL', caseSensitive: false))) {
+          !line.contains(RegExp('SUBTOTAL', caseSensitive: false)) &&
+          !line.contains('%')) {
         // correct OCR parsing if there is a space captured in the price
         if (priceRegex.hasMatch(line)) {
           int temp = line.lastIndexOf(' ');
