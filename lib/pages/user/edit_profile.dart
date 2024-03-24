@@ -123,7 +123,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(height: 14),
+                SizedBox(height: 16),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,

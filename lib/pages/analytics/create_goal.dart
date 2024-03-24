@@ -149,6 +149,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                       padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: (_startDate != null &&
                           _endDate != null &&
+                          _startDate!.isBefore(_endDate!) &&
                           _budget != null &&
                           _name != null &&
                           _description != null &&

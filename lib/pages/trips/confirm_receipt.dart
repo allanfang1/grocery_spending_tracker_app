@@ -291,7 +291,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                           }
                                         },
                                         child: Text(
-                                          Constants.CONFIRM_LABEL,
+                                          Constants.SAVE_LABEL,
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .colorScheme

@@ -47,6 +47,19 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     }
   }
 
+  String tooltipWeekString(BarChartGroupData group, LiveGoal liveGoal) {
+    return '\n' +
+        Helper.dateTimeToString(liveGoal.goal.startDate
+            .subtract(Duration(days: liveGoal.goal.startDate.weekday % 7))
+            .add(Duration(days: (7 * group.x).toInt())));
+  }
+
+  String tooltipDayString(BarChartGroupData group, LiveGoal liveGoal) {
+    return '\n' +
+        Helper.dateTimeToString(
+            liveGoal.goal.startDate.add(Duration(days: (group.x).toInt())));
+  }
+
   BarChartGroupData generateGroupData(int x, double y) {
     return BarChartGroupData(
       x: x,
@@ -148,7 +161,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     };
   }
 
-  Widget getGraph(LiveGoal liveGoal, int labelFreq, Function chartDataFunc) {
+  Widget getGraph(LiveGoal liveGoal, int labelFreq, Function chartDataFunc,
+      Function tooltipData) {
     Map<String, dynamic> chartData = chartDataFunc(liveGoal, labelFreq);
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
@@ -161,75 +175,71 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             width: 20 * chartData['barCount'] as double,
             child: BarChart(
               BarChartData(
-                  maxY: chartData['maxY'],
-                  borderData: FlBorderData(show: false),
-                  titlesData: FlTitlesData(
-                      leftTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      topTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 25,
-                              getTitlesWidget: chartData['bottomTitleFunc']))),
-                  barGroups: chartData['barGroups'],
-                  barTouchData: BarTouchData(
-                      handleBuiltInTouches: false,
-                      touchCallback: (FlTouchEvent event,
-                          BarTouchResponse? touchResponse) {
-                        if (touchResponse == null) {
-                          return;
-                        } else if (event is FlTapUpEvent &&
-                            touchResponse.spot == null) {
-                          setState(() {
-                            _showingTooltip = -1;
-                          });
-                        } else if (event is FlTapUpEvent) {
-                          final sectionIndex =
-                              touchResponse.spot!.touchedBarGroupIndex;
-                          setState(() {
-                            if (_showingTooltip == sectionIndex) {
-                              _showingTooltip = -1;
-                            } else {
-                              _showingTooltip = sectionIndex;
-                            }
-                          });
+                maxY: chartData['maxY'],
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                    leftTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 25,
+                            getTitlesWidget: chartData['bottomTitleFunc']))),
+                barGroups: chartData['barGroups'],
+                barTouchData: BarTouchData(
+                  handleBuiltInTouches: false,
+                  touchCallback:
+                      (FlTouchEvent event, BarTouchResponse? touchResponse) {
+                    if (touchResponse == null) {
+                      return;
+                    } else if (event is FlTapUpEvent &&
+                        touchResponse.spot == null) {
+                      setState(() {
+                        _showingTooltip = -1;
+                      });
+                    } else if (event is FlTapUpEvent) {
+                      final sectionIndex =
+                          touchResponse.spot!.touchedBarGroupIndex;
+                      setState(() {
+                        if (_showingTooltip == sectionIndex) {
+                          _showingTooltip = -1;
+                        } else {
+                          _showingTooltip = sectionIndex;
                         }
-                      },
-                      touchTooltipData: BarTouchTooltipData(
-                        fitInsideHorizontally: true,
-                        tooltipPadding: EdgeInsets.fromLTRB(8, 2, 8, 1),
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          final color = rod.gradient?.colors.first ?? rod.color;
-                          final textStyle = TextStyle(
-                            color: color,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          );
-                          return BarTooltipItem(
-                              textAlign: TextAlign.start,
-                              "TOTAL",
-                              textStyle,
-                              children: [
-                                TextSpan(
-                                    text: '\n${Helper.currencyFormat(rod.toY)}',
-                                    style: TextStyle(fontSize: 24)),
-                                TextSpan(
-                                    text: '\n' +
-                                        Helper.dateTimeToString(liveGoal
-                                            .goal.startDate
-                                            .subtract(Duration(
-                                                days: liveGoal.goal.startDate
-                                                        .weekday %
-                                                    7))
-                                            .add(Duration(
-                                                days: (7 * group.x).toInt()))))
-                              ]);
-                        },
-                      ))),
+                      });
+                    }
+                  },
+                  touchTooltipData: BarTouchTooltipData(
+                    tooltipBgColor:
+                        Theme.of(context).colorScheme.outlineVariant,
+                    fitInsideHorizontally: true,
+                    fitInsideVertically: true,
+                    tooltipPadding: EdgeInsets.fromLTRB(8, 3, 8, 0),
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final color = rod.gradient?.colors.first ?? rod.color;
+                      final textStyle = TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      );
+                      return BarTooltipItem(
+                          textAlign: TextAlign.start,
+                          "TOTAL",
+                          textStyle,
+                          children: [
+                            TextSpan(
+                                text: '\n${Helper.currencyFormat(rod.toY)}',
+                                style: TextStyle(fontSize: 24)),
+                            TextSpan(text: tooltipData(group, liveGoal))
+                          ]);
+                    },
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -327,8 +337,10 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         Container(
                           margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
                           child: [
-                            getGraph(liveGoal, 3, chartDataDay),
-                            getGraph(liveGoal, 3, chartDataWeek),
+                            getGraph(
+                                liveGoal, 3, chartDataDay, tooltipDayString),
+                            getGraph(
+                                liveGoal, 3, chartDataWeek, tooltipWeekString),
                           ][_tabIndex],
                         )
                       ],

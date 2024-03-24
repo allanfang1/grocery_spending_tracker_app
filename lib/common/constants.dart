@@ -43,6 +43,7 @@ class Constants {
   static const String TAXED_LABEL = "Taxed";
   static const String ITEM_PRICE_LABEL = "Price";
   static const String CONFIRM_LABEL = "Confirm";
+  static const String SAVE_LABEL = "Save";
   static const String TRIP_SUBTOTAL_LABEL = "Subtotal";
   static const String TRIP_TOTAL_LABEL = "Total";
   static const String TRIP_DESC_LABEL = "Trip Description";
