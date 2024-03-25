@@ -24,7 +24,7 @@ class _NewTrip extends State<NewTrip> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(
-          Constants.ANALYTICS,
+          Constants.NEW_TRIP,
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
