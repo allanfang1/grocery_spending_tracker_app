@@ -2,6 +2,8 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
 
+/* Takes a URL to a web image and resizes it to a 100px by 100px image.
+* This is used for the images on recommendations. */
 Future<ByteBuffer?> resizeImage(String url) async {
   var imageUrl = Uri.parse(url);
   http.Response response = await http.get(imageUrl);

@@ -26,7 +26,7 @@ class Constants {
   static const String ANALYTICS = "Analytics";
   static const String PROFILE = "Profile";
 
-  //user pages
+  //constant labels for ui pages
   static const String NEW_ACCOUNT_TITLE = "New Account";
   static const String FIRST_NAME_LABEL = "First Name";
   static const String LAST_NAME_LABEL = "Last Name";
@@ -48,7 +48,7 @@ class Constants {
   static const String TRIP_SUBTOTAL_LABEL = "Subtotal";
   static const String TRIP_TOTAL_LABEL = "Total";
   static const String TRIP_DESC_LABEL = "Trip Description";
-  static const String NEW_ITEM_LABEL = "NEW\nITEM";
+  static const String ADD_ITEM_LABEL = "ADD ITEM";
   static const String LOGOUT_LABEL = "Logout";
 
   static const String SCAN_RECEIPT_LABEL = "Scan Receipt";
@@ -57,6 +57,7 @@ class Constants {
   static const String EDIT_ITEM_LABEL = "Edit Item";
   static const String ITEM_LIST_LABEL = "Item List";
 
+  // supported addresses for autofilling based on receipt input
   static const List<String> ADDRESSES = [
     '1579 Main Street West, Hamilton, ON L8S 1E6',
     '845 King Street West, Hamilton, ON L8S 1K4',

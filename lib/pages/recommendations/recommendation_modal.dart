@@ -5,9 +5,11 @@ import 'package:grocery_spending_tracker_app/common/resize_image.dart';
 import 'package:grocery_spending_tracker_app/controller/recommendations_controller.dart';
 import 'package:grocery_spending_tracker_app/model/recommendation.dart';
 
+// This class represents the widget for displaying recommendations.
 class RecommendationModal extends ConsumerWidget {
   const RecommendationModal({super.key});
 
+  // Build method responsible for constructing the recommendations UI.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recommendationsAsync = ref.watch(recommendationsControllerProvider);

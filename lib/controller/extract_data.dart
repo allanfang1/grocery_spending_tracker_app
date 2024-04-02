@@ -1,9 +1,11 @@
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/levenshtein.dart';
 
+// This file defines the ExtractData class, responsible for parsing the necessary information from a scanned receipt.
+
 class ExtractData {
-  // need to separate out the lines of text in order to more easily parse
-  // and improve quality of outputs from RegExp
+  /* Method to separate the String captured by the OCR into a list by new line to
+  * easily parse through and improve quality of outputs from RegExp. */
   List<String> textToList(String receiptData) {
     List<String> splitReceipt = receiptData.split('\n');
 
@@ -15,7 +17,8 @@ class ExtractData {
     return splitReceipt;
   }
 
-  // extract date and time from the input receipt text if it exists
+  /* Method to extract the date and time from the input receipt text if it exists and
+  * format it into a Unix timestamp. If it doesn't exist, return current time. */
   int getDateTime(List<String> receiptData) {
     final dateTimeRegex = RegExp(
         r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{1,2}) ([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?');
@@ -43,12 +46,10 @@ class ExtractData {
     return parsedDate.millisecondsSinceEpoch ~/ 1000;
   }
 
-  // extract location of store if available
+  /* Method to extract the address of the grocery store from the input receipt text
+  * if it exists and find closest matching supported address if found.
+  * Otherwise, return an empty string and expect user input. */
   String getLocation(List<String> receiptData) {
-    // Full Street Address, City, Province, Postal Code
-    // r'([1-9]+) [a-zA-Z\s]+(\,)? [a-zA-Z]+(\,)? ([A-Z]{2})+(\,)? [A-Z0-9\s]{6,7}'
-
-    // want to add optional city, province and postal
     final addressRegex = RegExp(r'([1-9]+) [a-zA-Z\s]');
     int minDistance = 0x7FFFFFFFFFFFFFFF; // max int
     String storeAddress = '';
@@ -69,7 +70,7 @@ class ExtractData {
     return "";
   }
 
-  // extracts grocery items from receipt data
+  // Method to extract the grocery items from the input receipt data.
   List<String> getItems(List<String> receiptData) {
     List<String> groceries = [];
 
@@ -81,7 +82,7 @@ class ExtractData {
           !line.contains(RegExp('TOTAL', caseSensitive: false)) &&
           !line.contains(RegExp('SUBTOTAL', caseSensitive: false)) &&
           !line.contains('%')) {
-        // correct OCR parsing if there is a space captured in the price
+        // fix OCR parsing if there is a space captured in the price
         if (priceRegex.hasMatch(line)) {
           int temp = line.lastIndexOf(' ');
           line = line.replaceRange(temp, temp + 1, '');
@@ -94,7 +95,8 @@ class ExtractData {
     return groceries;
   }
 
-  // gets subtotal from receipt
+  /* Method to extract the subtotal from the input receipt data if it exists. Otherwise,
+  * return a default subtotal. */
   String getSubtotal(List<String> receiptData) {
     final subtotalRegex = RegExp(r'^(Subtotal|SUBTOTAL) [$]?[0-9]+.[0-9\s]{2,3}');
     final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');
@@ -112,7 +114,8 @@ class ExtractData {
     return "SUBTOTAL 0.00";
   }
 
-  // gets total from receipt
+  /* Method to extract the total from the input receipt data if it exists. Otherwise,
+  * return a default total. */
   String getTotal(List<String> receiptData) {
     final totalRegex = RegExp(r'^(Total|TOTAL) [$]?[0-9]+.[0-9\s]{2,3}');
     final priceRegex = RegExp(r'[$]?[0-9]+[.\s]{2}');

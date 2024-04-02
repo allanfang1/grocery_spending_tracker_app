@@ -9,6 +9,7 @@ import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 
+// This StatefulWidget represents the widget for the built in camera interface for receipt capture.
 class CaptureReceipt extends StatefulWidget {
   const CaptureReceipt({Key? key}) : super(key: key);
 
@@ -16,6 +17,7 @@ class CaptureReceipt extends StatefulWidget {
   State<CaptureReceipt> createState() => _CaptureReceiptState();
 }
 
+// The state class for the CaptureReceipt widget.
 class _CaptureReceiptState extends State<CaptureReceipt>
     with WidgetsBindingObserver {
   bool _isPermissionGranted = false;
@@ -25,6 +27,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
   double _x = 0;
   double _y = 0;
 
+  // Method to initialize camera permissions.
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     _future = _requestCameraPermission();
   }
 
+  // Method to stop camera and dispose of unneeded resources.
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -40,6 +44,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     super.dispose();
   }
 
+  // Method to enable/disable camera based on page activity (i.e., is the page hidden or in the background)
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (_cameraController == null || !_cameraController!.value.isInitialized) {
@@ -54,6 +59,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     }
   }
 
+  /* Build method to construct the camera interface or error page if something
+  * goes wrong or permissions are not granted. */
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -163,6 +170,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     );
   }
 
+  // Method to build help modal if user requires assistance/advice.
   Widget _showHelp() {
     return AlertDialog(
       title: const Text(Constants.SCAN_RECEIPT_HELP_LABEL),
@@ -232,23 +240,27 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     );
   }
 
+  // Method to request camera permissions.
   Future<void> _requestCameraPermission() async {
     final status = await Permission.camera.request();
     _isPermissionGranted = status == PermissionStatus.granted;
   }
 
+  // Method to start camera.
   void _startCamera() {
     if (_cameraController != null) {
       _cameraSelected(_cameraController!.description);
     }
   }
 
+  // Method to stop camera.
   void _stopCamera() {
     if (_cameraController != null) {
       _cameraController?.dispose();
     }
   }
 
+  // Method to initialize the camera controller with the correct device camera.
   void _initCameraController(List<CameraDescription> cameras) {
     // if the cameraController is already set
     if (_cameraController != null) return;
@@ -268,6 +280,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     }
   }
 
+  // Method to set camera controller based on a selected camera.
   Future<void> _cameraSelected(CameraDescription camera) async {
     _cameraController = CameraController(
       camera,
@@ -282,6 +295,7 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     setState(() {});
   }
 
+  // Method to facilitate tap focus on the camera interface.
   Future<void> _onTap(TapUpDetails details) async {
     if (_cameraController!.value.isInitialized) {
       _showFocusCircle = true;
@@ -309,6 +323,8 @@ class _CaptureReceiptState extends State<CaptureReceipt>
     }
   }
 
+  /* Method to capture a picture of the receipt and access OCR functionality.
+  * It then redirects the user to the receipt confirmation page. */
   Future<void> scanReceipt() async {
     if (_cameraController == null) return;
 

@@ -23,7 +23,7 @@ class _NewTrip extends State<NewTrip> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: Text(
+        title: const Text(
           Constants.NEW_TRIP,
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
@@ -54,7 +54,7 @@ class _NewTrip extends State<NewTrip> {
                           .surfaceTint
                           .withOpacity(0.5),
                       elevation: 0,
-                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                      padding: const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: () {
                     PersistentNavBarNavigator.pushNewScreen(context,
                         screen: const LoadingOverlay(child: CaptureReceipt()),
@@ -78,7 +78,7 @@ class _NewTrip extends State<NewTrip> {
                           .surfaceTint
                           .withOpacity(0.5),
                       elevation: 0,
-                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                      padding: const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: _selectImage,
                   child: Text('Upload',
                       style: TextStyle(

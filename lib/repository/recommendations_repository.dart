@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+// Repository for handling user recommendations.
+
 part 'recommendations_repository.g.dart';
 
 class RecommendationsRepository {
@@ -17,6 +19,8 @@ class RecommendationsRepository {
 
   List<Recommendation> recommendations = [];
 
+  /* Method to fetch user recommendations based strictly on purchase history and
+  * add them to the recommendations list. */
   Future<http.Response> getRecommendationsByHistory() async {
     final response = await client.get(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.RECOMMENDATIONS_PATH),
@@ -38,6 +42,8 @@ class RecommendationsRepository {
     return response;
   }
 
+  /* Method to fetch user recommendations based on low price and purchase
+  * history. It adds them to the recommendations list once fetched. */
   Future<http.Response> getRecommendationsByPrice() async {
     final response = await client.get(
         Uri.parse(
@@ -56,10 +62,12 @@ class RecommendationsRepository {
     return response;
   }
 
+  // Method to return the recommendations list stored in the class.
   List<Recommendation> getRecommendations() {
     return recommendations;
   }
 
+  // Method to clear the recommendations list on logout.
   void logout() {
     recommendations = [];
   }

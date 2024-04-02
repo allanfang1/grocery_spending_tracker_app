@@ -9,6 +9,7 @@ import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:intl/intl.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 
+// A StatefulWidget responsible for facilitating user correction of captured receipt data before submission.
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
 
@@ -18,6 +19,7 @@ class ConfirmReceipt extends ConsumerStatefulWidget {
   ConsumerState<ConfirmReceipt> createState() => _ConfirmReceiptState();
 }
 
+// The state class for the ConfirmReceipt widget.
 class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   final DateFormat _dateFormat = DateFormat.yMMMMd('en_US').add_Hms();
   final List<Widget> _itemFields = [];
@@ -33,6 +35,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   final _confirmReceiptKey = GlobalKey<FormState>();
   final _confirmItemKey = GlobalKey<FormState>();
 
+  // Method initializes all data fields on the form with captured receipt data.
   @override
   void initState() {
     super.initState();
@@ -60,6 +63,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     super.dispose();
   }
 
+  // Method to build the date/time text field and corresponding widget for editing.
   Widget _buildDateTime(BuildContext context) {
     var textValue = TextEditingController();
     textValue.text = _dateTimeString.value;
@@ -96,6 +100,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         });
   }
 
+  // Method to build the location text field. Also includes text field validation.
   Widget _buildLocation() {
     return TextFormField(
       decoration: const InputDecoration(labelText: Constants.LOCATION_LABEL),
@@ -112,6 +117,9 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the card widget representing each individual grocery item.
+  * It also handles the logic for opening the edit modal when an item is tapped
+  * and addressing any edits made. */
   Widget _buildItem(BuildContext context, int index) {
     Color getColor(Set<MaterialState> states) {
       if (_items[index].taxed) return Theme.of(context).colorScheme.primary;
@@ -126,8 +134,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
               elevation: 0,
               margin: EdgeInsets.zero,
               child: Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
@@ -142,7 +150,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                       children: [
                         Text(
                           _items[index].itemDesc,
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                         Text(
                           'Item ID: ${_items[index].itemKey}, Price: ${_items[index].price}, Taxed: ${_items[index].taxed}',
@@ -153,7 +161,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                         )
                       ],
                     ),
-                    Icon(Icons.edit),
+                    const Icon(Icons.edit),
                   ],
                 ),
               ),
@@ -267,7 +275,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                           });
                                         },
                                       ),
-                                      SizedBox(height: 12),
+                                      const SizedBox(height: 12),
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Theme.of(context)
@@ -279,7 +287,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                                   .surfaceTint
                                                   .withOpacity(0.5),
                                           elevation: 0,
-                                          padding: EdgeInsets.fromLTRB(
+                                          padding: const EdgeInsets.fromLTRB(
                                               22, 12, 22, 12),
                                         ),
                                         onPressed: () {
@@ -314,11 +322,13 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         });
   }
 
+  /* Method to build the list of items that is shown on the page. It also handles
+  * the creation of new items and deletion of unneeded items. */
   Widget _buildItems(BuildContext context) {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 4),
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 4),
           child: Text(
             'Swipe left or right to remove an item',
             style: TextStyle(
@@ -331,8 +341,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
             elevation: 0,
             margin: EdgeInsets.zero,
             child: Container(
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
               decoration: BoxDecoration(
                 border: Border(
                     top: BorderSide(
@@ -352,7 +362,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   Text(
-                    "ADD ITEM",
+                    Constants.ADD_ITEM_LABEL,
                     style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).colorScheme.primary),
@@ -405,6 +415,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the text field for the subtotal. It also contains validation
+  * for the text field. */
   Widget _buildSubtotal() {
     return TextFormField(
       decoration:
@@ -434,6 +446,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the text field for the total. It also contains validation
+  * for the text field. */
   Widget _buildTotal() {
     return TextFormField(
       decoration: const InputDecoration(labelText: Constants.TRIP_TOTAL_LABEL),
@@ -462,9 +476,10 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  // Method to build the text field for the trip description.
   Widget _buildTripDesc() {
     return TextFormField(
-      scrollPadding: EdgeInsets.only(bottom: 200),
+      scrollPadding: const EdgeInsets.only(bottom: 200),
       decoration: const InputDecoration(labelText: Constants.TRIP_DESC_LABEL),
       initialValue: _tripDesc,
       onChanged: (String? value) {
@@ -475,6 +490,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  // Helper method to validate that prices of items sum to the total/subtotal.
   bool _validateTotal(bool includeTax) {
     double localTotal = 0.00;
 
@@ -494,12 +510,13 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     return _subtotal == double.parse(localTotal.toStringAsFixed(2));
   }
 
+  // Build method to put together all constructed elements onto the page.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: Text(
+        title: const Text(
           Constants.CONFIRM_RECEIPT_LABEL,
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
@@ -516,7 +533,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Column(children: [
                         _buildDateTime(context),
                         _buildLocation(),
@@ -524,7 +541,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                     ),
                     _buildItems(context),
                     Container(
-                      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                       child: Column(children: [
                         _buildSubtotal(),
                         _buildTotal(),
@@ -535,7 +552,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -544,7 +561,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                         .surfaceTint
                         .withOpacity(0.5),
                     elevation: 0,
-                    padding: EdgeInsets.fromLTRB(22, 12, 22, 12),
+                    padding: const EdgeInsets.fromLTRB(22, 12, 22, 12),
                   ),
                   onPressed: () => {
                         if (_confirmReceiptKey.currentState!.validate())
@@ -562,7 +579,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 16))),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -570,6 +587,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to update the Grocery Trip object with any changes made before sending
+  * it to the backend. It navigates back to the home page once done. */
   Future<void> handleSubmit() async {
     final loading = LoadingOverlay.of(context);
     final navigator = Navigator.of(context, rootNavigator: true);

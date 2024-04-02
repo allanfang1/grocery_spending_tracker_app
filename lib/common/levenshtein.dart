@@ -1,5 +1,8 @@
 import 'dart:math';
 
+/* Dart implementation of Levenshtein distance for autofilling address.
+* Used for comparing the address on the receipt with the supported addresses
+* in the application and returning the one with the best match. */
 int levenshtein(String s, String t) {
   s = s.toLowerCase();
   t = t.toLowerCase();

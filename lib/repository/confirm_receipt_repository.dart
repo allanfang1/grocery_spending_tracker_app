@@ -4,6 +4,8 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+// Repository for handling Grocery Trip submission.
+
 part 'confirm_receipt_repository.g.dart';
 
 class ConfirmReceiptRepository {
@@ -11,6 +13,7 @@ class ConfirmReceiptRepository {
   final ProfileRepository profileRepository;
   http.Client client = http.Client();
 
+  // Method to send JSON trip data to the server.
   Future<int> submitTrip(String trip) async {
     final response = await client.post(
       Uri.parse(dotenv.env['BASE_URL']! + Constants.SUBMIT_TRIP_PATH),

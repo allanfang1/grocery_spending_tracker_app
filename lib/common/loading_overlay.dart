@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// This class creates a reusable loading overlay. It takes a page (Widget) as input.
 class LoadingOverlay extends StatefulWidget {
   const LoadingOverlay({Key? key, required this.child})
       : super(key: key);
@@ -14,11 +15,13 @@ class LoadingOverlay extends StatefulWidget {
   State<LoadingOverlay> createState() => _LoadingOverlayState();
 }
 
+// Stores the state and functionality of the loading overlay
 class _LoadingOverlayState extends State<LoadingOverlay> {
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    // Builds the UI for the loading overlay
     return Stack(children: [
       widget.child,
       if (_isLoading)
@@ -30,12 +33,14 @@ class _LoadingOverlayState extends State<LoadingOverlay> {
     ]);
   }
 
+  // Set loading overlay to be visible
   void show() {
     setState(() {
       _isLoading = true;
     });
   }
 
+  // Hide loading overlay
   void hide() {
     setState(() {
       _isLoading = false;
