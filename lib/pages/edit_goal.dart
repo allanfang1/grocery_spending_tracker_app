@@ -1,7 +1,7 @@
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:flutter/material.dart';
 
-// ignore_for_file: prefer_const_constructors
+// TODO: finish this page
 
 class EditGoal extends StatefulWidget {
   const EditGoal({super.key});

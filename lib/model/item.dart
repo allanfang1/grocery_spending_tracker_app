@@ -1,3 +1,4 @@
+/// Represents a grocery item.
 class Item {
   int? itemId;
   String? productKey;
@@ -7,9 +8,11 @@ class Item {
   String? category;
   String? description;
 
+  /// Constructor for creating an Item object.
   Item(this.itemId, this.productKey, this.price, this.location, this.isTaxed,
       this.category, this.description);
 
+  /// Factory method to create an Item object from JSON data.
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       json['item_id'] as int?,

@@ -6,6 +6,8 @@ import 'package:grocery_spending_tracker_app/repository/profile_repository.dart'
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+// Repository class for managing user goals.
+
 part 'goals_repository.g.dart';
 
 class GoalsRepository {
@@ -15,6 +17,7 @@ class GoalsRepository {
 
   List<Goal> goals = [];
 
+  // Method to load user goals from the server.
   Future<Response> loadGoals() async {
     final response = await client.get(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.GET_GOALS_PATH),
@@ -28,6 +31,7 @@ class GoalsRepository {
     return response;
   }
 
+  // Method to create a new goal on the server.
   Future<Response> createGoal(String goalName, String goalDescription,
       String startDate, String endDate, double budget) async {
     final response = await client.post(
@@ -49,6 +53,7 @@ class GoalsRepository {
     return response;
   }
 
+  // Method to delete a goal from the server.
   Future<Response> deleteGoal(int index) async {
     final response = await client.delete(
         Uri.parse(dotenv.env['BASE_URL']! +

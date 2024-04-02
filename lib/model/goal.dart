@@ -1,3 +1,4 @@
+/// Represents a goal in the application.
 class Goal {
   int goalId;
   String goalName;
@@ -7,9 +8,11 @@ class Goal {
   double budget;
   List<String>? categories;
 
+  /// Constructor for creating a Goal object.
   Goal(this.goalId, this.goalName, this.goalDescription, this.startDate,
       this.endDate, this.budget, this.categories);
 
+  /// Factory method to create a Goal object from JSON data.
   factory Goal.fromJson(dynamic json) {
     return Goal(
       json['goal_id'] as int,

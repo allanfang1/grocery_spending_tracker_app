@@ -7,6 +7,8 @@ import 'package:grocery_spending_tracker_app/repository/history_repository.dart'
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+// Service class for managing analytics.
+
 part 'analytics_service.g.dart';
 
 class AnalyticsService {
@@ -14,14 +16,17 @@ class AnalyticsService {
   final Ref ref;
   List<LiveGoal> liveGoals = [];
 
+  // Method to refresh goals.
   Future<void> refreshGoals() async {
     await ref.watch(goalsRepositoryProvider).loadGoals();
   }
 
+  // Method to refresh transactions.
   Future<void> refreshTransactions() async {
     await ref.watch(historyRepositoryProvider).loadTransactions();
   }
 
+  // Method to load live goals.
   Future<void> loadLiveGoals() async {
     final goals = ref.watch(goalsRepositoryProvider).goals;
     final transactions = ref.watch(historyRepositoryProvider).transactions;
@@ -39,6 +44,7 @@ class AnalyticsService {
     liveGoals = newLiveGoals;
   }
 
+  // Method to delete a goal.
   Future<void> deleteGoal(int index) async {
     Response response =
         await ref.watch(goalsRepositoryProvider).deleteGoal(index);

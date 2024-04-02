@@ -7,11 +7,11 @@ import 'package:grocery_spending_tracker_app/pages/analytics/create_goal.dart';
 import 'package:grocery_spending_tracker_app/pages/analytics/expanded_goal.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// This class represents the widget that displays the goals tab.
 class GoalsList extends ConsumerWidget {
   const GoalsList({super.key});
 
+  // Build method responsible for constructing the UI based on the provided context and ref.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final liveGoalsAsync = ref.watch(analyticsServiceControllerProvider);
@@ -19,14 +19,14 @@ class GoalsList extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: Text(
+          title: const Text(
             Constants.ANALYTICS,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         body: liveGoals.isNotEmpty
             ? ListView.builder(
-                padding: EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: 4),
                 itemCount: liveGoals.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
@@ -63,7 +63,7 @@ class GoalsList extends ConsumerWidget {
                         background: Container(
                             color: Theme.of(context).colorScheme.error),
                         child: Container(
-                          padding: EdgeInsets.fromLTRB(14, 10, 14, 16),
+                          padding: const EdgeInsets.fromLTRB(14, 10, 14, 16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -76,7 +76,7 @@ class GoalsList extends ConsumerWidget {
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(
                                     liveGoals[index].daysRemaining >= 0
                                         ? "${liveGoals[index].daysRemaining} days left"
@@ -98,7 +98,7 @@ class GoalsList extends ConsumerWidget {
                                   Text(
                                     Helper.currencyFormat(
                                         liveGoals[index].spendingTotal),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 28), //fix this to be dynamic
                                   ),
                                   Text(
@@ -107,7 +107,7 @@ class GoalsList extends ConsumerWidget {
                                   )
                                 ],
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 6),
                               LinearProgressIndicator(
                                 backgroundColor:
                                     Theme.of(context).colorScheme.secondary,
@@ -122,7 +122,7 @@ class GoalsList extends ConsumerWidget {
                   );
                 },
               )
-            : Text(
+            : const Text(
                 'You don\'t have any goals yet, try creating one.',
                 style:
                     TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
@@ -133,7 +133,7 @@ class GoalsList extends ConsumerWidget {
               builder: (context) => const LoadingOverlay(child: CreateGoal()),
             ),
           ),
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
       );
     }, error: (Object error, StackTrace stackTrace) {
@@ -142,15 +142,15 @@ class GoalsList extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: Text(
+          title: const Text(
             Constants.ANALYTICS,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         body: Center(
           child: Container(
-            margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: CircularProgressIndicator(),
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       );

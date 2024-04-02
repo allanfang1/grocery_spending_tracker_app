@@ -7,8 +7,7 @@ import 'package:grocery_spending_tracker_app/controller/profile_controller.dart'
 import 'package:grocery_spending_tracker_app/controller/recommendations_controller.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// This class represents the widget for user profile tab.
 class EditProfile extends ConsumerStatefulWidget {
   const EditProfile({super.key});
 
@@ -22,6 +21,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
   String? _firstname;
   String? _lastname;
 
+  // Build method responsible for constructing the UI based on the provided context.
   @override
   Widget build(BuildContext context) {
     final initUser = ref.watch(profileControllerProvider.notifier).getUser();
@@ -30,7 +30,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
           backgroundColor: Theme.of(context).colorScheme.background,
           title: Text(
             initUser.email ?? "",
-            style: TextStyle(fontWeight: FontWeight.w600),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           actions: [
             IconButton(
@@ -72,7 +72,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
           ]),
       body: Center(
         child: Container(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: Form(
             key: _formKey,
             onChanged: () =>
@@ -123,7 +123,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -132,7 +132,7 @@ class EditProfileState extends ConsumerState<EditProfile> {
                           .surfaceTint
                           .withOpacity(0.5),
                       elevation: 0,
-                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                      padding: const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: () {
                     ref.watch(profileControllerProvider.notifier).logout();
                     ref

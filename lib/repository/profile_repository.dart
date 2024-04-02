@@ -5,6 +5,8 @@ import 'package:grocery_spending_tracker_app/model/user.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+// Repository class for managing user profile.
+
 part 'profile_repository.g.dart';
 
 class ProfileRepository {
@@ -13,6 +15,7 @@ class ProfileRepository {
 
   final User user = User.empty();
 
+  // Method to authenticate user login.
   Future<Response> login(String email, String password) async {
     Response response = await client.post(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.LOGIN_PATH),
@@ -29,6 +32,7 @@ class ProfileRepository {
     return response;
   }
 
+  // Method to fetch user details.
   Future<Response> getUser() async {
     final response = await client.get(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.GET_USER_PATH),
@@ -42,6 +46,7 @@ class ProfileRepository {
     return response;
   }
 
+  // Method to register a new user.
   Future<Response> register(
       String firstname, String lastname, String email, String password) async {
     final response = await client.post(
@@ -58,6 +63,7 @@ class ProfileRepository {
     return response;
   }
 
+  // Method to update user details.
   Future<Response> updateUser(String firstname, String lastname) async {
     final response = await client.patch(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.PATCH_USER),
@@ -72,6 +78,7 @@ class ProfileRepository {
     return response;
   }
 
+  // Method to clear user data (logout).
   void logout() {
     user.clear();
   }

@@ -1,5 +1,6 @@
 import 'item.dart';
 
+/// Represents a transaction in the application.
 class Transaction {
   late int transactionId;
   late DateTime dateTime;
@@ -9,9 +10,11 @@ class Transaction {
   double? subtotal;
   late double total;
 
+  /// Constructor for creating a Transaction object.
   Transaction(this.transactionId, this.dateTime, this.location,
       this.description, this.items, this.subtotal, this.total);
 
+  /// Constructor for creating a blank Transaction object when the transaction is not found.
   Transaction.notFound(int transactionId) {
     this.transactionId = transactionId;
     total = 0;
@@ -19,6 +22,7 @@ class Transaction {
     items = [];
   }
 
+  /// Factory method to create a Transaction object from JSON data.
   factory Transaction.fromJson(Map<String, dynamic> json) {
     List<Item> items;
     if (json['items'] == null) {

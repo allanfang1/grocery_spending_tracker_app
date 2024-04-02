@@ -6,8 +6,7 @@ import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// Register or create profile page for the app
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -33,7 +32,7 @@ class _RegisterPage extends State<RegisterPage> {
             borderSide: BorderSide.none),
         hintStyle:
             TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           vertical: 0.0,
           horizontal: 10.0,
         ),
@@ -49,7 +48,7 @@ class _RegisterPage extends State<RegisterPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
+              const Text(
                 Constants.NEW_ACCOUNT_TITLE,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -131,7 +130,8 @@ class _RegisterPage extends State<RegisterPage> {
                                   .surfaceTint
                                   .withOpacity(0.5),
                               elevation: 0,
-                              padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                              padding:
+                                  const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                           onPressed: _enableBtn ?? false
                               ? () async {
                                   _formKey.currentState!.save();
@@ -172,7 +172,7 @@ class _RegisterPage extends State<RegisterPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(

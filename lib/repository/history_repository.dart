@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 part 'history_repository.g.dart';
 
+// Repository class for managing transaction history.
 class HistoryRepository {
   HistoryRepository(this.profileRepository);
   final ProfileRepository profileRepository;
@@ -16,6 +17,7 @@ class HistoryRepository {
 
   List<Transaction> transactions = [];
 
+  // Method to load user transactions from the server.
   Future<Response> loadTransactions() async {
     final response = await client.get(
         Uri.parse(dotenv.env['BASE_URL']! + Constants.LOAD_TRANSACTIONS_PATH),
@@ -30,6 +32,7 @@ class HistoryRepository {
     return response;
   }
 
+  // Method to delete a transaction from the server.
   Future<Response> deleteTransaction(int index) async {
     final response = await client.delete(
         Uri.parse(dotenv.env['BASE_URL']! +
@@ -42,10 +45,12 @@ class HistoryRepository {
     return response;
   }
 
+  // Getter to get all transactions.
   List<Transaction> getTransactions() {
     return transactions;
   }
 
+  // Method to get transaction by index.
   Transaction? getTransactionByIndex(int index) {
     return (index < 0 || index >= transactions.length)
         ? null

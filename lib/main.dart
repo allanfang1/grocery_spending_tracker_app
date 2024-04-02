@@ -5,6 +5,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 
+// Entry point of the application.
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   runApp(const ProviderScope(
@@ -12,10 +13,9 @@ Future<void> main() async {
   ));
 }
 
+// Root widget of the application.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

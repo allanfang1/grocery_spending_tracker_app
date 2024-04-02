@@ -6,11 +6,11 @@ import 'package:grocery_spending_tracker_app/controller/history_controller.dart'
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// This class represents the widget for displaying the purchase history tab.
 class PurchaseHistory extends ConsumerWidget {
   const PurchaseHistory({super.key});
 
+  // Build method responsible for constructing the UI based on the provided context and ref.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsAsync = ref.watch(historyControllerProvider);
@@ -20,14 +20,14 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: Text(
+          title: const Text(
             Constants.PURCHASE_HISTORY,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         body: _transactions.isNotEmpty
             ? ListView.builder(
-                padding: EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: 4),
                 itemCount: _transactions.length,
                 //TODO: prototypeItem:
                 itemBuilder: (context, index) {
@@ -59,11 +59,11 @@ class PurchaseHistory extends ConsumerWidget {
                           ref
                               .watch(historyControllerProvider.notifier)
                               .deleteGoal(index);
-                        }, //TODO
+                        },
                         background: Container(
                             color: Theme.of(context).colorScheme.error),
                         child: Container(
-                          padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                           child: Row(
                             children: [
                               Icon(
@@ -71,14 +71,14 @@ class PurchaseHistory extends ConsumerWidget {
                                 size: 38,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(_transactions[index].location ?? "",
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18)),
                                     Text(Helper.dateTimeToString(
@@ -86,11 +86,11 @@ class PurchaseHistory extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Text(
                                 Helper.currencyFormat(
                                     _transactions[index].total),
-                                style: TextStyle(fontSize: 17),
+                                style: const TextStyle(fontSize: 17),
                               ),
                             ],
                           ),
@@ -100,7 +100,7 @@ class PurchaseHistory extends ConsumerWidget {
                   );
                 },
               )
-            : Text(
+            : const Text(
                 'You don\'t have any trips yet.',
                 style:
                     TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
@@ -112,15 +112,15 @@ class PurchaseHistory extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: Text(
+          title: const Text(
             Constants.PURCHASE_HISTORY,
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         body: Center(
           child: Container(
-            margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: CircularProgressIndicator(),
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       );

@@ -5,6 +5,7 @@ import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/pages/recommendations/recommendation_modal.dart';
 
+// The home page or landing page tab of the app, displays the recommendations.
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 

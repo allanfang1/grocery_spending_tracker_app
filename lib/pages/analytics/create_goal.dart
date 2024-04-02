@@ -8,8 +8,7 @@ import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/goals_controller.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// A StatefulWidget responsible for creating a new goal.
 class CreateGoal extends ConsumerStatefulWidget {
   const CreateGoal({super.key});
 
@@ -17,6 +16,7 @@ class CreateGoal extends ConsumerStatefulWidget {
   CreateGoalState createState() => CreateGoalState();
 }
 
+// The state class for CreateGoal widget.
 class CreateGoalState extends ConsumerState<CreateGoal> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn = true;
@@ -31,14 +31,14 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: Text(
+        title: const Text(
           Constants.CREATE_GOAL,
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Form(
             key: _formKey,
             onChanged: () =>
@@ -46,7 +46,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
             child: Column(
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Name',
                   ),
                   onChanged: (value) {
@@ -56,7 +56,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
                   onChanged: (value) {
@@ -78,7 +78,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                         color: _startDate == null
                             ? Theme.of(context).colorScheme.onSurfaceVariant
                             : Theme.of(context).colorScheme.onBackground),
-                    suffixIcon: Icon(Icons.calendar_today),
+                    suffixIcon: const Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
                     final DateTime? picked = await showDatePicker(
@@ -107,7 +107,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                         color: _startDate == null
                             ? Theme.of(context).colorScheme.onSurfaceVariant
                             : Theme.of(context).colorScheme.onBackground),
-                    suffixIcon: Icon(Icons.calendar_today),
+                    suffixIcon: const Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
                     final DateTime? picked = await showDatePicker(
@@ -128,7 +128,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Budget',
                   ),
                   onChanged: (value) {
@@ -137,7 +137,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -146,7 +146,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                           .surfaceTint
                           .withOpacity(0.5),
                       elevation: 0,
-                      padding: EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                      padding: const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                   onPressed: (_startDate != null &&
                           _endDate != null &&
                           _startDate!.isBefore(_endDate!) &&

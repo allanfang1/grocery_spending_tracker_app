@@ -7,8 +7,7 @@ import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// Login page for the app
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -41,6 +40,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Builds the login page UI based on connectivity status.
     return Scaffold(
       body: Center(
           child: Container(
@@ -59,11 +59,12 @@ class LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
+  // Builds the UI for the login page.
   Widget _loginPage() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(
+        const Text(
           Constants.APP_NAME,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -89,7 +90,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                       borderSide: BorderSide.none),
                   hintText: Constants.EMAIL_LABEL,
                   hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     vertical: 0.0,
                     horizontal: 10.0,
                   ),
@@ -115,7 +116,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                   hintText: Constants.PASSWORD_LABEL,
                   hintStyle: TextStyle(
                       color: Theme.of(context).colorScheme.onSurfaceVariant),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     vertical: 0.0,
                     horizontal: 10.0,
                   ),
@@ -146,7 +147,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                       .surfaceTint
                       .withOpacity(0.5),
                   elevation: 0,
-                  padding: EdgeInsets.fromLTRB(22, 12, 22, 12),
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 12),
                 ),
                 onPressed: _enableBtn ?? false
                     ? () async {
@@ -163,7 +164,7 @@ class LoginPageState extends ConsumerState<LoginPage> {
                           Navigator.of(context, rootNavigator: true)
                               .pushAndRemoveUntil(MaterialPageRoute(
                                   builder: (BuildContext context) {
-                            return AppNavigation();
+                            return const AppNavigation();
                           }), (route) => false);
                         } else {
                           setState(() {
@@ -202,14 +203,15 @@ class LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
+  // Builds the UI for the no internet page.
   Widget _noInternetPage() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.wifi_off, color: Colors.red),
+        const Icon(Icons.wifi_off, color: Colors.red),
         Container(
-            margin: EdgeInsets.only(top: 20, bottom: 10),
+            margin: const EdgeInsets.only(top: 20, bottom: 10),
             child: const Text("No Internet Connection",
                 style: TextStyle(fontSize: 22))),
         Container(

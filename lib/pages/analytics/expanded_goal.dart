@@ -10,8 +10,7 @@ import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// A StatefulWidget responsible for displaying expanded details of a goal in analytics.
 class ExpandedGoal extends ConsumerStatefulWidget {
   const ExpandedGoal({super.key});
 
@@ -19,6 +18,7 @@ class ExpandedGoal extends ConsumerStatefulWidget {
   ExpandedGoalState createState() => ExpandedGoalState();
 }
 
+// The state class for ExpandedGoal widget.
 class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
@@ -38,6 +38,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     super.initState();
   }
 
+  // Function to handle tab selection.
   _handleTabSelection() {
     if (_tabController.indexIsChanging) {
       setState(() {
@@ -47,6 +48,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     }
   }
 
+  // Function to generate tooltip string for weekly data.
   String tooltipWeekString(BarChartGroupData group, LiveGoal liveGoal) {
     return '\n' +
         Helper.dateTimeToString(liveGoal.goal.startDate
@@ -54,12 +56,14 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
             .add(Duration(days: (7 * group.x).toInt())));
   }
 
+  // Function to generate tooltip string for daily data.
   String tooltipDayString(BarChartGroupData group, LiveGoal liveGoal) {
     return '\n' +
         Helper.dateTimeToString(
             liveGoal.goal.startDate.add(Duration(days: (group.x).toInt())));
   }
 
+  // Function to generate bar chart group data given a data point.
   BarChartGroupData generateGroupData(int x, double y) {
     return BarChartGroupData(
       x: x,
@@ -70,6 +74,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     );
   }
 
+  // Function to generate data for daily chart.
   Map<String, dynamic> chartDataDay(LiveGoal liveGoal, int labelFreq) {
     DateTime endDate = DateTime.now().isBefore(liveGoal.goal.endDate)
         ? DateTime.now()
@@ -77,7 +82,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     List<BarChartGroupData> barGroups = [];
     int resultCounter = 0;
     double maxY = 0;
-    //for every day from start of goal to (today or goal end date)
+    //for every day from start of goal to min(today or goal end date)
     for (DateTime date = liveGoal.goal.startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
@@ -99,7 +104,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
       'maxY': maxY,
       'bottomTitleFunc': ((value, meta) {
         if (value % labelFreq != 0) {
-          return SideTitleWidget(axisSide: meta.axisSide, child: Text(""));
+          return SideTitleWidget(
+              axisSide: meta.axisSide, child: const Text(""));
         }
         DateTime date =
             liveGoal.goal.startDate.add(Duration(days: value.toInt()));
@@ -111,6 +117,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     };
   }
 
+  // Function to generate data for weekly chart.
   Map<String, dynamic> chartDataWeek(LiveGoal liveGoal, int labelFreq) {
     DateTime startDate = liveGoal.goal.startDate
         .subtract(Duration(days: liveGoal.goal.startDate.weekday % 7));
@@ -120,7 +127,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     List<BarChartGroupData> barGroups = [];
     int resultCounter = 0;
     double maxY = 0;
-    //for every day from start of goal to (today or goal end date)
+    //aggregating data by start of the week (sunday)
     while (startDate.isBefore(endDate) || startDate.isAtSameMomentAs(endDate)) {
       double barLen = 0.0;
       for (Transaction transaction in liveGoal.transactions) {
@@ -129,15 +136,16 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                     liveGoal.goal.startDate, transaction.dateTime)) &&
             (transaction.dateTime.isAfter(startDate) ||
                 DateUtils.isSameDay(startDate, transaction.dateTime)) &&
-            (transaction.dateTime.isBefore(startDate.add(Duration(days: 6))) ||
-                DateUtils.isSameDay(
-                    startDate.add(Duration(days: 6)), transaction.dateTime))) {
+            (transaction.dateTime
+                    .isBefore(startDate.add(const Duration(days: 6))) ||
+                DateUtils.isSameDay(startDate.add(const Duration(days: 6)),
+                    transaction.dateTime))) {
           barLen += transaction.total;
         }
       }
       maxY = max(barLen, maxY);
       barGroups.add(generateGroupData(resultCounter, barLen));
-      startDate = startDate.add(Duration(days: 7));
+      startDate = startDate.add(const Duration(days: 7));
       resultCounter += 1;
     }
     double barCount = resultCounter.toDouble();
@@ -148,7 +156,8 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
       'maxY': maxY,
       'bottomTitleFunc': ((value, meta) {
         if (value % labelFreq != 0) {
-          return SideTitleWidget(axisSide: meta.axisSide, child: Text(""));
+          return SideTitleWidget(
+              axisSide: meta.axisSide, child: const Text(""));
         }
         DateTime date = liveGoal.goal.startDate
             .subtract(Duration(days: liveGoal.goal.startDate.weekday % 7))
@@ -161,6 +170,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     };
   }
 
+  // Function to get the graph widget.
   Widget getGraph(LiveGoal liveGoal, int labelFreq, Function chartDataFunc,
       Function tooltipData) {
     Map<String, dynamic> chartData = chartDataFunc(liveGoal, labelFreq);
@@ -170,7 +180,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
           scrollDirection: Axis.horizontal,
           reverse: true,
           child: Container(
-            padding: EdgeInsets.fromLTRB(3, 10, 3, 0),
+            padding: const EdgeInsets.fromLTRB(3, 10, 3, 0),
             height: 350,
             width: 20 * chartData['barCount'] as double,
             child: BarChart(
@@ -178,12 +188,12 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                 maxY: chartData['maxY'],
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
-                    leftTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    leftTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                     bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                             showTitles: true,
@@ -218,7 +228,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                         Theme.of(context).colorScheme.outlineVariant,
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
-                    tooltipPadding: EdgeInsets.fromLTRB(8, 3, 8, 0),
+                    tooltipPadding: const EdgeInsets.fromLTRB(8, 3, 8, 0),
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final color = rod.gradient?.colors.first ?? rod.color;
                       final textStyle = TextStyle(
@@ -233,7 +243,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                           children: [
                             TextSpan(
                                 text: '\n${Helper.currencyFormat(rod.toY)}',
-                                style: TextStyle(fontSize: 24)),
+                                style: const TextStyle(fontSize: 24)),
                             TextSpan(text: tooltipData(group, liveGoal))
                           ]);
                     },
@@ -246,7 +256,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
       ),
       Container(
           height: 335,
-          margin: EdgeInsets.only(left: 2),
+          margin: const EdgeInsets.only(left: 2),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,6 +267,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
     ]);
   }
 
+  // Build method responsible for constructing the UI based on the provided context and ref.
   @override
   Widget build(BuildContext context) {
     final LiveGoal liveGoal = ref
@@ -267,7 +278,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(
           liveGoal.goal.goalName,
-          style: TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
       ),
@@ -280,21 +291,21 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
         },
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Card(
                   elevation: 0,
-                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "${Helper.dateTimeToString(liveGoal.goal.startDate)}  -  ${Helper.dateTimeToString(liveGoal.goal.endDate)}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           Text(liveGoal.goal.goalDescription)
@@ -303,7 +314,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                 ),
                 Card(
                   elevation: 0,
-                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: DefaultTabController(
                     animationDuration: Duration.zero,
                     length: 2, // Number of tabs
@@ -312,7 +323,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                       children: <Widget>[
                         TabBar(
                           controller: _tabController,
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w600),
                           indicatorSize: TabBarIndicatorSize.tab,
                           overlayColor:
@@ -335,7 +346,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                           ],
                         ),
                         Container(
-                          margin: EdgeInsets.fromLTRB(20, 20, 10, 20),
+                          margin: const EdgeInsets.fromLTRB(20, 20, 10, 20),
                           child: [
                             getGraph(
                                 liveGoal, 3, chartDataDay, tooltipDayString),
@@ -349,9 +360,9 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                 ),
                 Card(
                   elevation: 0,
-                  margin: EdgeInsets.fromLTRB(0, 6, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       children: [
                         Row(
@@ -360,10 +371,10 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                           children: [
                             Text(
                               Helper.currencyFormat(liveGoal.spendingTotal),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 28), //fix this to be dynamic
                             ),
-                            Text(
+                            const Text(
                               " spent",
                             )
                           ],
@@ -374,12 +385,12 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                               Theme.of(context).colorScheme.secondary,
                           minHeight: 10,
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(Helper.currencyFormat(0)),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
                             Flexible(
                               child: Text(
                                 Helper.currencyFormat(liveGoal.goal.budget),
@@ -394,13 +405,13 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                 ),
                 Card(
                   elevation: 0,
-                  margin: EdgeInsets.fromLTRB(0, 6, 0, 10),
+                  margin: const EdgeInsets.fromLTRB(0, 6, 0, 10),
                   child: ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: liveGoal.transactions.length,
                       separatorBuilder: (context, index) {
-                        return Divider(
+                        return const Divider(
                           height: 0,
                           thickness: 1,
                           indent: 54,
@@ -422,7 +433,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                             child: Row(
                               children: [
                                 Icon(
@@ -430,7 +441,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                                   size: 38,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -441,7 +452,7 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                                                   .location ??
                                               "",
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 18)),
                                       Text(Helper.dateTimeToString(liveGoal
@@ -449,11 +460,11 @@ class ExpandedGoalState extends ConsumerState<ExpandedGoal>
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Text(
                                   Helper.currencyFormat(
                                       liveGoal.transactions[index].total),
-                                  style: TextStyle(fontSize: 17),
+                                  style: const TextStyle(fontSize: 17),
                                 ),
                               ],
                             ),
