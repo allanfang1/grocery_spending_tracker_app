@@ -1,3 +1,4 @@
+/// Represents a user.
 class User {
   int? id;
   String? email;
@@ -5,10 +6,13 @@ class User {
   String? firstName;
   String? lastName;
 
+  /// Constructor for creating an empty User object.
   User.empty();
 
+  /// Constructor for creating a User object.
   User(this.id, this.email, this.token, this.firstName, this.lastName);
 
+  /// Sets the attributes of the user.
   void setUser(
       int id, String email, String token, String firstName, String lastName) {
     this.id = id;
@@ -18,6 +22,7 @@ class User {
     this.lastName = lastName;
   }
 
+  /// Sets the attributes of the user from JSON data.
   void fromJson(dynamic json) {
     if (json['user_id'] != null) {
       id = json['user_id'] as int;
@@ -36,6 +41,7 @@ class User {
     }
   }
 
+  /// Clears all attributes of the user.
   void clear() {
     id = null;
     email = null;

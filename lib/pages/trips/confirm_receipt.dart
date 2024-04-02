@@ -9,6 +9,7 @@ import 'package:grocery_spending_tracker_app/pages/app_nav.dart';
 import 'package:intl/intl.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 
+// A StatefulWidget responsible for facilitating user correction of captured receipt data before submission.
 class ConfirmReceipt extends ConsumerStatefulWidget {
   final GroceryTrip tripData;
 
@@ -18,6 +19,7 @@ class ConfirmReceipt extends ConsumerStatefulWidget {
   ConsumerState<ConfirmReceipt> createState() => _ConfirmReceiptState();
 }
 
+// The state class for the ConfirmReceipt widget.
 class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   final DateFormat _dateFormat = DateFormat.yMMMMd('en_US').add_Hms();
   final List<Widget> _itemFields = [];
@@ -33,6 +35,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
   final _confirmReceiptKey = GlobalKey<FormState>();
   final _confirmItemKey = GlobalKey<FormState>();
 
+  // Method initializes all data fields on the form with captured receipt data.
   @override
   void initState() {
     super.initState();
@@ -60,6 +63,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     super.dispose();
   }
 
+  // Method to build the date/time text field and corresponding widget for editing.
   Widget _buildDateTime(BuildContext context) {
     var textValue = TextEditingController();
     textValue.text = _dateTimeString.value;
@@ -96,6 +100,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
         });
   }
 
+  // Method to build the location text field. Also includes text field validation.
   Widget _buildLocation() {
     return TextFormField(
       decoration: const InputDecoration(labelText: Constants.LOCATION_LABEL),
@@ -112,120 +117,179 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the card widget representing each individual grocery item.
+  * It also handles the logic for opening the edit modal when an item is tapped
+  * and addressing any edits made. */
   Widget _buildItem(BuildContext context, int index) {
     Color getColor(Set<MaterialState> states) {
-      if (_items[index].taxed) return Colors.purple;
+      if (_items[index].taxed) return Theme.of(context).colorScheme.primary;
       return Colors.white;
     }
 
     return ListenableBuilder(
         listenable: _items[index],
         builder: (context, Widget? child) {
-          return Card(
-              child: ListTile(
-            title: Text(_items[index].itemDesc),
-            subtitle: Text(
-                'Item ID: ${_items[index].itemKey}, Price: ${_items[index].price}, Taxed: ${_items[index].taxed}'),
-            trailing: const Icon(Icons.edit),
+          return GestureDetector(
+            child: Card(
+              elevation: 0,
+              margin: EdgeInsets.zero,
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.outlineVariant)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _items[index].itemDesc,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        Text(
+                          'Item ID: ${_items[index].itemKey}, Price: ${_items[index].price}, Taxed: ${_items[index].taxed}',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
+                        )
+                      ],
+                    ),
+                    const Icon(Icons.edit),
+                  ],
+                ),
+              ),
+            ),
             onTap: () async {
               await showDialog(
                   context: context,
                   builder: (context) {
                     return StatefulBuilder(builder: (context, setState) {
-                      return AlertDialog(
-                        title: const Text(Constants.EDIT_ITEM_LABEL),
-                        content: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned(
-                                right: -40,
-                                top: -40,
-                                child: InkResponse(
-                                  onTap: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    child: Icon(Icons.close),
-                                  ),
-                                )),
-                            Form(
-                                key: _confirmItemKey,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                          labelText: Constants.ITEM_ID_LABEL),
-                                      initialValue: _items[index].itemKey,
-                                      keyboardType: TextInputType.number,
-                                      onSaved: (String? value) {
-                                        setState(() {
-                                          _items[index].updateItem(
-                                              value!, null, null, null);
-                                        });
-                                      },
-                                    ),
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                          labelText: Constants.ITEM_NAME_LABEL),
-                                      initialValue: _items[index].itemDesc,
-                                      validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Item Name is required';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (String? value) {
-                                        setState(() {
-                                          _items[index].updateItem(
-                                              null, value!, null, null);
-                                        });
-                                      },
-                                    ),
-                                    CheckboxListTile(
-                                      title: const Text(Constants.TAXED_LABEL),
-                                      checkColor: Colors.white,
-                                      fillColor:
-                                          MaterialStateProperty.resolveWith(
-                                              getColor),
-                                      value: _items[index].taxed,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          _items[index].updateItem(
-                                              null, null, null, value!);
-                                        });
-                                      },
-                                    ),
-                                    TextFormField(
-                                      decoration: const InputDecoration(
-                                          labelText:
-                                              Constants.ITEM_PRICE_LABEL),
-                                      initialValue:
-                                          _items[index].price.toString(),
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                              decimal: true, signed: false),
-                                      validator: (String? value) {
-                                        final priceRegex =
-                                            RegExp(r'^\d+(.\d{2})?$');
+                      return Center(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.deferToChild,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: SingleChildScrollView(
+                            child: GestureDetector(
+                              child: AlertDialog(
+                                content: Form(
+                                  key: _confirmItemKey,
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        decoration: const InputDecoration(
+                                            labelText: Constants.ITEM_ID_LABEL),
+                                        initialValue: _items[index].itemKey,
+                                        keyboardType: TextInputType.number,
+                                        onSaved: (String? value) {
+                                          setState(() {
+                                            _items[index].updateItem(
+                                                value!, null, null, null, null);
+                                          });
+                                        },
+                                      ),
+                                      TextFormField(
+                                        decoration: const InputDecoration(
+                                            labelText:
+                                                Constants.ITEM_NAME_LABEL),
+                                        initialValue: _items[index].itemDesc,
+                                        validator: (String? value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Item Name is required';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (String? value) {
+                                          setState(() {
+                                            _items[index].updateItem(
+                                                null, value!, null, null, null);
+                                          });
+                                        },
+                                      ),
+                                      CheckboxListTile(
+                                        shape: Border(
+                                          bottom: BorderSide(
+                                              width: 1,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                        ),
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text(
+                                          Constants.TAXED_LABEL,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant),
+                                        ),
+                                        checkColor: Colors.white,
+                                        fillColor:
+                                            MaterialStateProperty.resolveWith(
+                                                getColor),
+                                        value: _items[index].taxed,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            _items[index].updateItem(
+                                                null, null, null, value!, null);
+                                          });
+                                        },
+                                      ),
+                                      TextFormField(
+                                        decoration: const InputDecoration(
+                                            labelText:
+                                                Constants.ITEM_PRICE_LABEL),
+                                        initialValue:
+                                            _items[index].price.toString(),
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(
+                                            decimal: true, signed: false),
+                                        validator: (String? value) {
+                                          final priceRegex =
+                                              RegExp(r'^\d+(.\d{2})?$');
 
-                                        if (value == null || value.isEmpty) {
-                                          return 'Item price is required';
-                                        } else if (!priceRegex
-                                            .hasMatch(value)) {
-                                          return 'Price should follow format X.XX';
-                                        }
-                                        return null;
-                                      },
-                                      onSaved: (String? value) {
-                                        setState(() {
-                                          _items[index].updateItem(null, null,
-                                              double.parse(value!), null);
-                                        });
-                                      },
-                                    ),
-                                    ElevatedButton(
+                                          if (value == null || value.isEmpty) {
+                                            return 'Item price is required';
+                                          } else if (!priceRegex
+                                              .hasMatch(value)) {
+                                            return 'Price should follow format X.XX';
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (String? value) {
+                                          setState(() {
+                                            _items[index].updateItem(
+                                                null,
+                                                null,
+                                                double.parse(value!),
+                                                null,
+                                                null);
+                                          });
+                                        },
+                                      ),
+                                      const SizedBox(height: 12),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          disabledBackgroundColor:
+                                              Theme.of(context)
+                                                  .colorScheme
+                                                  .surfaceTint
+                                                  .withOpacity(0.5),
+                                          elevation: 0,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              22, 12, 22, 12),
+                                        ),
                                         onPressed: () {
                                           if (_confirmItemKey.currentState!
                                               .validate()) {
@@ -234,34 +298,85 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
                                             Navigator.of(context).pop();
                                           }
                                         },
-                                        child:
-                                            const Text(Constants.CONFIRM_LABEL))
-                                  ],
-                                ))
-                          ],
+                                        child: Text(
+                                          Constants.SAVE_LABEL,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
+                                              fontSize: 16),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     });
                   });
             },
-          ));
+          );
         });
   }
 
+  /* Method to build the list of items that is shown on the page. It also handles
+  * the creation of new items and deletion of unneeded items. */
   Widget _buildItems(BuildContext context) {
     return Column(
       children: [
-        const Padding(
-            padding: EdgeInsets.only(top: 15),
-            child: Text(
-              Constants.ITEM_LIST_LABEL,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline),
-            )),
-        const Text(
-          'Swipe left or right to remove an item',
-          style: TextStyle(fontStyle: FontStyle.italic),
+        Container(
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 4),
+          child: Text(
+            'Swipe left or right to remove an item',
+            style: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
+        ),
+        GestureDetector(
+          child: Card(
+            elevation: 0,
+            margin: EdgeInsets.zero,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+              decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                        width: 1,
+                        color: Theme.of(context).colorScheme.outlineVariant),
+                    bottom: BorderSide(
+                        width: 1,
+                        color: Theme.of(context).colorScheme.outlineVariant)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add,
+                    size: 22,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  Text(
+                    Constants.ADD_ITEM_LABEL,
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              _items.add(Item('-', 'NEW ITEM', 0.00, false));
+              _itemFields.add(_buildItem(context, _items.length - 1));
+            });
+          },
         ),
         ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
@@ -270,14 +385,27 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
           itemBuilder: (context, index) {
             return Dismissible(
               background: Container(
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.error,
               ),
               key: UniqueKey(),
               onDismissed: (DismissDirection direction) {
+                Widget deletedField = _itemFields[index];
                 setState(() {
-                  _items[index].updateItem(null, 'USER REMOVED', null, null);
+                  _items[index].updateItem(null, null, null, null, true);
                   _itemFields[index] = Container();
                 });
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Deleted ${_items[index].itemDesc}'),
+                    action: SnackBarAction(
+                      label: 'UNDO',
+                      onPressed: () {
+                        setState(() {
+                          _itemFields[index] = deletedField;
+                          _items[index]
+                              .updateItem(null, null, null, null, false);
+                        });
+                      },
+                    )));
               },
               child: _itemFields[index],
             );
@@ -287,6 +415,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the text field for the subtotal. It also contains validation
+  * for the text field. */
   Widget _buildSubtotal() {
     return TextFormField(
       decoration:
@@ -316,6 +446,8 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  /* Method to build the text field for the total. It also contains validation
+  * for the text field. */
   Widget _buildTotal() {
     return TextFormField(
       decoration: const InputDecoration(labelText: Constants.TRIP_TOTAL_LABEL),
@@ -344,8 +476,10 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  // Method to build the text field for the trip description.
   Widget _buildTripDesc() {
     return TextFormField(
+      scrollPadding: const EdgeInsets.only(bottom: 200),
       decoration: const InputDecoration(labelText: Constants.TRIP_DESC_LABEL),
       initialValue: _tripDesc,
       onChanged: (String? value) {
@@ -356,11 +490,12 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     );
   }
 
+  // Helper method to validate that prices of items sum to the total/subtotal.
   bool _validateTotal(bool includeTax) {
     double localTotal = 0.00;
 
     for (Item item in _items) {
-      if (item.itemDesc != 'USER REMOVED') {
+      if (!item.deleted) {
         if (!includeTax || !item.taxed) {
           localTotal += item.price;
         } else if (includeTax && item.taxed) {
@@ -369,63 +504,91 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
       }
     }
 
-    if (includeTax) return _total == localTotal;
-
-    return _subtotal == localTotal;
+    if (includeTax) {
+      return _total == double.parse(localTotal.toStringAsFixed(2));
+    }
+    return _subtotal == double.parse(localTotal.toStringAsFixed(2));
   }
 
+  // Build method to put together all constructed elements onto the page.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.CONFIRM_RECEIPT_LABEL),
-      ),
-      body: Container(
-        margin: const EdgeInsets.all(24.0),
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Form(
-              key: _confirmReceiptKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildDateTime(context),
-                  _buildLocation(),
-                  _buildItems(context),
-                  _buildSubtotal(),
-                  _buildTotal(),
-                  _buildTripDesc(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                      onPressed: () => {
-                            if (_confirmReceiptKey.currentState!.validate())
-                              {handleSubmit()}
-                            else
-                              {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'An error occurred. Please check inputs.')),
-                                )
-                              }
-                          },
-                      child: const Text(Constants.CONFIRM_LABEL))
-                ],
-              )),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: const Text(
+          Constants.CONFIRM_RECEIPT_LABEL,
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _items.add(Item('-', 'NEW ITEM', 0.00, false));
-            _itemFields.add(_buildItem(context, _items.length - 1));
-          });
-        },
-        child: const Text(Constants.NEW_ITEM_LABEL),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Form(
+          key: _confirmReceiptKey,
+          child: Column(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Column(children: [
+                        _buildDateTime(context),
+                        _buildLocation(),
+                      ]),
+                    ),
+                    _buildItems(context),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Column(children: [
+                        _buildSubtotal(),
+                        _buildTotal(),
+                        _buildTripDesc(),
+                      ]),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    disabledBackgroundColor: Theme.of(context)
+                        .colorScheme
+                        .surfaceTint
+                        .withOpacity(0.5),
+                    elevation: 0,
+                    padding: const EdgeInsets.fromLTRB(22, 12, 22, 12),
+                  ),
+                  onPressed: () => {
+                        if (_confirmReceiptKey.currentState!.validate())
+                          {handleSubmit()}
+                        else
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'An error occurred. Please check inputs.')),
+                            )
+                          }
+                      },
+                  child: Text(Constants.CONFIRM_LABEL,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontSize: 16))),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
       ),
     );
   }
 
+  /* Method to update the Grocery Trip object with any changes made before sending
+  * it to the backend. It navigates back to the home page once done. */
   Future<void> handleSubmit() async {
     final loading = LoadingOverlay.of(context);
     final navigator = Navigator.of(context, rootNavigator: true);
@@ -438,7 +601,7 @@ class _ConfirmReceiptState extends ConsumerState<ConfirmReceipt> {
     loading.show();
 
     for (Item item in _items) {
-      if (item.itemDesc != 'USER REMOVED') updatedItems.add(item);
+      if (!item.deleted) updatedItems.add(item);
     }
 
     widget.tripData.updateGroceryTrip(

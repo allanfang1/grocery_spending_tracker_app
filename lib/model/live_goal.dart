@@ -1,6 +1,7 @@
 import 'package:grocery_spending_tracker_app/model/goal.dart';
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 
+/// Represents a goal with its associated transactions and supplementary information for UI use.
 class LiveGoal {
   late Goal goal;
   late List<Transaction> transactions;
@@ -9,6 +10,7 @@ class LiveGoal {
   late int daysRemaining;
   late double progressPercent;
 
+  /// Constructor for creating a LiveGoal object.
   LiveGoal(Goal inputGoal, List<Transaction> inputTransactions) {
     goal = inputGoal;
     transactions = inputTransactions;

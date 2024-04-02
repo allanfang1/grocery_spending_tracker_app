@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/repository/goals_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
@@ -11,7 +12,8 @@ void main() {
     late ProfileRepository profileRepository;
     late GoalsRepository goalsRepository;
 
-    setUp(() {
+    setUp(() async {
+      await dotenv.load(fileName: ".env");
       profileRepository = ProfileRepository();
       profileRepository.user
           .setUser(1, "email", "token", "firstName", "lastName");
@@ -19,6 +21,7 @@ void main() {
       goalsRepository.client = MockClient((request) async {
         final mapJson = [
           {
+            'goal_id': 1,
             'goal_name': "bob",
             'goal_desc': "yes",
             'start_date': "20010701T12:30:24",
@@ -31,7 +34,7 @@ void main() {
     });
 
     /*
-    FRT-M9-5
+    FRT-M5-4
     Initial State: A user is successfully logged in
     Input: n/a
     Output: List of all goals of the user
@@ -44,7 +47,7 @@ void main() {
     });
 
     /*
-    FRT-M9-4
+    FRT-M5-5
     Initial State: A user is successfully logged in
     Input: Goal name, description, start date, end date, budget
     Output: Success of goal creation

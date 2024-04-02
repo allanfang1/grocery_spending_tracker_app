@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/common/error_alert.dart';
 import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/pages/user/login.dart';
 import 'package:grocery_spending_tracker_app/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// Register or create profile page for the app
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -25,23 +25,21 @@ class _RegisterPage extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final InputDecoration _hiddenValidation = InputDecoration(
-      border: OutlineInputBorder(),
-      hintStyle: TextStyle(color: Colors.black.withOpacity(0.4)),
-      contentPadding: EdgeInsets.symmetric(
-        vertical: 0.0,
-        horizontal: 10.0,
-      ),
-      errorStyle: TextStyle(
-        color: Colors.transparent,
-        fontSize: 0,
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.black54),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
-      ),
-    );
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.onPrimary,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide.none),
+        hintStyle:
+            TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 0.0,
+          horizontal: 10.0,
+        ),
+        errorStyle: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontSize: 0,
+        ));
 
     return Scaffold(
       body: Center(
@@ -50,8 +48,8 @@ class _RegisterPage extends State<RegisterPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                'New Account',
+              const Text(
+                Constants.NEW_ACCOUNT_TITLE,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24.0,
@@ -69,11 +67,11 @@ class _RegisterPage extends State<RegisterPage> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       onSaved: (newValue) =>
                           setState(() => _firstname = newValue),
-                      decoration:
-                          _hiddenValidation.copyWith(hintText: "First Name"),
+                      decoration: _hiddenValidation.copyWith(
+                          hintText: Constants.FIRST_NAME_LABEL),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Invalid input';
+                          return Constants.GENERIC_INVALID_INPUT;
                         }
                         return null;
                       },
@@ -83,11 +81,11 @@ class _RegisterPage extends State<RegisterPage> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       onSaved: (newValue) =>
                           setState(() => _lastname = newValue),
-                      decoration:
-                          _hiddenValidation.copyWith(hintText: "Last Name"),
+                      decoration: _hiddenValidation.copyWith(
+                          hintText: Constants.LAST_NAME_LABEL),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Invalid input';
+                          return Constants.GENERIC_INVALID_INPUT;
                         }
                         return null;
                       },
@@ -96,10 +94,11 @@ class _RegisterPage extends State<RegisterPage> {
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       onSaved: (newValue) => setState(() => _email = newValue),
-                      decoration: _hiddenValidation.copyWith(hintText: "Email"),
+                      decoration: _hiddenValidation.copyWith(
+                          hintText: Constants.EMAIL_LABEL),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Invalid input';
+                          return Constants.GENERIC_INVALID_INPUT;
                         }
                         return null;
                       },
@@ -110,34 +109,40 @@ class _RegisterPage extends State<RegisterPage> {
                       onSaved: (newValue) =>
                           setState(() => _password = newValue),
                       obscureText: true,
-                      decoration:
-                          _hiddenValidation.copyWith(hintText: "Password"),
+                      decoration: _hiddenValidation.copyWith(
+                          hintText: Constants.PASSWORD_LABEL),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Invalid input';
+                          return Constants.GENERIC_INVALID_INPUT;
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     Consumer(
                       builder: (_, WidgetRef ref, __) {
-                        return OutlinedButton(
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              disabledBackgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceTint
+                                  .withOpacity(0.5),
+                              elevation: 0,
+                              padding:
+                                  const EdgeInsets.fromLTRB(22, 12, 22, 12)),
                           onPressed: _enableBtn ?? false
                               ? () async {
                                   _formKey.currentState!.save();
                                   setState(() => _enableBtn = false);
                                   final loading = LoadingOverlay.of(context);
-
                                   loading.show();
-
                                   final response = await ref
                                       .read(profileControllerProvider.notifier)
                                       .register(_firstname!, _lastname!,
                                           _email!, _password!);
-
                                   loading.hide();
-
                                   if (context.mounted) {
                                     if (response.statusCode == 200) {
                                       Navigator.of(context).push(
@@ -155,19 +160,25 @@ class _RegisterPage extends State<RegisterPage> {
                                   setState(() => _enableBtn = true);
                                 }
                               : null,
-                          child: const Text('Create Account'),
+                          child: Text(
+                            Constants.CREATE_ACCOUNT_BUTTON_LABEL,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontSize: 16),
+                          ),
                         );
                       },
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 4),
               GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const LoadingOverlay(
-                            child: LoginPage()),
+                        builder: (context) =>
+                            const LoadingOverlay(child: LoginPage()),
                       ),
                     );
                   },

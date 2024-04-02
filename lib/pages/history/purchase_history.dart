@@ -6,11 +6,11 @@ import 'package:grocery_spending_tracker_app/controller/history_controller.dart'
 import 'package:grocery_spending_tracker_app/model/transaction.dart';
 import 'package:grocery_spending_tracker_app/pages/history/receipt_view.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// This class represents the widget for displaying the purchase history tab.
 class PurchaseHistory extends ConsumerWidget {
   const PurchaseHistory({super.key});
 
+  // Build method responsible for constructing the UI based on the provided context and ref.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsAsync = ref.watch(historyControllerProvider);
@@ -19,104 +19,108 @@ class PurchaseHistory extends ConsumerWidget {
           ref.watch(historyControllerProvider.notifier).getTransactions();
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY),
-        ),
-        body: Center(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: _transactions.isNotEmpty ? ListView.builder(
-              padding: EdgeInsets.only(top: 14),
-              itemCount: _transactions.length,
-              prototypeItem: Card(
-                margin: EdgeInsets.only(bottom: 14),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("placeholder",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 18)),
-                            Text("placeholder"),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "placeholder",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    ref
-                        .watch(historyControllerProvider.notifier)
-                        .transactionIndex = index;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ReceiptView(),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    margin: EdgeInsets.only(bottom: 14),
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_transactions[index].location ?? "",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 18)),
-                                Text(Helper.dateTimeToString(
-                                    _transactions[index].dateTime)),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            Helper.currencyFormat(_transactions[index].total),
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ) : Text(
-              'You don\'t have any trips yet.',
-              style: TextStyle(
-                  fontStyle: FontStyle.italic, color: Colors.grey),
-            ),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: const Text(
+            Constants.PURCHASE_HISTORY,
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
+        body: _transactions.isNotEmpty
+            ? ListView.builder(
+                padding: const EdgeInsets.only(top: 4),
+                itemCount: _transactions.length,
+                //TODO: prototypeItem:
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      ref
+                          .watch(historyControllerProvider.notifier)
+                          .transactionIndex = index;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ReceiptView(),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      color: Theme.of(context).colorScheme.surface,
+                      margin: EdgeInsets.zero,
+                      elevation: 0,
+                      shape: Border(
+                          bottom: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant)),
+                      child: Dismissible(
+                        key: Key(index.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          ref
+                              .watch(historyControllerProvider.notifier)
+                              .deleteGoal(index);
+                        },
+                        background: Container(
+                            color: Theme.of(context).colorScheme.error),
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.receipt_long,
+                                size: 38,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(_transactions[index].location ?? "",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18)),
+                                    Text(Helper.dateTimeToString(
+                                        _transactions[index].dateTime)),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                Helper.currencyFormat(
+                                    _transactions[index].total),
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            : const Text(
+                'You don\'t have any trips yet.',
+                style:
+                    TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+              ),
       );
     }, error: (Object error, StackTrace stackTrace) {
       return Text('Error: $error');
     }, loading: () {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(Constants.PURCHASE_HISTORY),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          title: const Text(
+            Constants.PURCHASE_HISTORY,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         body: Center(
           child: Container(
-            margin: EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: CircularProgressIndicator(),
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: const CircularProgressIndicator(),
           ),
         ),
       );

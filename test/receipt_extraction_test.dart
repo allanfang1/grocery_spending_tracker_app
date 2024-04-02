@@ -3,6 +3,8 @@ import 'package:grocery_spending_tracker_app/controller/extract_data.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/grocery_trip.dart';
 import 'package:grocery_spending_tracker_app/model/capture_item.dart';
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 void main() {
   // Unit tests to verify DateTime extraction from strings/receipt text
@@ -397,25 +399,37 @@ void main() {
     /**
      * FRT-M3-23
      * Initial State: An Item has been created.
-     * Input: An update is made to the product name and price.
-     * Output: The Item should be updated to match the new input data and non-updated
-     * fields should remain the same.
+     * Input: An update is made to all fields.
+     * Output: The Item should be updated to match the new input data.
      * Derivation: A user wants to update a grocery item after the OCR finishes
      * scanning.
      */
     test('Item can be updated', () {
       Item test = Item('1', 'ProductOne', 3.99, true);
-      test.updateItem(null, 'Updated Name', 5.99, null);
-      expect(_isMatch(test, Item('1', 'Updated Name', 5.99, true)), true);
+      test.updateItem('2', 'Updated Name', 5.99, false, false);
+      expect(_isMatch(test, Item('2', 'Updated Name', 5.99, false)), true);
     });
 
     /**
      * FRT-M3-24
+     * Initial State: An Item has been created.
+     * Input: An existing Item is input.
+     * Output: The JSON form of the Item data.
+     * Derivation: A user is trying to submit their trip to the backend.
+     */
+    test('Item to  JSON conversion is working', () {
+      Item test = Item('1', 'ProductOne', 3.99, true);
+      String json = jsonEncode(test);
+      expect(json,
+          '{"item_key":"1","item_desc":"ProductOne","price":3.99,"taxed":true}');
+    });
+
+    /**
+     * FRT-M3-25
      * Initial State: A Grocery Trip has been created.
-     * Input: An update is made to the date, items, subtotal, total, and trip description.
-     * Output: The Grocery Trip should be updated to match the new input data and non-updated
-     * fields should remain the same.
-     * Derivation: A user wants to update their grocery trip after the OCR finishes
+     * Input: An update is made to all fields.
+     * Output: The Grocery Trip should be updated to match the new input data.
+     * Derivation: A user wants to update their Grocery Trip after the OCR finishes
      * scanning.
      */
     test('Grocery Trip can be updated', () {
@@ -424,7 +438,7 @@ void main() {
 
       trip.updateGroceryTrip(
           1709336961,
-          null,
+          '1579 Main Street West',
           [
             Item('1', 'Product0', 3.89, false),
             Item('2', 'Product1', 1.00, true)
@@ -435,12 +449,35 @@ void main() {
 
       expect(
           trip.dateTime == 1709336961 &&
-              trip.location == 'FORTINOS (1579 Main Street)' &&
+              trip.location == '1579 Main Street West' &&
               _isMatch(trip.items[0], Item('1', 'Product0', 3.89, false)) &&
               _isMatch(trip.items[1], Item('2', 'Product1', 1.00, true)) &&
               trip.subtotal == 4.89 &&
               trip.total == 5.02,
           true);
+    });
+
+    /**
+     * FRT-M3-26
+     * Initial State: A Grocery Trip has been created.
+     * Input: An existing Grocery Trip is input.
+     * Output: The JSON form of the Grocery Trip.
+     * Derivation: A user tries to submit their grocery trip to the backend.
+     */
+    test('Grocery Trip to JSON Conversion is Working', () {
+      GroceryTrip trip = GroceryTrip(1706830924, 'FORTINOS (1579 Main Street)',
+          [Item('1', 'Product0', 3.89, false)], 3.89, 3.89, '');
+      String json = jsonEncode(trip);
+
+      final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+      String expectedDateTime = dateFormat
+          .format(DateTime.fromMillisecondsSinceEpoch(1706830924 * 1000));
+
+      expect(
+          json,
+          '{"date_time":"$expectedDateTime","location":"FORTINOS (1579 Main Street)",'
+          '"items":[{"item_key":"1","item_desc":"Product0","price":3.89,"taxed":false}],'
+          '"subtotal":3.89,"total":3.89,"trip_desc":""}');
     });
   });
 }
@@ -449,7 +486,8 @@ bool _isMatch(Item a, Item b) {
   if (a.itemKey == b.itemKey &&
       a.itemDesc == b.itemDesc &&
       a.price == b.price &&
-      a.taxed == b.taxed) {
+      a.taxed == b.taxed &&
+      a.deleted == b.deleted) {
     return true;
   }
   return false;

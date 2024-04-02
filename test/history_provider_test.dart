@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/repository/history_repository.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:test/test.dart';
@@ -11,7 +12,8 @@ void main() {
     late ProfileRepository profileRepository;
     late HistoryRepository historyRepository;
 
-    setUp(() {
+    setUp(() async {
+      await dotenv.load(fileName: ".env");
       profileRepository = ProfileRepository();
       profileRepository.user
           .setUser(1, "email", "token", "firstName", "lastName");
@@ -54,7 +56,7 @@ void main() {
     });
 
     /*
-    FRT-M9-1
+    FRT-M5-1
     Initial State: A user is successfully logged in
     Input: n/a
     Output: List of all transactions of the user ordered by recency 
@@ -66,7 +68,7 @@ void main() {
     });
 
     /*
-    FRT-M9-2
+    FRT-M5-2
     Initial State: A user is successfully logged in
     Input: Index number
     Output: Transaction instance
@@ -78,7 +80,7 @@ void main() {
     });
 
     /*
-    FRT-M9-3
+    FRT-M5-3
     Initial State: A user is successfully logged in
     Input: Index number
     Output: null

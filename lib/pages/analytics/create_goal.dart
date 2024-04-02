@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
@@ -7,8 +8,7 @@ import 'package:grocery_spending_tracker_app/common/loading_overlay.dart';
 import 'package:grocery_spending_tracker_app/controller/goals_controller.dart';
 import 'package:grocery_spending_tracker_app/service/analytics_service_controller.dart';
 
-// ignore_for_file: prefer_const_constructors
-
+// A StatefulWidget responsible for creating a new goal.
 class CreateGoal extends ConsumerStatefulWidget {
   const CreateGoal({super.key});
 
@@ -16,6 +16,7 @@ class CreateGoal extends ConsumerStatefulWidget {
   CreateGoalState createState() => CreateGoalState();
 }
 
+// The state class for CreateGoal widget.
 class CreateGoalState extends ConsumerState<CreateGoal> {
   final _formKey = GlobalKey<FormState>();
   bool? _enableBtn = true;
@@ -29,12 +30,15 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(Constants.CREATE_GOAL),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: const Text(
+          Constants.CREATE_GOAL,
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
           child: Form(
             key: _formKey,
             onChanged: () =>
@@ -42,7 +46,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
             child: Column(
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Name',
                   ),
                   onChanged: (value) {
@@ -52,7 +56,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
                   onChanged: (value) {
@@ -69,7 +73,12 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintText: _startDate == null
                         ? 'Select a date'
                         : _startDate.toString().split(' ')[0],
-                    suffixIcon: Icon(Icons.calendar_today),
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: _startDate == null
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : Theme.of(context).colorScheme.onBackground),
+                    suffixIcon: const Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
                     final DateTime? picked = await showDatePicker(
@@ -93,7 +102,12 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     hintText: _endDate == null
                         ? 'Select a date'
                         : _endDate.toString().split(' ')[0],
-                    suffixIcon: Icon(Icons.calendar_today),
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: _startDate == null
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : Theme.of(context).colorScheme.onBackground),
+                    suffixIcon: const Icon(Icons.calendar_today),
                   ),
                   onTap: () async {
                     final DateTime? picked = await showDatePicker(
@@ -114,7 +128,7 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Budget',
                   ),
                   onChanged: (value) {
@@ -123,51 +137,65 @@ class CreateGoalState extends ConsumerState<CreateGoal> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
-                OutlinedButton(
-                    onPressed: (_startDate != null &&
-                            _endDate != null &&
-                            _budget != null &&
-                            _name != null &&
-                            _description != null &&
-                            (_enableBtn ?? false))
-                        ? () async {
-                            FocusScopeNode currentFocus =
-                                FocusScope.of(context);
-                            final loading = LoadingOverlay.of(context);
-                            if (!currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                            // _formKey.currentState!.save();
-                            setState(() => _enableBtn = false);
-                            loading.show();
-                            final response = await ref
-                                .watch(goalsControllerProvider.notifier)
-                                .createGoal(
-                                  _name!,
-                                  _description!,
-                                  _startDate!,
-                                  _endDate!,
-                                  _budget!,
-                                );
-                            if (response.statusCode == 200 && context.mounted) {
-                              ref
-                                  .watch(analyticsServiceControllerProvider
-                                      .notifier)
-                                  .refreshGoals();
-                              loading.hide();
-                              Navigator.of(context).pop();
-                            } else {
-                              setState(() {
-                                _enableBtn = true;
-                              });
-                              if (context.mounted) {
-                                showErrorAlertDialog(context, response.body);
-                              }
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      disabledBackgroundColor: Theme.of(context)
+                          .colorScheme
+                          .surfaceTint
+                          .withOpacity(0.5),
+                      elevation: 0,
+                      padding: const EdgeInsets.fromLTRB(22, 12, 22, 12)),
+                  onPressed: (_startDate != null &&
+                          _endDate != null &&
+                          _startDate!.isBefore(_endDate!) &&
+                          _budget != null &&
+                          _name != null &&
+                          _description != null &&
+                          (_enableBtn ?? false))
+                      ? () async {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          final loading = LoadingOverlay.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                          // _formKey.currentState!.save();
+                          setState(() => _enableBtn = false);
+                          loading.show();
+                          final response = await ref
+                              .watch(goalsControllerProvider.notifier)
+                              .createGoal(
+                                _name!,
+                                _description!,
+                                _startDate!,
+                                _endDate!,
+                                _budget!,
+                              );
+                          if (response.statusCode == 200 && context.mounted) {
+                            ref
+                                .watch(
+                                    analyticsServiceControllerProvider.notifier)
+                                .refreshGoals();
+                            loading.hide();
+                            Navigator.of(context).pop();
+                          } else {
+                            setState(() {
+                              _enableBtn = true;
+                            });
+                            if (context.mounted) {
+                              showErrorAlertDialog(context, response.body);
                             }
                           }
-                        : null,
-                    child: Text("Save"))
+                        }
+                      : null,
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 16),
+                  ),
+                ),
               ],
             ),
           ),

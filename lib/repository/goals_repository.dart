@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grocery_spending_tracker_app/common/constants.dart';
 import 'package:grocery_spending_tracker_app/model/goal.dart';
 import 'package:grocery_spending_tracker_app/repository/profile_repository.dart';
 import 'package:http/http.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+// Repository class for managing user goals.
 
 part 'goals_repository.g.dart';
 
@@ -14,9 +17,10 @@ class GoalsRepository {
 
   List<Goal> goals = [];
 
+  // Method to load user goals from the server.
   Future<Response> loadGoals() async {
     final response = await client.get(
-        Uri.parse(Constants.HOST + Constants.GET_GOALS_PATH),
+        Uri.parse(dotenv.env['BASE_URL']! + Constants.GET_GOALS_PATH),
         headers: {'Auth': profileRepository.user.token!});
     if (response.statusCode == 200) {
       List<Map<String, dynamic>> jsonList = (jsonDecode(response.body) as List)
@@ -27,24 +31,37 @@ class GoalsRepository {
     return response;
   }
 
+  // Method to create a new goal on the server.
   Future<Response> createGoal(String goalName, String goalDescription,
       String startDate, String endDate, double budget) async {
     final response = await client.post(
-        Uri.parse(Constants.HOST + Constants.CREATE_GOALS_PATH),
+        Uri.parse(dotenv.env['BASE_URL']! + Constants.CREATE_GOALS_PATH),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Auth': profileRepository.user.token!
         },
         body: jsonEncode({
           'goal_name': goalName,
-          'goal_description': goalDescription,
+          'goal_desc': goalDescription,
           'start_date': startDate,
           'end_date': endDate,
           'budget': budget
         }));
     if (response.statusCode == 200) {
-      print(response.body);
       await loadGoals();
+    }
+    return response;
+  }
+
+  // Method to delete a goal from the server.
+  Future<Response> deleteGoal(int index) async {
+    final response = await client.delete(
+        Uri.parse(dotenv.env['BASE_URL']! +
+            Constants.DELETE_GOALS_PATH +
+            goals[index].goalId.toString()),
+        headers: {'Auth': profileRepository.user.token!});
+    if (response.statusCode == 200) {
+      goals.removeAt(index);
     }
     return response;
   }
