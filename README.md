@@ -1,6 +1,8 @@
-# grocery_spending_tracker_app
+# Grocery Spending Tracker App
 
-Before running the app, you need to generate the necessary code by running the following command:
+Frontend submodule of [Grocery Spending Tracker](https://github.com/grocery-spending-tracker/grocery-spending-tracker)
+
+Build project by running the following command:
 
 ```bash
 dart run build_runner watch -d
